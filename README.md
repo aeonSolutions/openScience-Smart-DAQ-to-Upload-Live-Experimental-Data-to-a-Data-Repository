@@ -5,11 +5,14 @@ This paper discusses an innovative proof-of-concept method for management of col
 This paper is currently being written, in an open enviroment format. Available as a prePrint draft document at Elsevier's SSRN platform.
 https://ssrn.com/abstract=4210504 
 
-#Smart DAQ for LIVE Experimental Data
-Tthis repository hold the firmware C code compatible with Tensilica's Xtensa LX6/7 microprocessors. 
+## Smart DAQ for LIVE Experimental Data
+This repository hold the firmware C code compatible with Tensilica's Xtensa LX6/7 microprocessors. 
 
-# Smart PCB desgin
-The PCB design files are underway....in the meantime the reader can download the KiCad project files of similar smart DAQ compatible with the firmware code available on this repository:
+## Smart PCB desgin
+The PCB design files are underway....
+
+in the meantime the reader can download the KiCad project files of similar smart DAQ compatible with the firmware code available on this repository:
+
 https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/Smart%20DAQ/README.md
 
 ![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/LDAD_ATOM.jfif)
