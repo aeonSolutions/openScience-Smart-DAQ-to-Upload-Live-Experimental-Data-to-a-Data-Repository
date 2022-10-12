@@ -17,6 +17,6 @@ https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/Smart%20DAQ
 
 ## Proof of Concept
 
-To test and validate proposed smart DAQ PCB electronics and its firmware as a solution for LIVE experimental data measurements on any test specimen part of a experimental campaign, This PCB electronics is being used to measure a predefined set of variables/parameters to further study several asphalt mixtures with knonn carbon fibers weight content in the asphalt matrix. Below is a YouTube link to an undeited short video showing one of the experimental setups.
+To test and validate proposed smart DAQ PCB electronics and its firmware as a solution for LIVE experimental data measurements on any test specimen part of a experimental campaign, This PCB electronics is being used to measure a predefined set of variables/parameters to further study several asphalt mixtures with known carbon fiber weight content in the asphalt matrix. Below is a YouTube link to an unedited short video showing one of the experimental setups.
 
 [![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/smart_asphalt.png)](https://youtu.be/6td_RrH29jA)
