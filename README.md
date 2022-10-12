@@ -6,7 +6,7 @@ This paper is currently being written, in an open enviroment format. Available a
 https://ssrn.com/abstract=4210504 
 
 ## Smart DAQ for LIVE Experimental Data
-This repository hold the firmware C code compatible with Tensilica's Xtensa LX6/7 microprocessors. 
+This repository holds the firmware C code compatible with Tensilica's Xtensa LX6/7 microprocessors. 
 
 ## Smart PCB desgin
 The PCB design files are underway....
