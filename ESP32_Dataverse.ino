@@ -10,21 +10,24 @@
 #include <semphr.h>
 #include "time.h"
 #include <ESP32Ping.h>
+#include "ESP32Time.h"
 
 // WIFI SETUP ********************************************
 const char* WIFI_SSID = "TheScientist";
 const char* WIFI_PASSWORD = "angelaalmeidasantossilva4108";
 bool WIFIconnected=false;
 
+// RTC SETUP *******************
+//ESP32Time rtc;
+ESP32Time rtc(3600);  // offset in seconds GMT+1
 
 // RTC: NTP server ***********************
 const char* ntpServer = "pool.ntp.org";
 const long  gmtOffset_sec = 3600;
 const int   daylightOffset_sec = 3600;
 struct tm timeinfo;
-String NTC_TimeStamp = "-:-:- xxxx-xx-xx";
 long NTP_request_interval=64000;// 64 sec.
-long NTP_last_request=millis();
+long NTP_last_request=0;
   
 // DATAVERSE **********************************
 String API_TOKEN = "a85f5973-34dc-4133-a32b-c70dfef9d001";
@@ -72,9 +75,11 @@ String EXPERIMENTAL_DATA_FILENAME = "ER_measurements.csv";
 // Measurements: Data ********************************
 // array size is the number of sensors to do data collection
 #define NUM_SAMPLES 5
-#define NUM_DATA_READINGS 15
+#define NUM_DATA_READINGS 16
 #define SAMPLING_INTERVAL 1000
-String measurements[NUM_SAMPLES][NUM_DATA_READINGS];
+#define MEASUREMENTS_BUFFER_SIZE 10
+String measurements[MEASUREMENTS_BUFFER_SIZE][NUM_SAMPLES][NUM_DATA_READINGS];
+byte measurements_current_pos=0;
 
 /* Attention: is needed to set BUFFER_LENGTH to at least 64 in Wire.h and twi.h*/
 atsha204Class sha204;
@@ -86,7 +91,7 @@ unsigned long UPLOAD_DATASET_DELTA_TIME= NUM_SAMPLES*SAMPLING_INTERVAL + 120000;
 unsigned long DO_DATA_MEASURMENTS_DELTA_TIME= NUM_SAMPLES*SAMPLING_INTERVAL + 60000; // 1 min
 unsigned long LAST_DATASET_UPLOAD = 0;
 unsigned long LAST_DATA_MEASUREMENTS = 0;
-
+unsigned long MAX_LATENCY_ALLOWED = (unsigned long)(DO_DATA_MEASURMENTS_DELTA_TIME/2);
 
 // Setup IO pins and Addresses **********************************************
 
@@ -110,7 +115,7 @@ LSM6DS3 LSM6DS3sensor( I2C_MODE, LSMADDR);
 
 
 
-//components to test **************************************
+// Components to test **************************************
 bool scanI2C = true;
 bool testSHTsensor = true;
 bool testMotionSensor = true;
@@ -145,6 +150,7 @@ void Core2Loop(void* pvParameters) {
     loop1();
 }
 
+
 // ************************** == Lock semaphore == **********************
 SemaphoreHandle_t MemLockSemaphoreCore1 = xSemaphoreCreateMutex();
 SemaphoreHandle_t MemLockSemaphoreCore2 = xSemaphoreCreateMutex();
@@ -152,6 +158,7 @@ SemaphoreHandle_t MemLockSemaphoreDatasetFileAccess = xSemaphoreCreateMutex();
 bool datasetFileIsBusySaveData = false;
 bool datasetFileIsBusyUploadData = false;
 SemaphoreHandle_t MemLockSemaphoreWIFI = xSemaphoreCreateMutex();
+
 
 // **************************** == Serial Class == ************************
 class mSerial {
@@ -196,6 +203,7 @@ void setup1() {
 }
 
 
+
 // ********************************************************
 void setup() {
 
@@ -208,7 +216,7 @@ void setup() {
     &task_Core2_Loop,            /* Task handle to keep track of created task */
     !ARDUINO_RUNNING_CORE); /* pin task to core */
 
-
+  WiFi.disconnect(true);
   WiFi.onEvent(WiFiEvent);
 
   
@@ -218,7 +226,6 @@ void setup() {
   pinMode(ledGreen, OUTPUT);
 
   delay(2000);
-  mserial.printStrln(__FILE__);
 
   mserial.printStr("Starting serial...");
   mserial.start(115200);            // USB communication with mserial Monitor
@@ -228,7 +235,10 @@ void setup() {
   mserial.printStrln("OK");
   mserial.printStrln("Initializing...");
   delay(5000);
-      
+  mserial.printStr("set RTC clock to firmware Date & Time ...");  
+  rtc.setTimeStruct(CompileDateTime(__DATE__, __TIME__)); 
+  mserial.printStrln(rtc.getDateTime(true));
+            
   mserial.printStr("Testing RGB LED OFF...");
   digitalWrite(ledRed, HIGH);
   digitalWrite(ledGreen, HIGH);
@@ -460,7 +470,7 @@ void loop1() {
     mserial.printStrln("");
     mserial.printStrln("Upload Data to the Dataverse...");
     while (datasetFileIsBusySaveData){
-      mserial.printStr("busy saving ...");
+      mserial.printStr("busy S ");
       delay(500);
     }
 
@@ -504,29 +514,30 @@ void loop() {
     digitalWrite(ledGreen, LOW);
     delay(1000);   
     
-    mserial.printStr("Saving collected data....");
+    mserial.printStrln("Saving collected data....");
     if(datasetFileIsBusyUploadData){
       mserial.printStr("file is busy....");  
     }
-    while (datasetFileIsBusyUploadData){
-      mserial.printStr("busy uploading ...");
-      delay(500);
-    }
-    mserial.printStrln("starting");
-    digitalWrite(ledRed, HIGH);
-    digitalWrite(ledGreen, LOW);    
-    // SAVE DATA MEASUREMENTS ****
-    xSemaphoreTake(MemLockSemaphoreDatasetFileAccess, portMAX_DELAY); // enter critical section
-      datasetFileIsBusySaveData=true;
-    xSemaphoreGive(MemLockSemaphoreDatasetFileAccess); // exit critical section 
-    delay(1000);
-    saveDataMeasurements();
-    xSemaphoreTake(MemLockSemaphoreDatasetFileAccess, portMAX_DELAY); // enter critical section
-      datasetFileIsBusySaveData=false;
-    xSemaphoreGive(MemLockSemaphoreDatasetFileAccess); // exit critical section 
 
-    digitalWrite(ledRed, LOW);
-    digitalWrite(ledGreen, HIGH);    
+    if(measurements_current_pos+1 > MEASUREMENTS_BUFFER_SIZE){
+      mserial.printStr("[mandatory wait]");  
+      while (datasetFileIsBusyUploadData){
+      }
+      initSaveDataset();
+    }else{ // measurements buffer is not full
+      long latency=millis();
+      long delta= millis()-latency;
+      while (datasetFileIsBusyUploadData || (delta < MAX_LATENCY_ALLOWED)){
+        delta= millis()-latency;
+        delay(500);
+      }
+      if(datasetFileIsBusyUploadData){
+        measurements_current_pos++;
+        mserial.printStr("skipping file save.");  
+      }else{
+        initSaveDataset();
+      }       
+    }
     
     scheduleWait=false;
     xSemaphoreTake(MemLockSemaphoreCore1, portMAX_DELAY); // enter critical section
@@ -546,7 +557,23 @@ void loop() {
     xSemaphoreGive(MemLockSemaphoreCore1); // exit critical section
   }
 }
+ void initSaveDataset(){
+    mserial.printStrln("starting");
+    digitalWrite(ledRed, HIGH);
+    digitalWrite(ledGreen, LOW);    
+    // SAVE DATA MEASUREMENTS ****
+    xSemaphoreTake(MemLockSemaphoreDatasetFileAccess, portMAX_DELAY); // enter critical section
+      datasetFileIsBusySaveData=true;
+    xSemaphoreGive(MemLockSemaphoreDatasetFileAccess); // exit critical section 
+    delay(1000);
+    saveDataMeasurements();
+    xSemaphoreTake(MemLockSemaphoreDatasetFileAccess, portMAX_DELAY); // enter critical section
+      datasetFileIsBusySaveData=false;
+    xSemaphoreGive(MemLockSemaphoreDatasetFileAccess); // exit critical section 
 
+    digitalWrite(ledRed, LOW);
+    digitalWrite(ledGreen, HIGH);    
+ }
 
 // *********************************************************
 //            Upload Dataset to Harvard's Dataverse
@@ -761,19 +788,22 @@ bool initializeDataMeasurementsFile(){
 bool saveDataMeasurements(){
   EXPERIMENTAL_DATA_FILE = FFat.open("/" + EXPERIMENTAL_DATA_FILENAME,"a+");
   if (EXPERIMENTAL_DATA_FILE){
-      mserial.printStrln("Saving data measurements to the dataset file ...");
+    mserial.printStrln("Saving data measurements to the dataset file ...");
+    for (int k = 0; k <= measurements_current_pos; k++) {
       for (int i = 0; i < NUM_SAMPLES; i++) {
-        String lineRowOfData=NTC_TimeStamp; // Col 0 == Date & Time
+        String lineRowOfData="";
         for (int j = 0; j < NUM_DATA_READINGS; j++) {
-          lineRowOfData= lineRowOfData + measurements[i][j] +";";
+            lineRowOfData= lineRowOfData + measurements[k][i][j] +";";
         }
         lineRowOfData+= macChallengeDataAuthenticity(lineRowOfData) + ";" + CryptoICserialNumber();
         mserial.printStrln(lineRowOfData);
         EXPERIMENTAL_DATA_FILE.println(lineRowOfData);        
       }
+    }
     EXPERIMENTAL_DATA_FILE.close();
     delay(500);
     mserial.printStrln("collected data measurements stored in the dataset CSV file.("+ EXPERIMENTAL_DATA_FILENAME +")");
+    measurements_current_pos=0;
     return true;
   }else{
     mserial.printStrln("Error creating CSV dataset file(3): " + EXPERIMENTAL_DATA_FILENAME);
@@ -822,7 +852,7 @@ void onBoardSensorMeasurements(int i){
       if (! isnan(t)) { // check if 'is not a number'
         mserial.printStr("Temp *C = ");
         mserial.printStr(String(t));
-        measurements[i][4]=String(t);
+        measurements[measurements_current_pos][i][5]=String(t);
       } else {
         mserial.printStrln("Failed to read temperature");
       }
@@ -830,7 +860,7 @@ void onBoardSensorMeasurements(int i){
       if (! isnan(h)) { // check if 'is not a number'
         mserial.printStr("   Hum. % = ");
         mserial.printStrln(String(h));
-        measurements[i][5]=String(h);
+        measurements[measurements_current_pos][i][6]=String(h);
       } else {
         mserial.printStrln("Failed to read humidity");
       }
@@ -876,11 +906,12 @@ void ReadExternalAnalogData() {
       mserial.printStr(" <><>  R: ");
       mserial.printStr(String(R2));
       mserial.printStrln("  Ohm");
-
-      measurements [i][0]=String(raw);
-      measurements [i][1]=String(Vin);
-      measurements [i][2]=String(Vout);
-      measurements [i][3]=String(R2);
+        
+      measurements [measurements_current_pos][i][0]=String(rtc.getDateTime(true));
+      measurements [measurements_current_pos][i][1]=String(raw);
+      measurements [measurements_current_pos][i][2]=String(Vin);
+      measurements [measurements_current_pos][i][3]=String(Vout);
+      measurements [measurements_current_pos][i][4]=String(R2);
       
       onBoardSensorMeasurements(i);
       
@@ -921,33 +952,33 @@ void getLSM6DS3sensorData(int i) {
   mserial.printStr("LSM6DS3 Accelerometer Data: ");
   mserial.printStr(" X1 = ");
   mserial.printStr(String(LSM6DS3sensor.readFloatAccelX()));
-  measurements[i][6]=String(LSM6DS3sensor.readFloatAccelX());
+  measurements[measurements_current_pos][i][7]=String(LSM6DS3sensor.readFloatAccelX());
   
   mserial.printStr("  Y1 = ");
   mserial.printStr(String(LSM6DS3sensor.readFloatAccelY()));
-  measurements[i][7]=String(LSM6DS3sensor.readFloatAccelY());
+  measurements[measurements_current_pos][i][8]=String(LSM6DS3sensor.readFloatAccelY());
 
   mserial.printStr("  Z1 = ");
   mserial.printStrln(String(LSM6DS3sensor.readFloatAccelZ()));
-  measurements[i][8]=String(LSM6DS3sensor.readFloatAccelZ());
+  measurements[measurements_current_pos][i][9]=String(LSM6DS3sensor.readFloatAccelZ());
 
   mserial.printStr("LSM6DS3 Gyroscope data:");
   mserial.printStr(" X1 = ");
   mserial.printStr(String(LSM6DS3sensor.readFloatGyroX()));
-  measurements[i][9]=String(LSM6DS3sensor.readFloatGyroX());
+  measurements[measurements_current_pos][i][10]=String(LSM6DS3sensor.readFloatGyroX());
   
   mserial.printStr("  Y1 = ");
   mserial.printStr(String(LSM6DS3sensor.readFloatGyroY()));
-  measurements[i][10]=String(LSM6DS3sensor.readFloatGyroY());
+  measurements[measurements_current_pos][i][11]=String(LSM6DS3sensor.readFloatGyroY());
   
   mserial.printStr("  Z1 = ");
   mserial.printStr(String(LSM6DS3sensor.readFloatGyroZ()));
-  measurements[i][11]=String(LSM6DS3sensor.readFloatGyroZ());
+  measurements[measurements_current_pos][i][12]=String(LSM6DS3sensor.readFloatGyroZ());
   
   mserial.printStr("\nLSM6DS3 Thermometer Data:");
   mserial.printStr(" Degrees C1 = ");
   mserial.printStr(String(LSM6DS3sensor.readTempC()));
-  measurements[i][12]=String(LSM6DS3sensor.readTempC());
+  measurements[measurements_current_pos][i][13]=String(LSM6DS3sensor.readTempC());
   
   mserial.printStr("  Degrees F1 = ");
   mserial.printStrln(String(LSM6DS3sensor.readTempF()));
@@ -955,11 +986,11 @@ void getLSM6DS3sensorData(int i) {
   mserial.printStr("LSM6DS3 SensorOne Bus Errors Reported:");
   mserial.printStr(" All '1's = ");
   mserial.printStr(String(LSM6DS3sensor.allOnesCounter));
-  measurements[i][13]=String(LSM6DS3sensor.allOnesCounter);
+  measurements[measurements_current_pos][i][14]=String(LSM6DS3sensor.allOnesCounter);
   
   mserial.printStr("   Non-success = ");
   mserial.printStrln(String(LSM6DS3sensor.nonSuccessCounter));
-  measurements[i][14]=String(LSM6DS3sensor.nonSuccessCounter);
+  measurements[measurements_current_pos][i][15]=String(LSM6DS3sensor.nonSuccessCounter);
   delay(1000);
 }
 
@@ -1107,9 +1138,9 @@ void WiFiEvent(WiFiEvent_t event) {
       mserial.printStrln("Authentication mode of access point has changed");
       break;
     case SYSTEM_EVENT_STA_GOT_IP:
-      mserial.printStr("Obtained IP address: ");
-      mserial.printStrln("IP     : "+WiFi.localIP().toString());
-      mserial.printStrln("Gateway: "+WiFi.gatewayIP().toString());
+      mserial.printStrln("Connection Details");
+      mserial.printStrln("     IP     : "+WiFi.localIP().toString());
+      mserial.printStrln("     Gateway: "+WiFi.gatewayIP().toString());
 
       if(!Ping.ping("www.google.com", 3)){
         mserial.printStrln("no Internet connectivity found.");
@@ -1179,26 +1210,21 @@ void WiFiEvent(WiFiEvent_t event) {
 
 // *************************************************************
 void updateInternetTime(){
-  long diff= (NTP_last_request-millis());
-    if(abs(diff)< NTP_request_interval){
-      mserial.printStrln("Internet Time (NTP) is up to date. ");
-      return;
-    }
-    NTP_last_request=millis();
-    mserial.printStrln("Requesting Internet Time (NTP) to "+ String(ntpServer));
+  long diff= (millis()- NTP_last_request);
+  if(abs(diff)< NTP_request_interval && NTP_last_request!=0){
+    mserial.printStrln("Internet Time (NTP) is up to date. ");
+    return;
+  }
+  NTP_last_request=millis();
 
-    if(!Ping.ping(ntpServer, 3)){
-      mserial.printStr("connectivity found with NTP server. one moment...");
-      if(!getLocalTime(&timeinfo)){
-        mserial.printStrln("Failed to obtain Internet Time. Current System Time is " + NTC_TimeStamp);
-        return;
-      }else{
-        NTC_TimeStamp=  String(1900+timeinfo.tm_year) +"-" + String(timeinfo.tm_mon) +"-" + String(timeinfo.tm_mday) +" " + String(timeinfo.tm_hour) +":" + String(timeinfo.tm_min)  +":" + String(timeinfo.tm_sec);
-        mserial.printStrln("Internet Time is: " + NTC_TimeStamp);
-      }
-    }else{
-        mserial.printStrln("NTP server could not  be reached ");
-    }
+  mserial.printStrln("Requesting Internet Time (NTP) to "+ String(ntpServer));
+  if(!getLocalTime(&timeinfo)){
+    mserial.printStrln("Failed to obtain Internet Time. Current System Time is " + String(rtc.getDateTime(true)));
+    return;
+  }else{
+    rtc.setTimeStruct(timeinfo); 
+    mserial.printStrln("Internet Time is: " + String(rtc.getDateTime(true)));
+  }
 }
 
 
@@ -1303,3 +1329,17 @@ void loadKeyFromHex(const char *hex_key, uint8_t *key){
 }
 
 //*********************************************************************
+
+// Convert compile time to Time Struct
+tm CompileDateTime(char const *dateStr, char const *timeStr){
+    char s_month[5];
+    int year;
+    struct tm t;
+    static const char month_names[] = "JanFebMarAprMayJunJulAugSepOctNovDec";
+    sscanf(dateStr, "%s %d %d", s_month, &t.tm_mday, &year);
+    sscanf(timeStr, "%2d %*c %2d %*c %2d", &t.tm_hour, &t.tm_min, &t.tm_sec);
+    // Find where is s_month in month_names. Deduce month value.
+    t.tm_mon = (strstr(month_names, s_month) - month_names) / 3;    
+    t.tm_year = year - 1900;    
+    return t;
+}
