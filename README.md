@@ -11,3 +11,5 @@ Tthis repository hold the firmware C code compatible with Tensilica's Xtensa LX6
 # Smart PCB desgin
 The PCB design files underway....in the meantime the reader can preview the smart DAQ wiht a similar one available here:
 https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/Smart%20DAQ/README.md
+
+![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/LDAD_ATOM.jfif)
