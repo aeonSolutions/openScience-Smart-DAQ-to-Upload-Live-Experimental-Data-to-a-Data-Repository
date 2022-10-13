@@ -13,8 +13,8 @@
 #include "ESP32Time.h"
 
 // WIFI SETUP ********************************************
-const char* WIFI_SSID = "TheScientist";
-const char* WIFI_PASSWORD = "angelaalmeidasantossilva4108";
+const char* WIFI_SSID = "ssid";
+const char* WIFI_PASSWORD = "password";
 bool WIFIconnected=false;
 
 // RTC SETUP *******************
@@ -30,7 +30,7 @@ long NTP_request_interval=64000;// 64 sec.
 long NTP_last_request=0;
   
 // DATAVERSE **********************************
-String API_TOKEN = "a85f5973-34dc-4133-a32b-c70dfef9d001";
+String API_TOKEN = "xxxxXXXXxxxxxxx";
 String SERVER_URL = "dataverse.harvard.edu";
 int SERVER_PORT = 443;
 String PERSISTENT_ID = "doi:10.7910/DVN/ZWOLNI"; 
