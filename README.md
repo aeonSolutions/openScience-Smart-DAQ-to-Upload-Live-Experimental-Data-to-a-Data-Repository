@@ -58,15 +58,8 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
   - 16Mb SOIC 8 NOR SPI Flash Memory (max 1Gb);
   - 2.4GHz ISM wireless connectivity;
   - Up to 118 12bit ADC Multiplexed DAQ channels;
-  - Calc MD5 hash of the dataset file yo compare with json result on upload 
-  - OTA firmware update
-  - Remove lock on a dataset (by an admin)
-  - Validate Json received on a new dataset upload
-  - Load dataset repository metadata
-  - Output board startup diagnostics serial stream to a Bluetooth or WIFI data strean
-  - accecpt GBRL like setup and config $ commands.
-  - SQLite dataset 
-
+- Authentication & Security:
+  - Up to 118 12bit ADC Multiplexed DAQ channels;
 
 
 
@@ -76,7 +69,7 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
 
 
 
--	Authentication & Security:
+-	
   - SOIC-8 ATSHA204A SHA-256 high-security hardware authentication IC for secure and unique communication between devices;
 -	Power management:
   - DFN-6 AUR9718 high efficiency step-down 3.3V 1.5A DC converter;
