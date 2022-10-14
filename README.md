@@ -36,7 +36,7 @@ https://ssrn.com/abstract=4210504
 
 ## Dataverse API C library
 
-In paralell is being written a C library. See its repisitory below
+In paralell is being written a C library. See its repository below
 
 https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library (under construction) 
 
