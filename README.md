@@ -23,6 +23,7 @@ https://ssrn.com/abstract=4210504
   - Validate Json received on a new dataset upload
   - Load dataset repository metadata
   - Output board startup diagnostics serial stream to a Bluetooth or WIFI data strean
+  - accecpt GBRL like setup and config $ commands.
 
 ## Smart DAQ for LIVE Experimental Data
 This repository holds the firmware C code compatible with Tensilica's Xtensa LX6/7 microprocessors. 
