@@ -37,6 +37,8 @@ The hardware specifications are the following:
   - 16Mb SOIC 8 NOR SPI Flash Memory (max 1Gb);
   - 2.4GHz ISM wireless connectivity;
   - Up to 118 12bit ADC Multiplexed DAQ channels;
+
+
 -	Authentication & Security:
   - SOIC-8 ATSHA204A SHA-256 high-security hardware authentication IC for secure and unique communication between devices;
 -	Power management:
