@@ -50,8 +50,11 @@ This repository holds the firmware C code compatible with Tensilica's Xtensa LX6
 
 ### Smart PCB desgin and proof of Concept 
 The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are the following:
+
 <br>
 <br>
+
+
 -	QFN-56 Dual Xtensa LX7 Core Processors running up to 240MHz
   -	RISC V ultra-low power co-processor
   - 512Kb RAM (PSRAM max 1 Gb);
@@ -72,7 +75,8 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
   - 1x 12bit analog terminal connector (shared)
 
 
-The PCB design files are underway....
+
+PCB design files are underway....
 <br>
 <br>
 in the meantime the reader can download the KiCad project files of similar smart DAQ compatible with the firmware code available on this repository:
