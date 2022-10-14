@@ -32,7 +32,7 @@ This repository holds the firmware C code compatible with Tensilica's Xtensa LX6
 The hardware specifications are the following:
 
 -	QFN-56 Dual Xtensa LX7 Core Processors running up to 240MHz:
-  -	RISC-V ultra-low power co-processor
+  -	RISC V ultra-low power co-processor
   - 512Kb RAM (PSRAM max 1 Gb);
   - 16Mb SOIC 8 NOR SPI Flash Memory (max 1Gb);
   - 2.4GHz ISM wireless connectivity;
