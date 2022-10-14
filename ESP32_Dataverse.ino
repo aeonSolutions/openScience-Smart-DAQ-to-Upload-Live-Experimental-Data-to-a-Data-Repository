@@ -1,3 +1,10 @@
+/* Firmware version 0.5
+ *  ToDo:
+ *  - calc MD5 hash of the dataset file yo compare with json result on upload 
+ *  - OTA firmware update
+ *  - Remove lock on a dataset (by an admin)
+*/
+
 #include "Wire.h"
 #include "SparkFunLSM6DS3.h"
 #include "SPI.h"
@@ -11,15 +18,20 @@
 #include "time.h"
 #include <ESP32Ping.h>
 #include "ESP32Time.h"
+#include <ArduinoJson.h>
+
 
 // WIFI SETUP ********************************************
-const char* WIFI_SSID = "ssid";
-const char* WIFI_PASSWORD = "password";
+const char* WIFI_SSID = "TheScientist";
+const char* WIFI_PASSWORD = "pass";
 bool WIFIconnected=false;
+WiFiClientSecure client;
+#define HTTP_TTL 20000 // 20 sec TTL
 
 // RTC SETUP *******************
 //ESP32Time rtc;
 ESP32Time rtc(3600);  // offset in seconds GMT+1
+
 
 // RTC: NTP server ***********************
 const char* ntpServer = "pool.ntp.org";
@@ -30,7 +42,7 @@ long NTP_request_interval=64000;// 64 sec.
 long NTP_last_request=0;
   
 // DATAVERSE **********************************
-String API_TOKEN = "xxxxXXXXxxxxxxx";
+String API_TOKEN = "XXXXXXxxxxxXXXXXXxxxx";
 String SERVER_URL = "dataverse.harvard.edu";
 int SERVER_PORT = 443;
 String PERSISTENT_ID = "doi:10.7910/DVN/ZWOLNI"; 
@@ -64,6 +76,7 @@ const static char* HARVARD_ROOT_CA_RSA_SHA1 PROGMEM = \
 "smPi9WIsgtRqAEFQ8TmDn5XpNpaYbg==\n" \
 "-----END CERTIFICATE-----\n";
 
+DynamicJsonDocument datasetInfoJson((size_t)(2*2463+ 14*JSON_ARRAY_SIZE(1) + 122*JSON_OBJECT_SIZE(1)));
 
 // File management *********************************
 File EXPERIMENTAL_DATA_FILE;
@@ -439,8 +452,11 @@ void setup() {
 
   ESP_ERROR_CHECK(nvs_flash_erase());
   nvs_flash_init();
-
+      
   mserial.printStrln("Setup completed! Running loop mode now...");
+
+  mserial.printStrln(" get dataset locks...");
+  getDatasetMetadata(); 
 }
 
 
@@ -477,7 +493,11 @@ void loop1() {
     xSemaphoreTake(MemLockSemaphoreDatasetFileAccess, portMAX_DELAY); // enter critical section
       datasetFileIsBusyUploadData=true;
     xSemaphoreGive(MemLockSemaphoreDatasetFileAccess); // exit critical section 
-    UploadToDataverse();
+    
+    mserial.printStrln(" get dataset metadata...");
+    getDatasetMetadata();   
+  
+    UploadToDataverse(0);
     xSemaphoreTake(MemLockSemaphoreDatasetFileAccess, portMAX_DELAY); // enter critical section
       datasetFileIsBusyUploadData=false;
     xSemaphoreGive(MemLockSemaphoreDatasetFileAccess); // exit critical section 
@@ -578,15 +598,56 @@ void loop() {
 // *********************************************************
 //            Upload Dataset to Harvard's Dataverse
 // *********************************************************
-void UploadToDataverse() {
+void UploadToDataverse(byte counter) {
+  if(counter>5)
+    return;
+    
   //Check WiFi connection status
   if(WiFi.status() != WL_CONNECTED){
     mserial.printStrln("WiFi Disconnected");
     if (connect2WIFInetowrk()){
-      UploadToDataverse();
+      UploadToDataverse(i+1);
     }
   }
-  // Start sending dataset file
+
+  bool uploadStatusNotOK=true;
+  if(datasetInfoJson["data"].containsKey("id")){
+    if(datasetInfoJson["data"]["id"] !=""){
+      String rawResponse = GetInfoFromDataverse("/api/datasets/"+ datasetInfoJson["data"]["id"] +"/locks");
+      const size_t capacity =2*rawResponse.length() + JSON_ARRAY_SIZE(1) + 7*JSON_OBJECT_SIZE(1);
+      DynamicJsonDocument datasetLocksJson(capacity);  
+      // Parse JSON object
+      DeserializationError error = deserializeJson(datasetLocksJson, rawResponse);
+      if (error) {
+        mserial.printStr("unable to retrive dataset lock status. Upload not possible. ERR: "+error.f_str());
+        //mserial.printStrln(rawResponse);
+        return;
+      }else{
+         String stat = datasetInfoJson["status"];
+         if(datasetInfoJson.containsKey("lockType")){
+
+           String locktype = datasetInfoJson["data"]["lockType"];           
+           mserial.printStrln("There is a Lock on the dataset: "+ locktype); 
+           mserial.printStrln("Upload of most recent data is not possible without removal of the lock.");  
+           // Do unlocking 
+                
+         }else{
+            mserial.printStrln("The dataset is unlocked. Upload possible.");
+            uploadStatusNotOK=false;     
+         }
+      }
+    }else{
+      mserial.printStrln("dataset ID is empty. Upload not possible. "); 
+    }
+  }else{
+    mserial.printStrln("dataset metadata not loaded. Upload not possible. "); 
+  }
+  
+  if(uploadStatusNotOK){
+    return;
+  }
+
+  // Open the dataset file and prepare for binary upload
   File datasetFile = FFat.open("/"+EXPERIMENTAL_DATA_FILENAME, FILE_READ);
   if (!datasetFile){
     mserial.printStrln("Dataset file not found");
@@ -595,7 +656,6 @@ void UploadToDataverse() {
     
   String boundary = "7MA4YWxkTrZu0gW";
   String contentType = "text/csv";
-  // DATASET_REPOSITORY_URL = "/api/files/:persistentId/replace?persistentId=" +PERSISTENT_ID;
   DATASET_REPOSITORY_URL =  "/api/datasets/:persistentId/add?persistentId="+PERSISTENT_ID;
   
   String datasetFileName = datasetFile.name();
@@ -605,8 +665,6 @@ void UploadToDataverse() {
   mserial.printStrln("size (bytes): "+ datasetFileSize);
   mserial.printStrln("");
     
-  WiFiClientSecure client;
-
   int str_len = SERVER_URL.length() + 1; // Length (with one extra character for the null terminator)
   char SERVER_URL_char [str_len];    // Prepare the character array (the buffer) 
   SERVER_URL.toCharArray(SERVER_URL_char, str_len);    // Copy it over 
@@ -622,17 +680,15 @@ void UploadToDataverse() {
   }
   mserial.printStrln("Connected to the dataverse of Harvard University"); 
   mserial.printStrln("");
-  // We now create a URI for the request
-  mserial.printStr("Requesting URL: ");
-    mserial.printStrln(DATASET_REPOSITORY_URL);
+
+  mserial.printStr("Requesting URL: " + DATASET_REPOSITORY_URL);
 
   // Make a HTTP request and add HTTP headers    
-  // post header
   String postHeader = "POST " + DATASET_REPOSITORY_URL + " HTTP/1.1\r\n";
   postHeader += "Host: " + SERVER_URL + ":" + String(SERVER_PORT) + "\r\n";
   postHeader += "X-Dataverse-key: " + API_TOKEN + "\r\n";
   postHeader += "Content-Type: multipart/form-data; boundary=" + boundary + "\r\n";
-  postHeader += "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8\r\n";
+  postHeader += "Accept: text/html,application/xhtml+xml,application/xml,application/json;q=0.9,*/*;q=0.8\r\n";
   postHeader += "Accept-Encoding: gzip,deflate\r\n";
   postHeader += "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\n";
   postHeader += "User-Agent: AeonLabs LDAD Smart DAQ device\r\n";
@@ -690,9 +746,7 @@ void UploadToDataverse() {
         clientCount = 0;
     }
   }
-
   datasetFile.close();
-    
   if (clientCount > 0) {
       client.write((const uint8_t *)clientBuf, clientCount);
       mserial.printStrln("[binary data]");
@@ -700,15 +754,13 @@ void UploadToDataverse() {
 
   // send tail
   char charBuf3[tail.length() + 1];
-    tail.toCharArray(charBuf3, tail.length() + 1);
-    client.print(charBuf3);
+  tail.toCharArray(charBuf3, tail.length() + 1);
+  client.print(charBuf3);
   mserial.printStr(charBuf3);
 
-
-
-  // Read all the lines of the reply from server and print them to mserial
-    mserial.printStrln("");
-    mserial.printStrln("Response Headers:");
+  // Read all the lines on reply back from server and print them to mserial
+  mserial.printStrln("");
+  mserial.printStrln("Response Headers:");
   String responseHeaders = "";
 
   while (client.connected()) {
@@ -728,9 +780,136 @@ void UploadToDataverse() {
   mserial.printStrln("==========");
   mserial.printStrln("closing connection");
   client.stop();
+}
+
+
+  
+// *********************************************************
+//            Make data request to Dataverse
+// *********************************************************
+String GetInfoFromDataverse(String url) {
+  //Check WiFi connection status
+  if(WiFi.status() != WL_CONNECTED){
+    mserial.printStrln("WiFi Disconnected");
+    if (connect2WIFInetowrk()){
+      GetInfoFromDataverse(url);
+    }
+  }
+            
+  int str_len = SERVER_URL.length() + 1; // Length (with one extra character for the null terminator)
+  char SERVER_URL_char [str_len];    // Prepare the character array (the buffer) 
+  SERVER_URL.toCharArray(SERVER_URL_char, str_len);    // Copy it over 
+    
+  client.stop();
+  client.setCACert(HARVARD_ROOT_CA_RSA_SHA1);
+    
+  if (!client.connect(SERVER_URL_char, SERVER_PORT)) {
+      mserial.printStrln("Cloud server URL connection FAILED!");
+      mserial.printStrln(SERVER_URL_char);
+      int server_status = client.connected();
+      mserial.printStrln("Server status code: " + String(server_status));
+      return "";
+  }
+  
+  mserial.printStrln("Connected to the dataverse of Harvard University"); 
+  mserial.printStrln("");
+  
+  // We now create a URI for the request
+  mserial.printStr("Requesting URL: ");
+  mserial.printStrln(url);
+
+  // Make a HTTP request and add HTTP headers    
+  // post header
+  String postHeader = "GET " + url + " HTTP/1.1\r\n";
+  postHeader += "Host: " + SERVER_URL + ":" + String(SERVER_PORT) + "\r\n";
+  //postHeader += "X-Dataverse-key: " + API_TOKEN + "\r\n";
+  postHeader += "Content-Type: text/json\r\n";
+  postHeader += "Accept: text/html,application/xhtml+xml,application/xml,application/json,text/json;q=0.9,*/*;q=0.8\r\n";
+  postHeader += "Accept-Encoding: gzip,deflate\r\n";
+  postHeader += "Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7\r\n";
+  postHeader += "User-Agent: AeonLabs LDAD Smart DAQ device\r\n";
+  //postHeader += "Keep-Alive: 300\r\n";
+  postHeader += "Accept-Language: en-us\r\n";
+  postHeader += "Connection: close\r\n\r\n";
+
+  // request tail
+  String boundary = "7MA4YWxkTrZu0gW";
+  String tail = "\r\n--" + boundary + "--\r\n\r\n";
+
+  // content length
+  int contentLength = tail.length();
+  //postHeader += "Content-Length: " + String(contentLength, DEC) + "\n\n";
+  
+  // send post header
+  int postHeader_len=postHeader.length() + 1; 
+  char charBuf0[postHeader_len];
+  postHeader.toCharArray(charBuf0, postHeader_len);
+  client.print(charBuf0);
+  
+  mserial.printStrln("======= Headers =======");
+  mserial.printStrln(charBuf0);
+  mserial.printStrln("======= End of Headers =======");
+  
+  // Read all the lines of the reply from server and print them to mserial
+  String responseHeaders = "";
+
+  mserial.printStr("Waiting for server response...");
+  long timeout= millis();
+  long ttl=millis()-timeout;
+  while (client.connected() && abs(ttl) < HTTP_TTL) {
+    ttl=millis()-timeout;      
+    responseHeaders = client.readStringUntil('\n');
+    if (responseHeaders == "\r") {
+      break;
+    }
+  }
+  if (abs(ttl) < 10000){
+    mserial.printStrln("OK");
+  }else{
+    mserial.printStrln("timed out.");  
+  }
+  
+  String responseContent = client.readStringUntil('\n');
+  client.stop();
+
+  return responseContent;
   }
 
+// *********************************************************
+//            Get dataset metadata
+// *********************************************************
 
+
+void getDatasetMetadata(){
+
+  //String rawResponse = GetInfoFromDataverse("/api/datasets/:persistentId/?persistentId="+PERSISTENT_ID);
+  String rawResponse = GetInfoFromDataverse("/api/datasets/6443747/locks");
+  mserial.printStr("getDatasetMetadata json ini");
+  // Parse JSON object
+  DeserializationError error = deserializeJson(datasetInfoJson, rawResponse);
+  if (error) {
+    mserial.printStr("Get Info From Dataverse deserializeJson() failed: ");
+    mserial.printStrln(error.f_str());
+    mserial.printStrln("==== raw response ====");
+    mserial.printStr(rawResponse);  
+    mserial.printStr("========================");
+    return;
+  }else{
+     String stat = datasetInfoJson["status"];
+     mserial.printStrln("Status: "+ stat);   
+     if(stat=="ERROR"){
+       String code = datasetInfoJson["code"];
+       String msg = datasetInfoJson["message"];
+       mserial.printStrln("code : " + code);
+       mserial.printStrln("message : " + msg);            
+     }else{
+        mserial.printStrln("The dataset is unlocked");     
+     }
+     
+    String id = datasetInfoJson["data"]["id"];
+    mserial.printStrln("DATASET ID: " + id);
+  }
+}
 
 // *********************************************************
 //            FS FAT File Management
@@ -1059,7 +1238,8 @@ bool connect2WIFInetowrk(){
         
       cnt = 0;
     }
-  }   
+  }
+  
   return true;
 }
 
@@ -1150,9 +1330,11 @@ void WiFiEvent(WiFiEvent_t event) {
         configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
         updateInternetTime();
       }
+
       xSemaphoreTake(MemLockSemaphoreWIFI, portMAX_DELAY); // enter critical section
         WIFIconnected=true;
       xSemaphoreGive(MemLockSemaphoreWIFI); // exit critical section  
+      delay(200);
       break;
     case SYSTEM_EVENT_STA_LOST_IP:
       mserial.printStrln("Lost IP address and IP address is reset to 0");
@@ -1206,7 +1388,9 @@ void WiFiEvent(WiFiEvent_t event) {
       mserial.printStrln("Obtained IP address");
       break;
     default: break;
-}}
+  }
+}
+
 
 // *************************************************************
 void updateInternetTime(){
