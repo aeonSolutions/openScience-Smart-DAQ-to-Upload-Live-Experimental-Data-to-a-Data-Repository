@@ -17,12 +17,12 @@ https://ssrn.com/abstract=4210504
 
 **version and revision history**
 - ToDo:
-  - calc MD5 hash of the dataset file yo compare with json result on upload 
+  - Calc MD5 hash of the dataset file yo compare with json result on upload 
   - OTA firmware update
-  
   - Remove lock on a dataset (by an admin)
-  - validate Json received on a new dataset upload
-  - load dataset repository metadata
+  - Validate Json received on a new dataset upload
+  - Load dataset repository metadata
+  - Output board startup diagnostics serial stream to a Bluetooth or WIFI data strean
 
 ## Smart DAQ for LIVE Experimental Data
 This repository holds the firmware C code compatible with Tensilica's Xtensa LX6/7 microprocessors. 
