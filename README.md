@@ -67,9 +67,9 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
   - DFN-8 SHT3.x humidity sensor;
   - LGA-14 LSM6DS3 a 6-axis accelerometer and gyroscope;
 - 	External connectivity for up to 118 sensors:
-  - 	1x I2C 2 pin terminal connector (shared)
-  -  1x 12bit digital terminal connector (shared)	
-  -  1x 12bit analog terminal connector (shared)
+  - 1x I2C 2 pin terminal connector (shared)
+  - 1x 12bit digital terminal connector (shared)	
+  - 1x 12bit analog terminal connector (shared)
    
   
 PCB design files are underway....
