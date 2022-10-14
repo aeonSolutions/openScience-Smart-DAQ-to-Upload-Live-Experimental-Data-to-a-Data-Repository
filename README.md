@@ -8,8 +8,7 @@
 </a>
 ![](https://views.whatilearened.today/views/github/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo.svg)
 
-<br>
-<br>
+
 
 ## Proof of Concept of a Smart DAQ Device able to Upload Live Experimental Sensor Data to a Data Repository with a Unique Data Fingerprint
 
@@ -17,6 +16,9 @@ This paper discusses an innovative proof-of-concept method for management of col
 
 This paper is currently being written, in an open enviroment format. Available as a prePrint draft document at Elsevier's SSRN platform.
 https://ssrn.com/abstract=4210504 
+
+<br>
+<br>
 
 **version and revision history**
 - ToDo:
@@ -28,6 +30,9 @@ https://ssrn.com/abstract=4210504
   - Output board startup diagnostics serial stream to a Bluetooth or WIFI data strean
   - accecpt GBRL like setup and config $ commands.
 
+<br>
+<br>
+
 ## Smart DAQ for LIVE Experimental Data
 This repository holds the firmware C code compatible with Tensilica's Xtensa LX6/7 microprocessors. 
 <br>
@@ -35,8 +40,8 @@ This repository holds the firmware C code compatible with Tensilica's Xtensa LX6
 
 ### Smart PCB desgin and proof of Concept 
 The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are the following:
-
-
+<br>
+<br>
 -	QFN-56 Dual Xtensa LX7 Core Processors running up to 240MHz
   -	RISC V ultra-low power co-processor
   - 512Kb RAM (PSRAM max 1 Gb);
@@ -58,13 +63,16 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
 
 
 The PCB design files are underway....
-
+<br>
+<br>
 in the meantime the reader can download the KiCad project files of similar smart DAQ compatible with the firmware code available on this repository:
 
 https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/Smart%20DAQ/README.md
 
 ![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/LDAD_ATOM.jfif)
 
+<br>
+<br>
 
 ## Proof of Concept
 
