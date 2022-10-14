@@ -51,6 +51,19 @@ This repository holds the firmware C code compatible with Tensilica's Xtensa LX6
 ### Smart PCB desgin and proof of Concept 
 The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are the following:
 
+
+- ToDo:
+  - Calc MD5 hash of the dataset file yo compare with json result on upload 
+  - OTA firmware update
+  - Remove lock on a dataset (by an admin)
+  - Validate Json received on a new dataset upload
+  - Load dataset repository metadata
+  - Output board startup diagnostics serial stream to a Bluetooth or WIFI data strean
+  - accecpt GBRL like setup and config $ commands.
+  - SQLite dataset 
+
+
+
 -	QFN 56 Dual Xtensa LX7 Core Processors running up to 240MHz
   -	test
   
@@ -58,7 +71,24 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
 
 
 
-
+  -	RISC V ultra-low power co-processor
+  - 512Kb RAM (PSRAM max 1 Gb);
+  - 16Mb SOIC 8 NOR SPI Flash Memory (max 1Gb);
+  - 2.4GHz ISM wireless connectivity;
+  - Up to 118 12bit ADC Multiplexed DAQ channels;
+-	Authentication & Security:
+  - SOIC-8 ATSHA204A SHA-256 high-security hardware authentication IC for secure and unique communication between devices;
+-	Power management:
+  - DFN-6 AUR9718 high efficiency step-down 3.3V 1.5A DC converter;
+-	Onboard sensors:
+  - DFN-8 SHT3.x; temperature sensor with a precision of 1.5C;
+  - DFN-8 SHT3.x humidity sensor;
+  - LGA-14 LSM6DS3 a 6-axis accelerometer and gyroscope;
+-	External connectivity for up to 118 sensors:
+  - 1x I2C 2 pin terminal connector (shared)
+  - 1x 12bit digital terminal connector (shared)
+  - 1x 12bit analog terminal connector (shared)
+  - 
 
 PCB design files are underway....
 <br>
