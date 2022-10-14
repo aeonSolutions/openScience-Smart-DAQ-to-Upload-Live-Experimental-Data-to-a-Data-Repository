@@ -28,7 +28,33 @@ https://ssrn.com/abstract=4210504
 ## Smart DAQ for LIVE Experimental Data
 This repository holds the firmware C code compatible with Tensilica's Xtensa LX6/7 microprocessors. 
 
-## Smart PCB desgin
+## Smart PCB desgin and proof of Concept 
+The hardware specifications are the following:
+
+-	QFN-56 Dual Xtensa LX7 Core Processors running up to 240MHz:
+  -	RISC-V ultra-low power co-processor
+  -	512Kb RAM (PSRAM max 1 Gb);
+  -	16Mb SOIC 8 NOR SPI Flash Memory (max 1Gb);
+  - 2.4GHz ISM wireless connectivity;
+  -	Up to 118 12bit ADC Multiplexed DAQ channels;
+
+-	Authentication & Security:
+  - SOIC-8 ATSHA204A SHA-256 high-security hardware authentication IC for secure and unique communication between devices;
+
+-	Power management
+  -	DFN-6 AUR9718 high efficiency step-down 3.3V 1.5A DC converter;
+
+-	Onboard sensors:
+  - 	DFN-8 SHT3.x; temperature sensor with a precision of 1.5C;
+  -	DFN-8 SHT3.x humidity sensor;
+  - 	LGA-14 LSM6DS3 a 6-axis accelerometer and gyroscope;
+-	External connectivity for up to 118 sensors:
+  -	1x I2C 2 pin terminal connector (shared)
+  - 1x 12bit digital terminal connector (shared)
+  -	1x 12bit analog terminal connector (shared)
+
+
+
 The PCB design files are underway....
 
 in the meantime the reader can download the KiCad project files of similar smart DAQ compatible with the firmware code available on this repository:
