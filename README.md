@@ -29,14 +29,15 @@ https://ssrn.com/abstract=4210504
 This repository holds the firmware C code compatible with Tensilica's Xtensa LX6/7 microprocessors. 
 
 ## Smart PCB desgin and proof of Concept 
-The hardware specifications for the pcb with dimensions of 23.5x43.5mm are the following:
+The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are the following:
 
--	QFN-56 Dual Xtensa LX7 Core Processors running up to 240MHz:
-   -	RISC V ultra-low power co-processor
-   - 512Kb RAM (PSRAM max 1 Gb);
-   - 16Mb SOIC 8 NOR SPI Flash Memory (max 1Gb);
-   - 2.4GHz ISM wireless connectivity;
-   - Up to 118 12bit ADC Multiplexed DAQ channels;
+
+-	QFN-56 Dual Xtensa LX7 Core Processors running up to 240MHz
+  -	RISC V ultra-low power co-processor
+  - 512Kb RAM (PSRAM max 1 Gb);
+  - 16Mb SOIC 8 NOR SPI Flash Memory (max 1Gb);
+  - 2.4GHz ISM wireless connectivity;
+  - Up to 118 12bit ADC Multiplexed DAQ channels;
 -	Authentication & Security:
   - SOIC-8 ATSHA204A SHA-256 high-security hardware authentication IC for secure and unique communication between devices;
 -	Power management:
