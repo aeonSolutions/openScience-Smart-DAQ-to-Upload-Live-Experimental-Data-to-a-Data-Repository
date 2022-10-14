@@ -34,7 +34,9 @@ https://ssrn.com/abstract=4210504
 <br>
 <br>
 ## Dataverse API C library
-In paralell is being written a C library. See its repisitory here: https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library (under construction) 
+In paralell is being written a C library. See its repisitory below
+
+https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library (under construction) 
 
 
 ## Smart DAQ for LIVE Experimental Data
