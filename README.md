@@ -51,7 +51,7 @@ This repository holds the firmware C code compatible with Tensilica's Xtensa LX6
 ### Smart PCB desgin and proof of Concept 
 The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are the following:
 
--	QFN-56 Dual Xtensa LX7 Core Processors running up to 240MHz
+-	QFN 56 Dual Xtensa LX7 Core Processors running up to 240MHz
   -	 test
   
 
