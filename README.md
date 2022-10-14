@@ -39,7 +39,7 @@ The hardware specifications are the following:
   - Up to 118 12bit ADC Multiplexed DAQ channels;
 -	Authentication & Security:
   - SOIC-8 ATSHA204A SHA-256 high-security hardware authentication IC for secure and unique communication between devices;
--	Power management
+-	Power management:
   - DFN-6 AUR9718 high efficiency step-down 3.3V 1.5A DC converter;
 -	Onboard sensors:
   - DFN-8 SHT3.x; temperature sensor with a precision of 1.5C;
@@ -49,7 +49,6 @@ The hardware specifications are the following:
   - 1x I2C 2 pin terminal connector (shared)
   - 1x 12bit digital terminal connector (shared)
   - 1x 12bit analog terminal connector (shared)
-
 
 
 The PCB design files are underway....
