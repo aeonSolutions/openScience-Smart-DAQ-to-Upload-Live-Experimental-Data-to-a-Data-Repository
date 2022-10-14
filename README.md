@@ -29,6 +29,7 @@ https://ssrn.com/abstract=4210504
   - Load dataset repository metadata
   - Output board startup diagnostics serial stream to a Bluetooth or WIFI data strean
   - accecpt GBRL like setup and config $ commands.
+  - SQLite dataset 
 
 <br>
 <br>
