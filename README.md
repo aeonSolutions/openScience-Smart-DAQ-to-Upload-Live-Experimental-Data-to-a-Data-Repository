@@ -27,8 +27,10 @@ https://ssrn.com/abstract=4210504
 
 ## Smart DAQ for LIVE Experimental Data
 This repository holds the firmware C code compatible with Tensilica's Xtensa LX6/7 microprocessors. 
+<br>
+<br>
 
-## Smart PCB desgin and proof of Concept 
+### Smart PCB desgin and proof of Concept 
 The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are the following:
 
 
