@@ -72,6 +72,7 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
   - 	1x 12bit analog terminal connector (shared)
  
   
+  
 PCB design files are underway....
 <br>
 <br>
