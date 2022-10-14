@@ -33,11 +33,15 @@ https://ssrn.com/abstract=4210504
 
 <br>
 <br>
+
 ## Dataverse API C library
+
 In paralell is being written a C library. See its repisitory below
 
 https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library (under construction) 
 
+<br>
+<br>
 
 ## Smart DAQ for LIVE Experimental Data
 This repository holds the firmware C code compatible with Tensilica's Xtensa LX6/7 microprocessors. 
