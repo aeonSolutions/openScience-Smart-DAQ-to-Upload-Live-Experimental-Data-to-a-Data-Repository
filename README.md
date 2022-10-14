@@ -15,6 +15,15 @@ This paper discusses an innovative proof-of-concept method for management of col
 This paper is currently being written, in an open enviroment format. Available as a prePrint draft document at Elsevier's SSRN platform.
 https://ssrn.com/abstract=4210504 
 
+**version and revision history**
+- ToDo:
+  - calc MD5 hash of the dataset file yo compare with json result on upload 
+  - OTA firmware update
+  
+  - Remove lock on a dataset (by an admin)
+  - validate Json received on a new dataset upload
+  - load dataset repository metadata
+
 ## Smart DAQ for LIVE Experimental Data
 This repository holds the firmware C code compatible with Tensilica's Xtensa LX6/7 microprocessors. 
 
