@@ -36,7 +36,7 @@ https://ssrn.com/abstract=4210504
 
 ## Dataverse API C library
 
-In paralell is being written a C library. See its repository below
+In paralell is being written a C library to expedite API integration on smart DAQ devices or elsewhere. Follow the link to its repository:
 
 https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library (under construction) 
 
