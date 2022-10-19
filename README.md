@@ -20,6 +20,10 @@ https://ssrn.com/abstract=4210504
 <br>
 <br>
 
+**Status**
+
+This project is waiting for parts to arrive from aliExpress. Will resume at the end of October 20222. In 2 weeks time.
+
 **version and revision history**
 - ToDo:
   - Calc MD5 hash of the dataset file yo compare with json result on upload 
