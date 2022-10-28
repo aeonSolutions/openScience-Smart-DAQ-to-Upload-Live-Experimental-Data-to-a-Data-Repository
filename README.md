@@ -104,6 +104,11 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
 <br>
 <br>
 
+## PCB circuit Schematic 
+The PCB circuit schematic is available in PDF located in the folder "PCB Schematic"
+
+https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/tree/main/PCB%20Schematic
+
 ## PCB design files
 The PCB gerber files are located in the folder "PCB Gerber Files" and are ready to order online on any pcb fabrication store. (PCBWay, AllPCB, Eurocircuits, etc)
 <br>
