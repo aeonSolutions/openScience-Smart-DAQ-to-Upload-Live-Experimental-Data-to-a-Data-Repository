@@ -75,11 +75,12 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
   - LGA-14 LSM6DS3 a 6-axis accelerometer and gyroscope;
   - reference voltage sessor calibration wiht temperature and humidity
 - 	External connectivity for up to 118 sensors:
-  - 	1x I2C 2 pin terminal connector (shared)
-  - 	1x 12bit digital terminal connector (shared)
-  - 	1x 12bit analog terminal connector (shared)
- 
- 
+  -  1x I2C pin terminal connector (shared)
+  -  1x 12bit digital terminal connector (shared)
+  -  1x 12bit analog trminal connector (shared)
+
+
+
  **In real life this smart DAQ is able to:**
 - connect to all kinds of 3V to 5V Digital sensors;
 - connect to all kinds of sensors compatible with the I2C protocol. (max 115 sensors simultaneously)
