@@ -12,12 +12,18 @@
 
 ## Proof of Concept of a Smart DAQ Device able to Upload Live Experimental Sensor Data to a Data Repository with a Unique Data Fingerprint
 
-This paper discusses an innovative proof-of-concept method for management of collected experimental data in real-time and compatible with any open environment. The proposed proof-of-concept smart DAQ device has the minimum hardware caracteristics to handle data measurements collection from sensors locally connected to it, store it on a local CSV or SQLite database file and finally connect and synchronize data measurements collected with a data repository hosted remotely on a Dataverse. 
+This paper discusses an innovative proof-of-concept method for management of collected experimental data in real-time and compatible with any open environment. The proposed proof-of-concept smart DAQ device has the minimum hardware characteristics to handle data measurements collection from sensors locally connected to it, store it on a local CSV or SQLite database file and finally connect and synchronize data measurements collected with a data repository hosted remotely on a Dataverse. 
 
 This paper is currently being written, in an open enviroment format. Available as a prePrint draft document at Elsevier's SSRN platform.
 https://ssrn.com/abstract=4210504 
 
 <br>
+<br>
+
+**Status**
+
+This project is waiting for parts to arrive from aliExpress. Will resume at the end of October 2022. In 2 weeks time.
+
 <br>
 
 **version and revision history**
@@ -36,7 +42,7 @@ https://ssrn.com/abstract=4210504
 
 ## Dataverse API C library
 
-In paralell is being written a C library. See its repository below
+In paralell is being written a C library to expedite API integration on smart DAQ devices or elsewhere. Follow the link to its repository:
 
 https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library (under construction) 
 
@@ -66,13 +72,24 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
   - DFN-8 SHT3.x; temperature sensor with a precision of 1.5C;
   - DFN-8 SHT3.x humidity sensor;
   - LGA-14 LSM6DS3 a 6-axis accelerometer and gyroscope;
+  - reference voltage sessor calibration wiht temperature and humidity
 - 	External connectivity for up to 118 sensors:
   - 	1x I2C 2 pin terminal connector (shared)
   - 	1x 12bit digital terminal connector (shared)
   - 	1x 12bit analog terminal connector (shared)
  
-  
-  
+ 
+ **In real life this smart DAQ is able to:**
+- connect to all kinds of 3V to 5V Digital sensors;
+- connect to all kinds of sensors compatible with the I2C protocol. (max 115 sensors simultaneously)
+- measure voltage in the range of  [0;3.3V]
+- measure electrical resistance [0; 10^6] Ohm 
+- do temperature and humidity compensation on all measurements 
+- has a motion sensor to know if anyone moved a specimen during an experiment
+
+<br>
+<br>
+
 PCB design files are underway....
 <br>
 <br>
@@ -80,7 +97,9 @@ in the meantime the reader can download the KiCad project files of similar smart
 
 https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/Smart%20DAQ/README.md
 
-![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/LDAD_ATOM.jfif)
+![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/LDAD%20fron.png)
+![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/LDAD%20back.png)
+
 (September pcb revision)
 <br>
 <br>
