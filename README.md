@@ -46,6 +46,10 @@ In paralell is being written a C library to expedite API integration on smart DA
 
 https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library
 
+
+![]((https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/dataverse_r_project.png)
+
+
 <br>
 <br>
 
