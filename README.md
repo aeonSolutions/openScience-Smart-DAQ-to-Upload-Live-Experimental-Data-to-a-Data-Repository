@@ -44,7 +44,7 @@ This project is waiting for parts to arrive from aliExpress. Will resume at the 
 
 In paralell is being written a C library to expedite API integration on smart DAQ devices or elsewhere. Follow the link to its repository:
 
-https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library (under construction) 
+https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library
 
 <br>
 <br>
