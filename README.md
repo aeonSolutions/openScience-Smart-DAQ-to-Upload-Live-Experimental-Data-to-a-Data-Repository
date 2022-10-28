@@ -72,13 +72,24 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
   - DFN-8 SHT3.x; temperature sensor with a precision of 1.5C;
   - DFN-8 SHT3.x humidity sensor;
   - LGA-14 LSM6DS3 a 6-axis accelerometer and gyroscope;
+  - reference voltage sessor calibration wiht temperature and humidity
 - 	External connectivity for up to 118 sensors:
   - 	1x I2C 2 pin terminal connector (shared)
   - 	1x 12bit digital terminal connector (shared)
   - 	1x 12bit analog terminal connector (shared)
  
-  
-  
+ 
+ **In real life this smart DAQ is able to:**
+-  connect to all kinds of 3V to 5V Digital sensors can be connected to this smart DAQ.
+- connect to all kinds of sensors compatible with the I2C protocol. (max 115 sensors simultaneously)
+-  measure voltage in the range of  [0;3.3V]
+- measure electrical resistance [0; 10^6] Ohm 
+- do temperature and humidity compensation on all measurements 
+- has a motion sensor to know if anyone moved a specimen during an experiment
+
+<br>
+<br>
+
 PCB design files are underway....
 <br>
 <br>
@@ -86,7 +97,9 @@ in the meantime the reader can download the KiCad project files of similar smart
 
 https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/Smart%20DAQ/README.md
 
-![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/LDAD_ATOM.jfif)
+![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/LDAD%20fron.png)
+![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/LDAD%20back.png)
+
 (September pcb revision)
 <br>
 <br>
