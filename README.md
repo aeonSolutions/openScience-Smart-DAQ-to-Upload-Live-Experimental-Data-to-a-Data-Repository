@@ -79,7 +79,8 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
   -  1x 12bit digital terminal connector (shared)
   -  1x 12bit analog trminal connector (shared)
 
-
+<br>
+<br>
 
  **In real life this smart DAQ is able to:**
 - connect to all kinds of 3V to 5V Digital sensors;
