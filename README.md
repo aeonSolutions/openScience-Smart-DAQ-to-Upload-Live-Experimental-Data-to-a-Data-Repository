@@ -50,7 +50,8 @@ https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library (under cons
 <br>
 
 ## Smart DAQ for LIVE Experimental Data
-This repository holds the firmware C code compatible with Tensilica's Xtensa LX6/7 microprocessors. 
+This repository holds the firmware C code compatible with Tensilica's Xtensa LX6/7 microprocessors. Files are located in the folder "Firmware Code".
+
 <br>
 <br>
 
@@ -90,7 +91,8 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
 <br>
 <br>
 
-PCB design files are underway....
+## PCB design files
+The PCB gerber files are located in the folder "PCB Gerber Files" and are ready to order online on any pcb fabrication store. (PCBWay, AllPCB, Eurocircuits, etc)
 <br>
 <br>
 in the meantime the reader can download the KiCad project files of similar smart DAQ compatible with the firmware code available on this repository:
