@@ -22,7 +22,7 @@ https://ssrn.com/abstract=4210504
 
 **Status**
 
-This project is waiting for parts to arrive from aliExpress. Will resume at the end of October 2022. In 2 weeks time.
+This project is waiting for parts to arrive from aliExpress. Will resume at the end of November 2022. In 2 weeks time.
 
 <br>
 
