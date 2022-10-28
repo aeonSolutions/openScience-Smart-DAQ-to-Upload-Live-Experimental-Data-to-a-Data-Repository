@@ -22,7 +22,7 @@ https://ssrn.com/abstract=4210504
 
 **Status**
 
-This project is waiting for parts to arrive from aliExpress. Will resume at the end of October 2022. In 2 weeks time.
+This project is waiting for parts to arrive from aliExpress. Will resume at the end of November 2022. In 4 weeks time.
 
 <br>
 
@@ -44,13 +44,25 @@ This project is waiting for parts to arrive from aliExpress. Will resume at the 
 
 In paralell is being written a C library to expedite API integration on smart DAQ devices or elsewhere. Follow the link to its repository:
 
-https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library (under construction) 
+https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library
+
+
+[![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/dataverse_r_project.png)](https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library)
+
+<br>
+
+**Dataverse API in another coding language**
+
+Goto dataverse.org for another coding language that best suits your coding style and needs. Currently there are client libraries for Python, Javascript, R, Java, and Julia that can be used to develop against Dataverse Software APIs
+
+https://guides.dataverse.org/en/5.12/api/client-libraries.html
 
 <br>
 <br>
 
 ## Smart DAQ for LIVE Experimental Data
-This repository holds the firmware C code compatible with Tensilica's Xtensa LX6/7 microprocessors. 
+This repository holds the firmware C code compatible with Tensilica's Xtensa LX6/7 microprocessors. Files are located in the folder "Firmware Code".
+
 <br>
 <br>
 
@@ -74,14 +86,16 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
   - LGA-14 LSM6DS3 a 6-axis accelerometer and gyroscope;
   - reference voltage sessor calibration wiht temperature and humidity
 - 	External connectivity for up to 118 sensors:
-  - 	1x I2C 2 pin terminal connector (shared)
-  - 	1x 12bit digital terminal connector (shared)
-  - 	1x 12bit analog terminal connector (shared)
- 
- 
+  -  1x I2C pin terminal connector (shared)
+  -  1x 12bit digital terminal connector (shared)
+  -  1x 12bit analog terminal connector (shared)
+
+<br>
+<br>
+
  **In real life this smart DAQ is able to:**
 - connect to all kinds of 3V to 5V Digital sensors;
-- connect to all kinds of sensors compatible with the I2C protocol. (max 115 sensors simultaneously)
+- connect to all kinds of sensors compatible with the I2C protocol. (max 118 sensors simultaneously)
 - measure voltage in the range of  [0;3.3V]
 - measure electrical resistance [0; 10^6] Ohm 
 - do temperature and humidity compensation on all measurements 
@@ -90,17 +104,18 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
 <br>
 <br>
 
-PCB design files are underway....
+## PCB design files
+The PCB gerber files are located in the folder "PCB Gerber Files" and are ready to order online on any pcb fabrication store. (PCBWay, AllPCB, Eurocircuits, etc)
 <br>
 <br>
-in the meantime the reader can download the KiCad project files of similar smart DAQ compatible with the firmware code available on this repository:
+other open hardware PCB electronics are also available on my PCB catalogue that maybe worth have a look.  The catalogue includes the KiCad project files of similar smart DAQ compatible with the firmware code available on this repository:
 
 https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/Smart%20DAQ/README.md
 
 ![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/LDAD%20fron.png)
 ![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/LDAD%20back.png)
 
-(September pcb revision)
+(November pcb revision)
 <br>
 <br>
 
