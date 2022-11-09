@@ -90,7 +90,7 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
   -  1x I2C pin terminal connector (shared)
   -  1x 12bit digital terminal connector (shared)
   -  1x 12bit analog terminal connector (shared) with automatic ohmeter
-  - 12bit voltage reference analyser with temperature compensation 
+  -  12bit voltage reference analyser with temperature compensation 
 
 <br>
 <br>
