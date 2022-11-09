@@ -92,9 +92,11 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
   -  1x 12bit analog terminal connector (shared) with automatic ohmeter
   -  12bit voltage reference analyser with temperature compensation 
 
+<br>
+
 **Smart PCB design wiht a built in 1.69" LCD TFT IPS display**
 
-Another version of this smart DAQ will be available in december that includes built in a 1.69" LCD TFT IPS display with ability to display LIVE experimental data being collected.. Stay tuned for updates. 
+Another version of this smart DAQ will be available next December that includes built in a 1.69" LCD TFT IPS display with ability to display LIVE experimental data being collected.. Stay tuned for updates. 
 
 <br>
 <br>
