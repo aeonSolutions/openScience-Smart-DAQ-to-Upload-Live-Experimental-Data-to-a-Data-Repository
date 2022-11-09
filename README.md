@@ -101,7 +101,7 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
 - measure voltage in the range of  [0;3.3V]
 - measure electrical resistance [0; 10^6] Ohm 
 - do temperature and humidity compensation on all measurements 
-- has a voltage reference sensor for improved accurcy on analog measurements  
+- has a voltage reference sensor for improved accurcy on ADC measurements  
 - has a motion sensor to know if anyone moved a specimen during an experiment
 
 <br>
