@@ -88,9 +88,9 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
   - reference voltage sessor calibration wiht temperature and humidity
 - 	External connectivity for up to 118 sensors:
   -  1x I2C pin terminal connector (shared)
-  -  1x 12bit digital terminal connector (shared)
-  -  1x 12bit analog terminal connector (shared) with manual scale selection ohmeter via jumper pin
-  -  12bit voltage reference analyser with temperature compensation 
+  -  1x 12 to 16bit (oversampling & digitization) digital terminal connector (shared)
+  -  1x 12 to 16bit (oversampling & digitization) analog terminal connector (shared) with manual scale selection ohmeter via jumper pin
+  -  12 to 16bit (oversampling & digitization) voltage reference analyser with temperature compensation 
 
 <br>
 
