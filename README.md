@@ -89,7 +89,7 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
 - 	External connectivity for up to 118 sensors:
   -  1x I2C pin terminal connector (shared)
   -  1x 12bit digital terminal connector (shared)
-  -  1x 12bit analog terminal connector (shared) with automatic ohmeter
+  -  1x 12bit analog terminal connector (shared) with manual scale selection ohmeter via jumper pin
   -  12bit voltage reference analyser with temperature compensation 
 
 <br>
