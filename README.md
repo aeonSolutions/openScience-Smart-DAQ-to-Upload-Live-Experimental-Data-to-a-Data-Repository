@@ -60,7 +60,9 @@ https://guides.dataverse.org/en/5.12/api/client-libraries.html
 
 <br>
 <br>
+
 ![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/12bitSmartDAQoctober.jpeg)
+
 <br>
 
 ## Smart DAQ for LIVE Experimental Data
