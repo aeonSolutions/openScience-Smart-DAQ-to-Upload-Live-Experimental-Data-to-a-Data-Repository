@@ -63,7 +63,7 @@ https://guides.dataverse.org/en/5.12/api/client-libraries.html
 
 ![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/12bitSmartDAQoctober.jpeg)
 
-On the photo above the smart DAQ is instaled on an acrylic case and screwed with plastic screews to an acrylic base with the same cross section area as the specimen to be tested. 
+On the photo above the smart DAQ is installed on an acrylic case and screwed with plastic screws to an acrylic base with the same cross section area as the specimen to be tested. 
 
 The acrylic base can be bought [here](https://s.click.aliexpress.com/e/_DEGsZaL). And the acrylic case [here](https://s.click.aliexpress.com/e/_Dmudkjt). 
 
