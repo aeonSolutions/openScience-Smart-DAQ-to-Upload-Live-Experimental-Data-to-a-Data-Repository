@@ -127,7 +127,7 @@ Another version of this smart DAQ will be available next December that includes 
 <br>
 <br>
 
-[![]()](https://youtu.be/ycCJRiwse2M)
+[![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/youtube.png)](https://youtu.be/ycCJRiwse2M)
 
 ## PCB circuit Schematic 
 The PCB circuit schematic is available in PDF located in the folder "PCB Schematic"
