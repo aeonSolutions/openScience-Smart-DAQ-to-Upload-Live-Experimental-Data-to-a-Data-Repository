@@ -127,6 +127,8 @@ Another version of this smart DAQ will be available next December that includes 
 <br>
 <br>
 
+[![]()](https://youtu.be/ycCJRiwse2M)
+
 ## PCB circuit Schematic 
 The PCB circuit schematic is available in PDF located in the folder "PCB Schematic"
 
