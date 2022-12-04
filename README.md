@@ -48,8 +48,7 @@ This project is waiting for parts to arrive from aliExpress. Will resume at the 
 <br>
 
 **Experimental Data Media Manager**
-- Multi environment experimental files media manager coded in QT6 (Android, Windows, Linux,...) able to upload an Edit metadata of photos and video files.
-
+- Multi environment experimental files media manager coded in QT6 (Android, Windows, Linux,...) able to upload an Edit metadata of photos and video files to a dataverse repository.
 
 <br>
 <br>
