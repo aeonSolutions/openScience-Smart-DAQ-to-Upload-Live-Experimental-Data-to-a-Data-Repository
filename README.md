@@ -39,6 +39,10 @@ This project is waiting for parts to arrive from aliExpress. Will resume at the 
   - SQLite dataset
   - Swarm connectivity to other nearby Smart DAQ devices for experimental data redundancy and sharing (IoE - Internet of Everything). 
 
+**Smart DAQ setup and configuration**
+- Multi environment smart DAQ manager coded in QT6 (Android, Windows, Lunux,...)  for setup and configuration of individual smart DAQ devices to each specimen or sample.
+- Ability to define a policy of experimental expected/ possible warnings. 
+
 **Experimental Data Media Manager**
 - Multi environment experimental files media manager coded in QT6 (Android, Windows, Linux,...) able to upload an Edit metadata of photos and video files.
 
