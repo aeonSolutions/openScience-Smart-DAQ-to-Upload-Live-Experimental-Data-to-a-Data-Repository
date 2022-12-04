@@ -40,7 +40,7 @@ This project is waiting for parts to arrive from aliExpress. Will resume at the 
   - Swarm connectivity to other nearby Smart DAQ devices for experimental data redundancy and sharing (IoE - Internet of Everything). 
 
 **Smart DAQ setup and configuration**
-- Multi environment smart DAQ manager coded in QT6 (Android, Windows, Lunux,...)  for setup and configuration of individual smart DAQ devices to each specimen or sample.
+- Multi environment smart DAQ manager coded in QT6 (Android, Windows, Lunux,...)  for setup and configuration of individual smart DAQ devices to each specimen or sample (using RFID NFC technolgies).
 - Ability to define a policy of experimental expected/ possible warnings. 
 
 **Experimental Data Media Manager**
