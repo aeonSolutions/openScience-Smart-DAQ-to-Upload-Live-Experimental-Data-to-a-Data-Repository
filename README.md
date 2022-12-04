@@ -22,13 +22,13 @@ https://ssrn.com/abstract=4210504 . See the [WIKI](https://github.com/aeonSoluti
 
 **Status**
 
-This project is waiting for parts to arrive from aliExpress. Will resume at the end of November 2022. In 4 weeks time.
+This project is waiting for parts to arrive from aliExpress. Will resume at the end of December 2022. In 3 weeks time.
 
 <br>
 
-**version and revision history**
+**revision history and ToDo list**
 
-- ToDo (firmware):
+**Smart DAQ Firmware:**
   - Calc MD5 hash of the dataset file yo compare with json result on upload 
   - OTA firmware update
   - Remove lock on a dataset (by an admin)
@@ -36,7 +36,12 @@ This project is waiting for parts to arrive from aliExpress. Will resume at the 
   - Load dataset repository metadata
   - Output board startup diagnostics serial stream to a Bluetooth or WIFI data strean
   - accecpt GBRL like setup and config $ commands.
-  - SQLite dataset 
+  - SQLite dataset
+  - Swarm connectivity to other nearby Smart DAQ devices for experimental data redundancy and sharing. 
+
+**Experimental Data Media Manager**
+- Multi environment experimental files media manager coded in QT6 (Android, Windows, Linux,...) able to upload an Edit metadata of photos and video files.
+
 
 <br>
 <br>
