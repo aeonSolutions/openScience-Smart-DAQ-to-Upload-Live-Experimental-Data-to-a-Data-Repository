@@ -26,7 +26,7 @@ This project is waiting for parts to arrive from aliExpress. Will resume at the 
 
 <br>
 
-## ToDo list
+## ToDo List
 
 **Smart DAQ Firmware:**
   - Calc MD5 hash of the dataset file yo compare with json result on upload 
