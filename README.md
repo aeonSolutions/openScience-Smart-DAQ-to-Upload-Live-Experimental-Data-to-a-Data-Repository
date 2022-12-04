@@ -37,7 +37,7 @@ This project is waiting for parts to arrive from aliExpress. Will resume at the 
   - Output board startup diagnostics serial stream to a Bluetooth or WIFI data strean
   - accecpt GBRL like setup and config $ commands.
   - SQLite dataset
-  - Swarm connectivity to other nearby Smart DAQ devices for experimental data redundancy and sharing. 
+  - Swarm connectivity to other nearby Smart DAQ devices for experimental data redundancy and sharing (IoE - Internet of Everything). 
 
 **Experimental Data Media Manager**
 - Multi environment experimental files media manager coded in QT6 (Android, Windows, Linux,...) able to upload an Edit metadata of photos and video files.
