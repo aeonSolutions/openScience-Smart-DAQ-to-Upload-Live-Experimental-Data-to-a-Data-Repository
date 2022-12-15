@@ -34,8 +34,8 @@ This project is waiting for parts to arrive from aliExpress. Will resume at the 
   - Remove lock on a dataset (by an admin)
   - Validate Json received on a new dataset upload
   - Load dataset repository metadata
-  - Output board startup diagnostics serial stream to a Bluetooth or WIFI data strean
-  - accecpt GBRL like setup and config $ commands.
+  - Output board startup diagnostics serial stream to a Bluetooth or WIFI data stream
+  - accept GBRL like setup and config $ commands.
   - SQLite database to store measured experumental data and upload to a dataverse repository
   - Swarm connectivity to other nearby Smart DAQ devices for experimental data redundancy and sharing (IoE - Internet of Everything). 
 
