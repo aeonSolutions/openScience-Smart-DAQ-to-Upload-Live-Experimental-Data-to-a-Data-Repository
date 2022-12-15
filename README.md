@@ -139,21 +139,23 @@ Another version of this smart DAQ will be available next December that includes 
 <br>
 <br>
 
-## PCB circuit Schematic 
-The PCB circuit schematic is available in PDF located in the folder "PCB Schematic"
+## PCB design files and circuit schematic
 
-https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/tree/main/PCB%20Schematic
+## [Open Science: 12bit Smart DAQ Device with unique data fingerprint and a 1.69" TFT LCD](https://github.com/aeonSolutions/-openScienceResearch-12bit-LCD-1.69-TFT-Smart-DAQ-Device-with-unique-data-fingerprint)
 
-## PCB design files
-The PCB gerber files are located in the folder "PCB Gerber Files" and are ready to order online on any pcb fabrication store. (PCBWay, AllPCB, Eurocircuits, etc)
-<br>
-<br>
-other open hardware PCB electronics are also available on my PCB catalogue that maybe worth have a look.  The catalogue includes the KiCad project files of similar smart DAQ compatible with the firmware code available on this repository:
-
-https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/Smart%20DAQ/README.md
-
+This is the repository for the 12bit Smart DAQ Device with unique data fingerprint able to do experimental data upload to any data repository
+ 
 ![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/LDAD%20fron.png)
-![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/LDAD%20back.png)
+
+=====================================================================================
+
+## [Open Science: 12bit Smart DAQ Device with unique data fingerprint](https://github.com/aeonSolutions/openScienceResearch-12bit-Smart-DAQ-Device-with-unique-data-fingerprint-)
+
+This is the repository for the 12bit Smart DAQ Device with unique data fingerprint able to do experimental data upload to any data repository
+ 
+![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/LDAD%20fron.png)
+
+=====================================================================================
 
 (November pcb revision)
 <br>
