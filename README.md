@@ -111,14 +111,15 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
   - DFN-8 SHT3.x; temperature sensor with a precision of 1.5C;
   - DFN-8 SHT3.x humidity sensor;
   - LGA-14 LSM6DS3 a 6-axis accelerometer and gyroscope;
-  - reference voltage sessor calibration wiht temperature and humidity
+  - reference voltage sensor calibration with temperature and humidity
 - 	External connectivity for up to 118 sensors:
   -  1x I2C pin terminal connector (shared)
   -  1x 12 to 16bit (oversampling & digitization) digital terminal connector (shared)
-  -  1x 12 to 16bit (oversampling & digitization) analog terminal connector (shared) with manual scale selection ohmeter via jumper pin
+  -  1x 12 to 16bit (oversampling & digitization) analogue terminal connector (shared) with manual scale selection ohmmeter via jumper pin
   -  12 to 16bit (oversampling & digitization) voltage reference analyser with temperature compensation 
 
 <br>
+
 
 **Smart PCB design wiht a built in 1.69" LCD TFT IPS display**
 
