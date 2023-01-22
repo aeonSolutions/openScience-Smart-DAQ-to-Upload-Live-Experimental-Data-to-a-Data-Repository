@@ -22,7 +22,7 @@ https://ssrn.com/abstract=4210504 . See the [WIKI](https://github.com/aeonSoluti
 
 **Status**
 
-This project is waiting for parts to arrive from aliExpress and for fabrication of a revised PCB electronics from factory. Will resume at the end of January 2023. In 3 weeks time.
+This project is waiting for parts to arrive from aliExpress and for fabrication of a revised PCB electronics from factory. Will resume at the end of February 2023. In 3/4 weeks time.
 
 <br>
 
