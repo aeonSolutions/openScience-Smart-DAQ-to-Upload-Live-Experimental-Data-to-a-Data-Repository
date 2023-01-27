@@ -288,15 +288,20 @@ const char *DATA_VALIDATION_KEY = "A9CD7F1B6688159B54BBE862F638FF9D29E0FA5F87C69
 // external 3V3 power
 #define ENABLE_3v3_PWR 2
 // Voltage reference
-#define VOLTAGE_REF 7
+#define VOLTAGE_REF_PIN 7
 // External PWM / Digital IO Pin
 #define EXT_IO_ANALOG_PIN 6
 
-//ToDo
+// Reference resistances : loaded from config file
 float ADC_R1 = 1032;
+float ADC_R20 = 19910;
+float ADC_R200 = 198000;
+float ADC_R2M = 2000000;
+uint8_t SELECTED_ADC_REF_RESISTANCE=0;
+float ADC_REF_RESISTANCE[4];
 
 // configuration: PCB specific
-const float MCU_VDD = 3.3;
+const float MCU_VDD = 3.33;
 const float MCU_ADC_DIVIDER = 4095.0;
 
 //I2C Bus Pins
@@ -670,6 +675,14 @@ void setup1() {
 
 // ********************************************************
 void setup() {
+  String units="";
+
+  //ToDo: load from config file
+  SELECTED_ADC_REF_RESISTANCE=0;
+  ADC_REF_RESISTANCE[0]=ADC_R1;
+  ADC_REF_RESISTANCE[1]=ADC_R20;
+  ADC_REF_RESISTANCE[2]=ADC_R200;
+  ADC_REF_RESISTANCE[3]=ADC_R2M;
 
   // ******** Setup *******************
   WiFi.disconnect(true);
@@ -695,10 +708,6 @@ void setup() {
   // ADC Power
   pinMode(ENABLE_3v3_PWR, OUTPUT);
   digitalWrite(ENABLE_3v3_PWR,LOW); // disabled
-
-  // ADC IO
-  pinMode(EXT_IO_ANALOG_PIN, INPUT);
-
 
 
   ESP_ERROR_CHECK(nvs_flash_erase());
@@ -789,7 +798,7 @@ See more http://henrysbench.capnfatz.com/henrys-bench/arduino-adafruit-gfx-libra
     delay(2000);
   }
   
-  tftPrintText(0,160, (char*)String("PSRAM "+String(ESP.getPsramSize()/1024/1024)+"Mb").c_str(),2,"center", TFT_WHITE, true);
+  tftPrintText(0,160, (char*)String("PSRAM "+String(ESP.getPsramSize()/1024/1024)+" Mb").c_str(),2,"center", TFT_WHITE, true);
   delay(2000);
   
   mserial.printStrln("Total heap: "+String(ESP.getHeapSize()/1024/1024)+"Mb");
@@ -967,6 +976,7 @@ See more http://henrysbench.capnfatz.com/henrys-bench/arduino-adafruit-gfx-libra
   tftPrintText(0,160,(char*) String("Buff. size:"+ String(MEASUREMENTS_BUFFER_SIZE)).c_str(),2,"center", TFT_WHITE, true); 
   delay(2000);
 
+  units="";
   // 1D number of sample readings ; 2D number of sensor data measuremtns; 3D RAM buffer size
   measurements=PSRAMalloc.initializeDynamicVar(NUM_SAMPLE_SAMPLING_READINGS, (int) NUMBER_OF_SENSORS_DATA_VALUES , MEASUREMENTS_BUFFER_SIZE);
   if (measurements == NULL){
@@ -977,9 +987,14 @@ See more http://henrysbench.capnfatz.com/henrys-bench/arduino-adafruit-gfx-libra
 
   }else{
       mserial.printStrln("Measurements Buffer Initialized successfully.");
-      float bufSize= ( sizeof(measurements) / sizeof(measurements[0][0][0][0])  )/8; // bytes /1024;
+      float bufSize= sizeof(char)*(NUM_SAMPLE_SAMPLING_READINGS*NUMBER_OF_SENSORS_DATA_VALUES*MEASUREMENTS_BUFFER_SIZE); // bytes
+      units=" B";
+      if (bufSize>1024){
+        bufSize=bufSize/1024;
+        units=" Kb";
+      }
       mserial.printStrln("Buffer size:" + String(bufSize));
-      tftPrintText(0,160,(char*) String("Buf size:"+String(bufSize)+"Kb").c_str(),2,"center", TFT_WHITE, true); 
+      tftPrintText(0,160,(char*) String("Buf size:"+String(bufSize)+ units).c_str(),2,"center", TFT_WHITE, true); 
       delay(1000);
       tftPrintText(0,160,"Exp. Data RAM ready",2,"center", TFT_WHITE, true); 
       statusLED( (byte*)(const byte[]){LED_GREEN}, 100,2);
@@ -997,17 +1012,32 @@ See more http://henrysbench.capnfatz.com/henrys-bench/arduino-adafruit-gfx-libra
   LAST_DATASET_UPLOAD = 0;
   LAST_DATA_MEASUREMENTS = 0;
 
+  float refRes;
+  units=" Ohm";
+  refRes=ADC_REF_RESISTANCE[SELECTED_ADC_REF_RESISTANCE];
+  if(ADC_REF_RESISTANCE[SELECTED_ADC_REF_RESISTANCE]>10000){
+     refRes=ADC_REF_RESISTANCE[SELECTED_ADC_REF_RESISTANCE]/1000;
+    units="k Ohm";     
+  }else if(ADC_REF_RESISTANCE[SELECTED_ADC_REF_RESISTANCE]>1000000){
+     refRes=ADC_REF_RESISTANCE[SELECTED_ADC_REF_RESISTANCE]/1000000;
+     units="M Ohm";
+  }
+  
+  tftPrintText(0,160,(char*)String("Sel. Rref: "+String(refRes)+ units).c_str(),2,"center", TFT_WHITE, true); 
+  mserial.printStrln("ADC_REF_RESISTANCE="+String(ADC_REF_RESISTANCE[SELECTED_ADC_REF_RESISTANCE])+" Ohm");
+  delay(2000);
+
 
   mserial.printStrln("Time interval for dataset upload to a dataverse repository hosted by Harvard University: ");
   mserial.printStr(String(UPLOAD_DATASET_DELTA_TIME/60000));
   mserial.printStrln(" min");
-  tftPrintText(0,160,(char*)String("Exp. data upload:"+String(UPLOAD_DATASET_DELTA_TIME/60000)+" min").c_str(),2,"center", TFT_WHITE, true); 
+  tftPrintText(0,160,(char*)String("Exp. data upload:\n"+String(UPLOAD_DATASET_DELTA_TIME/60000)+" min").c_str(),2,"center", TFT_WHITE, true); 
   delay(2000);
 
   mserial.printStrln("Time interval for data measurements collection on each connected sensor:");
   mserial.printStr(String(DO_DATA_MEASURMENTS_DELTA_TIME/60000));
   mserial.printStrln(" min");
-  tftPrintText(0,160,(char*)String("Exp. data time measur:"+String(DO_DATA_MEASURMENTS_DELTA_TIME/60000)+" min").c_str(),2,"center", TFT_WHITE, true); 
+  tftPrintText(0,160,(char*)String("Exp. Data delta time:\n"+String(DO_DATA_MEASURMENTS_DELTA_TIME/60000)+" min").c_str(),2,"center", TFT_WHITE, true); 
   LAST_DATA_MEASUREMENTS=millis();
   delay(2000);
   
@@ -1696,7 +1726,7 @@ void getLSM6DS3sensorData(int i) {
 void ReadExternalAnalogData() {
 
   union Data adc_ch_analogRead_raw; 
-  union Data ADC_CH_VOLTAGE; 
+  union Data ADC_CH_REF_VOLTAGE; 
   union Data adc_ch_measured_voltage; 
   union Data adc_ch_calcukated_e_resistance; 
 
@@ -1715,9 +1745,21 @@ void ReadExternalAnalogData() {
   // Enable power to ADC and I2C external plugs
   digitalWrite(ENABLE_3v3_PWR,HIGH); //enable 3v3
 
-  ADC_CH_VOLTAGE.f= analogRead(EXT_IO_ANALOG_PIN)/MCU_ADC_DIVIDER * MCU_VDD;
-  tftPrintText(0,25,(char*) String(String(NUM_SAMPLE_SAMPLING_READINGS)+ " measurements\nsamples requested\n\nSampling interval (ms)\n"+String(SAMPLING_INTERVAL)+"\n\nADC CH OUT: "+String(ADC_CH_VOLTAGE.f)+" Volt").c_str(),2,"left", TFT_WHITE, true); 
-  delay(1000);
+  /*
+  Set the attenuation for a particular pin
+  Default is 11 db
+    0	     0 ~ 750 mV     ADC_0db
+    2.5	   0 ~ 1050 mV    ADC_2_5db
+    6	     0 ~ 1300 mV    ADC_6db
+    11	   0 ~ 2500 mV    ADC_11db
+  */
+  analogSetPinAttenuation(EXT_IO_ANALOG_PIN, ADC_11db);
+  analogSetPinAttenuation(VOLTAGE_REF_PIN, ADC_11db);
+  
+  ADC_CH_REF_VOLTAGE.f= analogRead(VOLTAGE_REF_PIN)/MCU_ADC_DIVIDER * MCU_VDD;
+
+  tftPrintText(0,25,(char*) String(String(NUM_SAMPLE_SAMPLING_READINGS)+ " measurements\nsamples requested\n\nSampling interval (ms)\n"+String(SAMPLING_INTERVAL)+"\n\nADC CH OUT: "+String(ADC_CH_REF_VOLTAGE.f)+" Volt").c_str(),2,"left", TFT_WHITE, true); 
+  delay(2000);
 
   int zerosCount=0;
   for (byte i = 0; i < NUM_SAMPLE_SAMPLING_READINGS; i++) {
@@ -1727,17 +1769,26 @@ void ReadExternalAnalogData() {
 
     adc_ch_analogRead_raw.f = analogRead(EXT_IO_ANALOG_PIN);
     num_valid_sample_measurements_made = num_valid_sample_measurements_made + 1;
-
-    ADC_CH_VOLTAGE.f= analogRead(EXT_IO_ANALOG_PIN)/MCU_ADC_DIVIDER * MCU_VDD;
-
-    adc_ch_measured_voltage.f = (adc_ch_analogRead_raw.f / MCU_ADC_DIVIDER) * ADC_CH_VOLTAGE.f;
-    adc_ch_measured_voltage_Sum = adc_ch_measured_voltage_Sum + adc_ch_measured_voltage.f;
-    adc_ch_calcukated_e_resistance.f = (ADC_R1 * adc_ch_analogRead_raw.f) / (MCU_ADC_DIVIDER - adc_ch_analogRead_raw.f);
-    adc_ch_calcukated_e_resistance_sum = adc_ch_calcukated_e_resistance_sum + adc_ch_calcukated_e_resistance.f;
+    // Vref
+    ADC_CH_REF_VOLTAGE.f= analogRead(VOLTAGE_REF_PIN)/MCU_ADC_DIVIDER * MCU_VDD;
     
-    mserial.printStr("ADC CH OUT: ");
-    mserial.printStr(String(ADC_CH_VOLTAGE.f));
+    // ADC Vin
+    adc_ch_measured_voltage.f = adc_ch_analogRead_raw.f  * ADC_CH_REF_VOLTAGE.f / MCU_ADC_DIVIDER;
+    
+    //R
+    adc_ch_calcukated_e_resistance.f = (ADC_REF_RESISTANCE[SELECTED_ADC_REF_RESISTANCE] * adc_ch_analogRead_raw.f ) / (MCU_ADC_DIVIDER- adc_ch_analogRead_raw.f);
+
+
+    mserial.printStr("ADC Vref raw: ");
+    mserial.printStrln(String(adc_ch_analogRead_raw.f));
+
+    mserial.printStr("ADC Vref: ");
+    mserial.printStr(String(ADC_CH_REF_VOLTAGE.f));
     mserial.printStrln(" Volt");
+
+    mserial.printStr("ADC CH IN raw: ");
+    mserial.printStrln(String(adc_ch_analogRead_raw.f));
+
     mserial.printStr("ADC CH READ: ");
     mserial.printStr(String(adc_ch_measured_voltage.f));
     mserial.printStrln(" Volt");
@@ -1748,7 +1799,7 @@ void ReadExternalAnalogData() {
     // SAMPLING_READING POS,  SENSOR POS, MEASUREMENTS_BUFFER_ POS
     measurements [i][0][measurements_current_pos]= (char*) rtc.getDateTime(true).c_str();
     measurements [i][1][measurements_current_pos]= (char*) String(adc_ch_analogRead_raw.f).c_str();
-    measurements [i][2][measurements_current_pos]= (char*) String(ADC_CH_VOLTAGE.f).c_str();
+    measurements [i][2][measurements_current_pos]= (char*) String(ADC_CH_REF_VOLTAGE.f).c_str();
     measurements [i][3][measurements_current_pos]= (char*) String(adc_ch_measured_voltage.f).c_str();
     measurements [i][4][measurements_current_pos]= (char*) String(adc_ch_calcukated_e_resistance.f).c_str();
     
@@ -1758,6 +1809,9 @@ void ReadExternalAnalogData() {
 
     if (adc_ch_analogRead_raw.f==0) {
       zerosCount++;
+    }else{
+      adc_ch_calcukated_e_resistance_sum = adc_ch_calcukated_e_resistance_sum + adc_ch_calcukated_e_resistance.f;
+      adc_ch_measured_voltage_Sum = adc_ch_measured_voltage_Sum + adc_ch_measured_voltage.f;
     }
   }
 
@@ -1775,8 +1829,12 @@ void ReadExternalAnalogData() {
   
   float adc_ch_measured_voltage_avg = adc_ch_measured_voltage_Sum / num_valid_sample_measurements_made;
   float adc_ch_calcukated_e_resistance_avg = adc_ch_calcukated_e_resistance_sum / num_valid_sample_measurements_made;
-  
-  tftPrintText(0,25,(char*) String("Total data samples: \n"+String(num_valid_sample_measurements_made)+"\n"+"Avg ADC CH volt.:\n"+String(adc_ch_measured_voltage_avg)+"\n Volt\n\nAverage ADC CH ER:\n"+String(adc_ch_calcukated_e_resistance_avg)+" Ohm"  ).c_str(),2,"left", TFT_WHITE, true); 
+  String units="Ohm";
+  if (adc_ch_calcukated_e_resistance_avg>1000){
+    adc_ch_calcukated_e_resistance_avg=adc_ch_calcukated_e_resistance_avg/1000;
+    units="kOhm";
+  }
+  tftPrintText(0,25,(char*) String("Total data samples: \n"+String(num_valid_sample_measurements_made)+"/"+String(NUM_SAMPLE_SAMPLING_READINGS)+"\n\n"+"Avg ADC CH volt.:\n"+String(adc_ch_measured_voltage_avg)+" Volt\n\nAverage ADC CH ER:\n"+String(adc_ch_calcukated_e_resistance_avg)+" "+units  ).c_str(),2,"left", TFT_WHITE, true); 
 
   delay(5000);
 }
