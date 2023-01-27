@@ -93,18 +93,12 @@ The acrylic base can be bought [here](https://s.click.aliexpress.com/e/_DEGsZaL)
 ![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/12bitSmartDAQ2023january_4.jpeg)
 
 On the photo above is one of my many specimens I purposely fabricated to research self-sensing properties of a asphalt mixed with a known content of carbon fibers. This is a 10cm cylinder specimen and on the top is already setup my own design smart #DAQ (get it here on my GitHub ) with ability do upload LIVE experimental data to a #dataverse.
-<br>
-
-
-## Smart DAQ for LIVE Experimental Data
-This repository holds the firmware C code compatible with Tensilica's Xtensa LX6/7 microprocessors. Files are located in the folder "Firmware Code".
 
 <br>
 <br>
 
 ### Smart PCB Hardware Specifications
 The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are the following:
-
 
 - QFN 56 Dual Xtensa LX7 Core Processors running up to 240MHz
   -	RISC V ultra-low power co-processor
@@ -127,7 +121,6 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
   -  1x I2C pin terminal connector
   -  1x 12 to 16bit (oversampling & digitization) digital terminal connector
   -  1x 12 to 16bit (oversampling & digitization) analogue terminal connector with manual scale selection ohmmeter via dip switch selection
-
 
 <br>
 <br>
