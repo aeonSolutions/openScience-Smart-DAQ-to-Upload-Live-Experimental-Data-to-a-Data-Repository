@@ -20,6 +20,15 @@ https://ssrn.com/abstract=4210504 . See the [WIKI](https://github.com/aeonSoluti
 <br>
 <br>
 
+**Most recent update**
+
+The C firmware code now includes PSRAM support for temporary storage of  measurments data (buffer). See [this](https://stackoverflow.com/questions/75004548/multidimensional-char-string-array-initialization-and-usage-for-esp32-mcus-with/75004549#75004549) stack overflow question for more info. The 1.69" Display is now also available and a standard layout design and configuration is now shown when the smart DAQ is powered.
+
+A new PCB design layout made to fit a well known waterproof acrylic enclosure, is available with new DAQ capabilities. This new PCB design dimensions is the one selected to move forward on this sci. researh project.  See photos below.
+
+<br>
+<br>
+
 **Status**
 
 This project is waiting for parts to arrive from aliExpress and for fabrication of a revised PCB electronics from factory. Will resume at the end of February 2023. In 3/4 weeks time.
@@ -73,7 +82,7 @@ https://guides.dataverse.org/en/5.12/api/client-libraries.html
 <br>
 <br>
 
-![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/12bitSmartDAQoctober.jpeg)
+![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/12bitSmartDAQ2023january_2.jpeg)
 
 On the photo above the smart DAQ is installed on an acrylic case and screwed with plastic screws to an acrylic base with the same cross section area as the specimen to be tested. 
 
@@ -81,14 +90,9 @@ The acrylic base can be bought [here](https://s.click.aliexpress.com/e/_DEGsZaL)
 
 <br>
 
-![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/smartAsphaltSample.jpeg)
+![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/12bitSmartDAQ2023january_4.jpeg)
 
 On the photo above is one of my many specimens I purposely fabricated to research self-sensing properties of a asphalt mixed with a known content of carbon fibers. This is a 10cm cylinder specimen and on the top is already setup my own design smart #DAQ (get it here on my GitHub ) with ability do upload LIVE experimental data to a #dataverse.
-<br>
-
-
-## Smart DAQ for LIVE Experimental Data
-This repository holds the firmware C code compatible with Tensilica's Xtensa LX6/7 microprocessors. Files are located in the folder "Firmware Code".
 
 <br>
 <br>
@@ -96,47 +100,41 @@ This repository holds the firmware C code compatible with Tensilica's Xtensa LX6
 ### Smart PCB Hardware Specifications
 The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are the following:
 
-
 - QFN 56 Dual Xtensa LX7 Core Processors running up to 240MHz
   -	RISC V ultra-low power co-processor
-  - 512Kb RAM (PSRAM max 1 Gb);
-  - 16Mb SOIC 8 NOR SPI Flash Memory (max 1Gb);
+  - 512Kb RAM (PSRAM max 1 Gbit);
+  - 16Mb SOIC 8 NOR SPI Flash Memory (max 1Gbit);
   - 2.4GHz ISM wireless connectivity;
   - Up to 118 12bit ADC Multiplexed DAQ channels;
 - Authentication & Security:
   - SOIC-8 ATSHA204A SHA-256 high-security hardware authentication IC for secure and unique experimental data exchange
 - Power management
   - DFN-6 AUR9718 high efficiency step-down 3.3V 1.5A DC converter;
+  - 2x JST SH 1.0mm for 4.2V LiPo batteries
+  - QFN-8 CN3065 LiPo battery BMS  
 - Onboard sensors:
-  - DFN-8 SHT3.x; temperature sensor with a precision of 1.5C;
+  - DFN-8 SHT3.x; temperature sensor with a precision of 0.2 *C;
   - DFN-8 SHT3.x humidity sensor;
   - LGA-14 LSM6DS3 a 6-axis accelerometer and gyroscope;
   - reference voltage sensor calibration with temperature and humidity
 - 	External connectivity for up to 118 sensors:
-  -  1x I2C pin terminal connector (shared)
-  -  1x 12 to 16bit (oversampling & digitization) digital terminal connector (shared)
-  -  1x 12 to 16bit (oversampling & digitization) analogue terminal connector (shared) with manual scale selection ohmmeter via jumper pin
-  -  12 to 16bit (oversampling & digitization) voltage reference analyser with temperature compensation 
-
-<br>
-
-
-**Smart PCB design wiht a built in 1.69" LCD TFT IPS display**
-
-Another version of this smart DAQ will be available next December that includes built in a 1.69" LCD TFT IPS display with ability to display LIVE experimental data being collected.. Stay tuned for updates. 
+  -  1x I2C pin terminal connector
+  -  1x 12 to 16bit (oversampling & digitization) digital terminal connector
+  -  1x 12 to 16bit (oversampling & digitization) analogue terminal connector with manual scale selection ohmmeter via dip switch selection
 
 <br>
 <br>
 
  **In real life this smart DAQ is able to:**
-- connect to all kinds of 3V to 5V Digital sensors;
+- connect to all kinds of 3.3V digital sensors;
 - connect to all kinds of sensors compatible with the I2C protocol. (max 118 sensors simultaneously)
 - measure voltage in the range of  [0;3.3V]
 - measure electrical resistance [0; 10^6] Ohm 
 - do temperature and humidity compensation on all measurements 
 - has a voltage reference sensor for improved accuracy on ADC measurements  
 - has a motion sensor to know if anyone moved a specimen during an experiment
-
+- can be powered using 4.2V LiPo batteries
+- 
 <br>
 <br>
 
