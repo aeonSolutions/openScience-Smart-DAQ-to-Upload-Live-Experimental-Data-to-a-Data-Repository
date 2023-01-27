@@ -24,7 +24,7 @@ https://ssrn.com/abstract=4210504 . See the [WIKI](https://github.com/aeonSoluti
 
 The C firmware code now includes PSRAM support for temporary storage of  measurments data (buffer). See [this](https://stackoverflow.com/questions/75004548/multidimensional-char-string-array-initialization-and-usage-for-esp32-mcus-with/75004549#75004549) stack overflow question for more info. The 1.69" Display is now also available and a standard layout design and configuration is now shown when the smart DAQ is powered.
 
-A new PCB design layout made to fit a well known waterproof acrylic enclosure, is available with new DAQ capabilities. This new PCB design dimensions is the one selected to move forward on this sci. researh project.  
+A new PCB design layout made to fit a well known waterproof acrylic enclosure, is available with new DAQ capabilities. This new PCB design dimensions is the one selected to move forward on this sci. researh project.  See photos below.
 
 <br>
 <br>
