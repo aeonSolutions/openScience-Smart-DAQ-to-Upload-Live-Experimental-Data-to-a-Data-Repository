@@ -105,24 +105,25 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
 
 - QFN 56 Dual Xtensa LX7 Core Processors running up to 240MHz
   -	RISC V ultra-low power co-processor
-  - 512Kb RAM (PSRAM max 1 Gb);
-  - 16Mb SOIC 8 NOR SPI Flash Memory (max 1Gb);
+  - 512Kb RAM (PSRAM max 1 Gbit);
+  - 16Mb SOIC 8 NOR SPI Flash Memory (max 1Gbit);
   - 2.4GHz ISM wireless connectivity;
   - Up to 118 12bit ADC Multiplexed DAQ channels;
 - Authentication & Security:
   - SOIC-8 ATSHA204A SHA-256 high-security hardware authentication IC for secure and unique experimental data exchange
 - Power management
   - DFN-6 AUR9718 high efficiency step-down 3.3V 1.5A DC converter;
+  - 2x JST SH 1.0mm for 4.2V LiPo batteries
+  - QFN-8 CN3065 LiPo battery BMS  
 - Onboard sensors:
-  - DFN-8 SHT3.x; temperature sensor with a precision of 1.5C;
+  - DFN-8 SHT3.x; temperature sensor with a precision of 0.2 *C;
   - DFN-8 SHT3.x humidity sensor;
   - LGA-14 LSM6DS3 a 6-axis accelerometer and gyroscope;
   - reference voltage sensor calibration with temperature and humidity
 - 	External connectivity for up to 118 sensors:
-  -  1x I2C pin terminal connector (shared)
-  -  1x 12 to 16bit (oversampling & digitization) digital terminal connector (shared)
-  -  1x 12 to 16bit (oversampling & digitization) analogue terminal connector (shared) with manual scale selection ohmmeter via jumper pin
-  -  12 to 16bit (oversampling & digitization) voltage reference analyser with temperature compensation 
+  -  1x I2C pin terminal connector
+  -  1x 12 to 16bit (oversampling & digitization) digital terminal connector
+  -  1x 12 to 16bit (oversampling & digitization) analogue terminal connector with manual scale selection ohmmeter via dip switch selection
 
 <br>
 
