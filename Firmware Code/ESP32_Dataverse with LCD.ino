@@ -364,9 +364,9 @@ void turnOffLedAll(){
   ledcWrite(LED_BLUE_CH, 4096);//RED
   ledcWrite(LED_GREEN_CH, 4096);//Blue
 
-  digitalWrite(LED_RED,HIGH);
-  digitalWrite(LED_GREEN,HIGH);
-  digitalWrite(LED_BLUE,HIGH);
+  //digitalWrite(LED_RED,HIGH);
+  //digitalWrite(LED_GREEN,HIGH);
+  //digitalWrite(LED_BLUE,HIGH);
 }
 
 
@@ -407,15 +407,15 @@ void statusLED(byte led[], byte brightness, float time=0) {
   }
   if(!greenPresent){
     ledcWrite(LED_GREEN, 4096);
-    digitalWrite(LED_GREEN,HIGH);
+    //digitalWrite(LED_GREEN,HIGH);
   }
   if(!redPresent){
     ledcWrite(LED_RED, 4096);
-    digitalWrite(LED_RED,HIGH);
+    //digitalWrite(LED_RED,HIGH);
   }
   if(!bluePresent){
     ledcWrite(LED_BLUE, 4096);
-    digitalWrite(LED_BLUE,HIGH);
+    //digitalWrite(LED_BLUE,HIGH);
   }
   if (time>0){
     delay(time*1000);
@@ -789,13 +789,13 @@ See more http://henrysbench.capnfatz.com/henrys-bench/arduino-adafruit-gfx-libra
     delay(2000);
   }
   
-  tftPrintText(0,160, (char*)String("PSRAM "+String(ESP.getPsramSize()/1024/1024)+"Mb").c_str(),2,"center", TFT_WHITE, true);
+  tftPrintText(0,160, (char*)String("PSRAM "+String(ESP.getPsramSize()/8/1024/1024)+"Mb").c_str(),2,"center", TFT_WHITE, true);
   delay(2000);
   
-  mserial.printStrln("Total heap: "+String(ESP.getHeapSize()/1024/1024)+"Mb");
-  mserial.printStrln("Free heap: "+String(ESP.getFreeHeap()/1024/1024)+"Mb");
-  mserial.printStrln("Total PSRAM: "+String(ESP.getPsramSize()/1024/1024)+"Mb");
-  mserial.printStrln("Free PSRAM: "+String(ESP.getFreePsram()/1024/1024)+"Mb");
+  mserial.printStrln("Total heap: "+String(ESP.getHeapSize()/8/1024/1024)+"Mb");
+  mserial.printStrln("Free heap: "+String(ESP.getFreeHeap()/8/1024/1024)+"Mb");
+  mserial.printStrln("Total PSRAM: "+String(ESP.getPsramSize()/8/1024/1024)+"Mb");
+  mserial.printStrln("Free PSRAM: "+String(ESP.getFreePsram()/8/1024/1024)+"Mb");
 
   mserial.printStrln("set RTC clock to firmware Date & Time ...");  
   rtc.setTimeStruct(CompileDateTime(__DATE__, __TIME__)); 
@@ -869,7 +869,7 @@ See more http://henrysbench.capnfatz.com/henrys-bench/arduino-adafruit-gfx-libra
     mserial.printStrln(" bytes");
 
     mserial.printStrln("");
-    tftPrintText(0,160,(char*) String(String(roundf(totalBytes/1024/1024))+" / "+ String(roundf(freeBytes/1024/1024))+" Mb free").c_str(),2,"center", TFT_WHITE, true); 
+    tftPrintText(0,160,(char*) String(String(roundf(totalBytes/8/1024/1024))+" / "+ String(roundf(freeBytes/8/1024/1024))+" Mb free").c_str(),2,"center", TFT_WHITE, true); 
     delay(1000);
 
     mserial.printStrln("Listing Files and Directories: ");
@@ -977,7 +977,7 @@ See more http://henrysbench.capnfatz.com/henrys-bench/arduino-adafruit-gfx-libra
 
   }else{
       mserial.printStrln("Measurements Buffer Initialized successfully.");
-      float bufSize= ( sizeof(measurements) / sizeof(measurements[0][0][0][0])  ) /1024;
+      float bufSize= ( sizeof(measurements) / sizeof(measurements[0][0][0][0])  )/8; // bytes /1024;
       mserial.printStrln("Buffer size:" + String(bufSize));
       tftPrintText(0,160,(char*) String("Buf size:"+String(bufSize)+"Kb").c_str(),2,"center", TFT_WHITE, true); 
       delay(1000);
@@ -1706,19 +1706,24 @@ void ReadExternalAnalogData() {
   tft.pushImage (TFT_CURRENT_X_RES-75,0,16,18,MEASURE_ICON_16BIT_BITMAP);
   // ToDo: Keep ON or turn it off at the end of measurments
   // Enable power to ADC and I2C external plugs
-  digitalWrite(ENABLE_3v3_PWR,LOW); //enable 3v3
+  digitalWrite(ENABLE_3v3_PWR,HIGH); //enable 3v3
 
   int num_valid_sample_measurements_made = 0;
   mserial.clearLCDscreen();
   mserial.printStrln(String(NUM_SAMPLE_SAMPLING_READINGS)+ " measurements");
   mserial.printStrln("samples requested ");
   mserial.printStrln(" ");
-  delay(1000);
 
   mserial.printStrln("Sampling interval (ms)");
   mserial.printStrln(String(SAMPLING_INTERVAL));
-  delay(1000);
+  mserial.printStrln(" ");
   
+  ADC_CH_VOLTAGE.f= analogRead(EXT_IO_ANALOG_PIN)/MCU_ADC_DIVIDER * MCU_VDD;
+  mserial.printStr("ADC CH OUT: ");
+  mserial.printStr(String(ADC_CH_VOLTAGE.f));
+  mserial.printStrln(" Volt");
+  delay(1000);
+
   mserial.clearLCDscreen();
   mserial.setOutput2LCD(false);
 
@@ -1764,25 +1769,25 @@ void ReadExternalAnalogData() {
         mserial.clearLCDscreen();
         tft.setTextColor(TFT_WHITE);
         tft.setCursor(30, 60);
-        tft.println("Zero val. measurement");
-        tft.println("consider change ref. R");
-        tft.println("dip switch on the DAQ");
+        tft.println("Zero value found");
+        tft.println("consider chg ref. R");
+        tft.println(" switch on the DAQ");
 
         mserial.printStrln("Zero value measur. founda: "+String(adc_ch_analogRead_raw.f));
         statusLED( (byte*)(const byte[]){LED_RED}, 100,2); 
 
         tft.setTextColor(TFT_BLACK);
         tft.setCursor(30, 60);
-        tft.println("Zero val. measurement");
-        tft.println("consider change ref. R");
-        tft.println("dip switch on the DAQ");
+        tft.println("Zero value found");
+        tft.println("consider chg ref. R");
+        tft.println(" switch on the DAQ");
         tft.setTextColor(TFT_WHITE);
     }
   }
 
   // ToDo: Keep ON or turn it off at the end of measurments
   // Enable power to ADC and I2C external plugs
-  digitalWrite(ENABLE_3v3_PWR,HIGH); 
+  digitalWrite(ENABLE_3v3_PWR,LOW); 
   
   float adc_ch_measured_voltage_avg = adc_ch_measured_voltage_Sum / num_valid_sample_measurements_made;
   float adc_ch_calcukated_e_resistance_avg = adc_ch_calcukated_e_resistance_sum / num_valid_sample_measurements_made;
