@@ -977,7 +977,7 @@ See more http://henrysbench.capnfatz.com/henrys-bench/arduino-adafruit-gfx-libra
 
   }else{
       mserial.printStrln("Measurements Buffer Initialized successfully.");
-      float bufSize= (sizeof(measurements)/(sizeof(measurements[0]0[0][0])/sizeof(measurements[0]0[0][0])) /1024;
+      float bufSize= ( sizeof(measurements) / sizeof(measurements[0][0][0][0])  ) /1024;
       mserial.printStrln("Buffer size:" + String(bufSize));
       tftPrintText(0,160,(char*) String("Buf size:"+String(bufSize)+"Kb").c_str(),2,"center", TFT_WHITE, true); 
       delay(1000);
