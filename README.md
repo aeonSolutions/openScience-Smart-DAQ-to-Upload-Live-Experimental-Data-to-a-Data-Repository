@@ -19,6 +19,7 @@ https://ssrn.com/abstract=4210504 . See the [WIKI](https://github.com/aeonSoluti
 
 <br>
 <br>
+
 **Most recent update**
 
 The C firmware code now includes PSRAM support for temporary storage of  measurments data (buffer). The 1.69" Display is now also available and a standard layout design and configuration is now shown when the smart DAQ is powered.
