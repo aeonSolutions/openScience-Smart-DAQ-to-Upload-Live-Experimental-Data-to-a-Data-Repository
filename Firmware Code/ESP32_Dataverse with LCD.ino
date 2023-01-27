@@ -39,8 +39,8 @@
 
 #include <TFT_eSPI.h>                                            
 // AeonLabs Logo 
-#include "aeonlabs_science_img.h"
-#include "wifi_icon.h"
+#include "lcd_aeonlabs_science_logo.h"
+#include "lcd_icons.h"
 TFT_eSPI tft = TFT_eSPI();    
 
 #include <Arduino.h>
@@ -1023,7 +1023,7 @@ See more http://henrysbench.capnfatz.com/henrys-bench/arduino-adafruit-gfx-libra
      units="M Ohm";
   }
   
-  tftPrintText(0,160,(char*)String("Sel. Rref: "+String(refRes)+ units).c_str(),2,"center", TFT_WHITE, true); 
+  tftPrintText(0,160,(char*)String("Selected ref R:\n"+String(refRes)+ units).c_str(),2,"center", TFT_WHITE, true); 
   mserial.printStrln("ADC_REF_RESISTANCE="+String(ADC_REF_RESISTANCE[SELECTED_ADC_REF_RESISTANCE])+" Ohm");
   delay(2000);
 
@@ -1758,7 +1758,7 @@ void ReadExternalAnalogData() {
   
   ADC_CH_REF_VOLTAGE.f= analogRead(VOLTAGE_REF_PIN)/MCU_ADC_DIVIDER * MCU_VDD;
 
-  tftPrintText(0,25,(char*) String(String(NUM_SAMPLE_SAMPLING_READINGS)+ " measurements\nsamples requested\n\nSampling interval (ms)\n"+String(SAMPLING_INTERVAL)+"\n\nADC CH OUT: "+String(ADC_CH_REF_VOLTAGE.f)+" Volt").c_str(),2,"left", TFT_WHITE, true); 
+  tftPrintText(0,25,(char*) String(String(NUM_SAMPLE_SAMPLING_READINGS)+ " measurements\nsamples requested\n\nSampling interval\n"+String(SAMPLING_INTERVAL)+" ms\n\nADC CH OUT: "+String(ADC_CH_REF_VOLTAGE.f)+" Volt").c_str(),2,"left", TFT_WHITE, true); 
   delay(2000);
 
   int zerosCount=0;
@@ -1775,7 +1775,12 @@ void ReadExternalAnalogData() {
     // ADC Vin
     adc_ch_measured_voltage.f = adc_ch_analogRead_raw.f  * ADC_CH_REF_VOLTAGE.f / MCU_ADC_DIVIDER;
     
-    //R
+    /*
+    How accurate is an Arduino Ohmmeter?
+    Gergely Makan, Robert Mingesz and Zoltan Gingl
+    Department of Technical Informatics, University of Szeged, Árpád tér 2, 6720, Szeged, Hungary
+    https://arxiv.org/ftp/arxiv/papers/1901/1901.03811.pdf
+    */
     adc_ch_calcukated_e_resistance.f = (ADC_REF_RESISTANCE[SELECTED_ADC_REF_RESISTANCE] * adc_ch_analogRead_raw.f ) / (MCU_ADC_DIVIDER- adc_ch_analogRead_raw.f);
 
 
@@ -1834,7 +1839,7 @@ void ReadExternalAnalogData() {
     adc_ch_calcukated_e_resistance_avg=adc_ch_calcukated_e_resistance_avg/1000;
     units="kOhm";
   }
-  tftPrintText(0,25,(char*) String("Total data samples: \n"+String(num_valid_sample_measurements_made)+"/"+String(NUM_SAMPLE_SAMPLING_READINGS)+"\n\n"+"Avg ADC CH volt.:\n"+String(adc_ch_measured_voltage_avg)+" Volt\n\nAverage ADC CH ER:\n"+String(adc_ch_calcukated_e_resistance_avg)+" "+units  ).c_str(),2,"left", TFT_WHITE, true); 
+  tftPrintText(0,25,(char*) String("Total data samples: \n"+String(num_valid_sample_measurements_made)+"/"+String(NUM_SAMPLE_SAMPLING_READINGS)+"\n\n"+"Avg ADC CH volt.:\n"+String(adc_ch_measured_voltage_avg)+" Volt\n\nAverage ADC CH R:\n"+String(adc_ch_calcukated_e_resistance_avg)+" "+units  ).c_str(),2,"left", TFT_WHITE, true); 
 
   delay(5000);
 }
