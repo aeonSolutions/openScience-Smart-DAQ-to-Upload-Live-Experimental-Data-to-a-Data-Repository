@@ -143,7 +143,7 @@ union Data {
 #define NUM_SAMPLE_SAMPLING_READINGS 16
 #define SAMPLING_INTERVAL 0
 #define MEASUREMENTS_BUFFER_SIZE 10
-uint8_t NUMBER_OF_SENSORS =0;
+uint8_t NUMBER_OF_SENSORS_DATA_VALUES =5; // time + 4 ADC
 
 char ****measurements = NULL; //pointer to pointer
 int measurements_current_pos=0;
@@ -155,16 +155,18 @@ unsigned long LAST_DATASET_UPLOAD = 0;
 unsigned long LAST_DATA_MEASUREMENTS = 0;
 unsigned long MAX_LATENCY_ALLOWED = (unsigned long)(DO_DATA_MEASURMENTS_DELTA_TIME/2);
 
+
 // **************************** == PSRAM Memory Class == ************************
 class PSRAMallocClass {
   private:
 
   public:
+    bool result=false;
     PSRAMallocClass() {
 
     }
 
-  bool initializeDynamicVar( int size1D, int size2D, int size3D){    
+  char**** initializeDynamicVar( int size1D, int size2D, int size3D){    
     int i1D = 0; //Variable for looping Row
     int i2D = 0; //Variable for looping column
     int i3D=0; 
@@ -175,7 +177,8 @@ class PSRAMallocClass {
     //Check memory validity
     if(measurements == NULL){
        Serial.println("FAIL");
-       return false;
+       this->result=false;
+      return NULL;
     }
     //Allocate memory for 1D (rows)
     for (i1D =0 ; i1D < size1D ; i1D++){
@@ -184,7 +187,8 @@ class PSRAMallocClass {
         if(measurements[i1D] == NULL){
          // this->freeAllocatedMemory(measurements,i1D);
           Serial.println("FAIL 1D alloc");
-          return false;
+          this->result=false;
+          return NULL;
         }
     }
 
@@ -196,7 +200,8 @@ class PSRAMallocClass {
         if(measurements[i1D][i2D] == NULL){
           //this->freeAllocatedMemory(measurements,i1D);
           Serial.println("FAIL 2D alloc");
-          return false;
+          this->result=false;
+          return NULL;
         }
       }
     }
@@ -210,12 +215,14 @@ class PSRAMallocClass {
             if(measurements[i1D][i2D][i3D] == NULL){
               //this->freeAllocatedMemory(measurements,i1D);
               Serial.println("FAIL 3D alloc");
-              return false;
+              this->result=false;
+              return NULL;
             }
           }
         }
     }
-    return true;
+    this->result=true;   
+    return measurements;
   } // initializeDynamicVar
 
   //Free Allocated memory
@@ -288,7 +295,9 @@ const char *DATA_VALIDATION_KEY = "A9CD7F1B6688159B54BBE862F638FF9D29E0FA5F87C69
 //ToDo
 float ADC_R1 = 1032;
 
-const float MCU_ADC_DIVIDER = 4094.0;
+// configuration: PCB specific
+const float MCU_VDD = 3.3;
+const float MCU_ADC_DIVIDER = 4095.0;
 
 //I2C Bus Pins
 #define SDA 8
@@ -335,18 +344,17 @@ const byte LED_GREEN_CH = 7;
 
 // Components Testing  **************************************
 bool SCAN_I2C_BUS = false;
-bool TEST_SHT_SENSOR = true;
-bool TEST_MOTION_SENSOR = true;
 bool TEST_RGB_LED = false;
-bool TEST_FLASH_DRIVE=true;
-bool TEST_WIFI_SCAN =true;
+bool TEST_FLASH_DRIVE=false;
+bool TEST_WIFI_SCAN =false;
 bool TEST_WIFI_NETWORK_CONNECTION=true;
-bool TEST_SECURITY_IC=true;
+bool TEST_SECURITY_IC=false;
 bool TEST_LCD=false;
 
 // COMPONENTS STATUS AND AVAILABILITY
 bool SHTsensorAvail = false;
 bool MotionSensorAvail=false;
+uint8_t NUMBER_OF_SENSORS =0; 
 
 //*******************************************************************
 //*******************************************************************
@@ -361,7 +369,8 @@ void turnOffLedAll(){
   digitalWrite(LED_BLUE,HIGH);
 }
 
-void statusLED(byte led[], byte brightness, byte time=0) {
+
+void statusLED(byte led[], byte brightness, float time=0) {
   turnOffLedAll();
   // turn ON LED
   int bright = floor(4096-(brightness/100*3596));
@@ -414,6 +423,13 @@ void statusLED(byte led[], byte brightness, byte time=0) {
   }
 }  
 
+void blinkStatusLED(byte led[], byte brightness, float time=0, byte numberBlinks=1){
+  for(int i=0; i<numberBlinks; i++){
+    statusLED(led, brightness, time);
+    turnOffLedAll();
+    delay(time*1000);
+  }
+}
 // *********************** == Dual Core Setup == ************************
 TaskHandle_t task_Core2_Loop;
 void Core2Loop(void* pvParameters) {
@@ -680,6 +696,11 @@ void setup() {
   pinMode(ENABLE_3v3_PWR, OUTPUT);
   digitalWrite(ENABLE_3v3_PWR,LOW); // disabled
 
+  // ADC IO
+  pinMode(EXT_IO_ANALOG_PIN, INPUT);
+
+
+
   ESP_ERROR_CHECK(nvs_flash_erase());
   nvs_flash_init();
 
@@ -768,12 +789,13 @@ See more http://henrysbench.capnfatz.com/henrys-bench/arduino-adafruit-gfx-libra
     delay(2000);
   }
   
-  tftPrintText(0,160, (char*)String("PSRAM ("+String(ESP.getPsramSize())+") :" +String(ESP.getFreePsram())+"  free").c_str(),2,"center", TFT_WHITE, true);
-
-  mserial.printStrln("Total heap:"+String(ESP.getHeapSize()));
-  mserial.printStrln("Free heap:"+String(ESP.getFreeHeap()));
-  mserial.printStrln("Total PSRAM:"+String(ESP.getPsramSize()));
-  mserial.printStrln("Free PSRAM:"+String(ESP.getFreePsram()));
+  tftPrintText(0,160, (char*)String("PSRAM "+String(ESP.getPsramSize()/1024/1024)+"Mb").c_str(),2,"center", TFT_WHITE, true);
+  delay(2000);
+  
+  mserial.printStrln("Total heap: "+String(ESP.getHeapSize()/1024/1024)+"Mb");
+  mserial.printStrln("Free heap: "+String(ESP.getFreeHeap()/1024/1024)+"Mb");
+  mserial.printStrln("Total PSRAM: "+String(ESP.getPsramSize()/1024/1024)+"Mb");
+  mserial.printStrln("Free PSRAM: "+String(ESP.getFreePsram()/1024/1024)+"Mb");
 
   mserial.printStrln("set RTC clock to firmware Date & Time ...");  
   rtc.setTimeStruct(CompileDateTime(__DATE__, __TIME__)); 
@@ -847,8 +869,8 @@ See more http://henrysbench.capnfatz.com/henrys-bench/arduino-adafruit-gfx-libra
     mserial.printStrln(" bytes");
 
     mserial.printStrln("");
-    tftPrintText(0,160,(char*) String(String(roundf(totalBytes/1024/1024))+" / "+ String(roundf(freeBytes/1024/1024))+" Mb free").c_str(),1,"center", TFT_WHITE, true); 
-    delay(2000);
+    tftPrintText(0,160,(char*) String(String(roundf(totalBytes/1024/1024))+" / "+ String(roundf(freeBytes/1024/1024))+" Mb free").c_str(),2,"center", TFT_WHITE, true); 
+    delay(1000);
 
     mserial.printStrln("Listing Files and Directories: ");
     // Open dir folder
@@ -912,51 +934,55 @@ See more http://henrysbench.capnfatz.com/henrys-bench/arduino-adafruit-gfx-libra
     delay(1000);
   }
   
-  if (TEST_SHT_SENSOR) {
-    mserial.printStr("Starting SHT31 sensor...");
-    startSHT(SHT_begin_result);
-    delay(1000);
-  }
 
-  if (TEST_MOTION_SENSOR) {
-    mserial.printStr("Starting Motion Sensor...");
-    if ( LSM6DS3sensor.begin() != 0 ) {
-      mserial.printStrln("FAIL!");
-      mserial.printStrln("Error starting the sensor at specified address");
-      tftPrintText(0,160,"Motion Sensor Error",2,"center", TFT_RED, true); 
-      statusLED( (byte*)(const byte[]){LED_RED}, 100,2); 
-      MotionSensorAvail=false;
-    } else {
-      mserial.printStrln("started.");
-      tftPrintText(0,160,"Motion sensor started",2,"center", TFT_GREEN, true); 
-      statusLED( (byte*)(const byte[]){LED_GREEN}, 100,2);
-      NUMBER_OF_SENSORS=NUMBER_OF_SENSORS+1;
-      MotionSensorAvail = true; 
-    }
-    mserial.printStrln("");
-    delay(1000);
+  mserial.printStr("Starting SHT31 sensor...");
+  startSHT(SHT_begin_result);
+  delay(1000);
+
+  mserial.printStr("Starting Motion Sensor...");
+  if ( LSM6DS3sensor.begin() != 0 ) {
+    mserial.printStrln("FAIL!");
+    mserial.printStrln("Error starting the sensor at specified address");
+    tftPrintText(0,160,"Motion Sensor Error",2,"center", TFT_RED, true); 
+    statusLED( (byte*)(const byte[]){LED_RED}, 100,2); 
+    MotionSensorAvail=false;
+  } else {
+    mserial.printStrln("started.");
+    tftPrintText(0,160,"Motion sensor started",2,"center", TFT_GREEN, true); 
+    statusLED( (byte*)(const byte[]){LED_GREEN}, 100,2);
+    NUMBER_OF_SENSORS=NUMBER_OF_SENSORS+1;
+    MotionSensorAvail = true; 
+    NUMBER_OF_SENSORS_DATA_VALUES = NUMBER_OF_SENSORS_DATA_VALUES + 9;
   }
+  mserial.printStrln("");
+  delay(1000);
   
   // Add ADC External plug as a sensor
   NUMBER_OF_SENSORS=NUMBER_OF_SENSORS+1;  
 
   mserial.printStrln("Sensor detection completed. Initializing Dynamic memory with:");
   mserial.printStrln("Number of SAMPLING READINGS:"+ String(NUM_SAMPLE_SAMPLING_READINGS));
-  mserial.printStrln("Number of Sensor Data values per reading:" + String(NUMBER_OF_SENSORS));
+  mserial.printStrln("Number of Sensor Data values per reading:" + String(NUMBER_OF_SENSORS_DATA_VALUES));
   mserial.printStrln("PSRAM buffer size:" + String(MEASUREMENTS_BUFFER_SIZE));
-  tftPrintText(0,160,(char*) String("PSRAM buffer size:"+ String(MEASUREMENTS_BUFFER_SIZE)).c_str(),2,"center", TFT_WHITE, true); 
-  delay(3000);
+  tftPrintText(0,160,(char*) String("Buff. size:"+ String(MEASUREMENTS_BUFFER_SIZE)).c_str(),2,"center", TFT_WHITE, true); 
+  delay(2000);
 
   // 1D number of sample readings ; 2D number of sensor data measuremtns; 3D RAM buffer size
-  if (PSRAMalloc.initializeDynamicVar(NUM_SAMPLE_SAMPLING_READINGS, (int) NUMBER_OF_SENSORS, MEASUREMENTS_BUFFER_SIZE)){
-      mserial.printStrln("Measurements Buffer Initialized successfully.");
-      tftPrintText(0,160,"Exp. data RAM buf Ready",2,"center", TFT_WHITE, true); 
-      statusLED( (byte*)(const byte[]){LED_GREEN}, 100,2);
-  }else{
+  measurements=PSRAMalloc.initializeDynamicVar(NUM_SAMPLE_SAMPLING_READINGS, (int) NUMBER_OF_SENSORS_DATA_VALUES , MEASUREMENTS_BUFFER_SIZE);
+  if (measurements == NULL){
       mserial.printStrln("Error Initializing Measruments Buffer.");
       tftPrintText(0,160,"ERR Exp. data Buffer",2,"center", TFT_WHITE, true); 
       statusLED( (byte*)(const byte[]){LED_RED}, 100,5); 
       // TODO : what to do when memeory alloc is NULL
+
+  }else{
+      mserial.printStrln("Measurements Buffer Initialized successfully.");
+      float bufSize= (sizeof(measurements)/(sizeof(measurements[0]0[0][0])/sizeof(measurements[0]0[0][0])) /1024;
+      mserial.printStrln("Buffer size:" + String(bufSize));
+      tftPrintText(0,160,(char*) String("Buf size:"+String(bufSize)+"Kb").c_str(),2,"center", TFT_WHITE, true); 
+      delay(1000);
+      tftPrintText(0,160,"Exp. Data RAM ready",2,"center", TFT_WHITE, true); 
+      statusLED( (byte*)(const byte[]){LED_GREEN}, 100,2);
   }
 
   changeMcuFreq(WIFI_FREQUENCY);
@@ -975,7 +1001,7 @@ See more http://henrysbench.capnfatz.com/henrys-bench/arduino-adafruit-gfx-libra
   mserial.printStrln("Time interval for dataset upload to a dataverse repository hosted by Harvard University: ");
   mserial.printStr(String(UPLOAD_DATASET_DELTA_TIME/60000));
   mserial.printStrln(" min");
-  tftPrintText(0,160,(char*)String("Exp. data time upload:"+String(UPLOAD_DATASET_DELTA_TIME/60000)+" min").c_str(),2,"center", TFT_WHITE, true); 
+  tftPrintText(0,160,(char*)String("Exp. data upload:"+String(UPLOAD_DATASET_DELTA_TIME/60000)+" min").c_str(),2,"center", TFT_WHITE, true); 
   delay(2000);
 
   mserial.printStrln("Time interval for data measurements collection on each connected sensor:");
@@ -1586,10 +1612,7 @@ void onBoardSensorMeasurements(int i){
         mserial.printStr(String(t.chr));
         int MAX_DATA__MEASUREMENT_SIZE=20;
 
-        strncpy(measurements[measurements_current_pos][i][5], t.chr, MAX_DATA__MEASUREMENT_SIZE);
-        measurements[measurements_current_pos][i][5][MAX_DATA__MEASUREMENT_SIZE - 1] = '\0';
-        //strcpy(, );
-        //measurements[measurements_current_pos][i][5]=t.str;
+        measurements[i][5][measurements_current_pos]= (char*) String(t.f).c_str();
 
       } else {
         mserial.printStrln("Failed to read temperature");
@@ -1598,8 +1621,8 @@ void onBoardSensorMeasurements(int i){
       if (! isnan(h.f)) { // check if 'is not a number'
         mserial.printStr("   Hum. % = ");
         mserial.printStrln(String(h.f));
-        strcpy(measurements[measurements_current_pos][i][6], h.chr);
-        //measurements[measurements_current_pos][i][6]=h.str;
+        
+        measurements[i][6][measurements_current_pos]= (char*) String(h.f).c_str();
       } else {
         mserial.printStrln("Failed to read humidity");
       }
@@ -1620,39 +1643,39 @@ void getLSM6DS3sensorData(int i) {
   mserial.printStr(" X1 = ");
   motion.f=LSM6DS3sensor.readFloatAccelX();
   mserial.printStr(String(motion.chr));
-  measurements[measurements_current_pos][i][7]=motion.chr;
+  measurements[i][7][measurements_current_pos]= (char*) String(motion.f).c_str();
   
   mserial.printStr("  Y1 = ");
   motion.f=LSM6DS3sensor.readFloatAccelY();
   mserial.printStr(String(motion.chr));
-  measurements[measurements_current_pos][i][8]=motion.chr;
+  measurements[i][8][measurements_current_pos]= (char*) String(motion.f).c_str();
 
   mserial.printStr("  Z1 = ");
   motion.f=LSM6DS3sensor.readFloatAccelZ();
   mserial.printStr(String(motion.chr));
-  measurements[measurements_current_pos][i][9]=motion.chr;
-
+  measurements[i][9][measurements_current_pos]= (char*) String(motion.f).c_str();
+  
   mserial.printStr("LSM6DS3 Gyroscope data:");
   mserial.printStr(" X1 = ");  
   motion.f=LSM6DS3sensor.readFloatGyroX();
   mserial.printStr(String(motion.chr));
-  measurements[measurements_current_pos][i][10]=motion.chr;
+  measurements[i][10][measurements_current_pos]= (char*) String(motion.f).c_str();
 
   mserial.printStr("  Y1 = ");
   motion.f=LSM6DS3sensor.readFloatGyroY();
   mserial.printStr(String(motion.chr));
-  measurements[measurements_current_pos][i][11]=motion.chr;
+  measurements[i][11][measurements_current_pos]= (char*) String(motion.f).c_str();
   
   mserial.printStr("  Z1 = ");
   motion.f=LSM6DS3sensor.readFloatGyroZ();
   mserial.printStr(String(motion.chr));
-  measurements[measurements_current_pos][i][12]=motion.chr;
+  measurements[i][12][measurements_current_pos]= (char*) String(motion.f).c_str();
   
   mserial.printStr("\nLSM6DS3 Thermometer Data:");
   mserial.printStr(" Degrees C1 = ");
   motion.f=LSM6DS3sensor.readTempC();
   mserial.printStr(String(motion.chr));
-  measurements[measurements_current_pos][i][13]=motion.chr;
+  measurements[i][13][measurements_current_pos]= (char*) String(motion.f).c_str();
   
   //mserial.printStrln(String(LSM6DS3sensor.readTempF()));
 
@@ -1660,20 +1683,19 @@ void getLSM6DS3sensorData(int i) {
   mserial.printStr("success = ");
   motion.f=LSM6DS3sensor.allOnesCounter;
   mserial.printStr(String(motion.chr));
-  measurements[measurements_current_pos][i][14]=motion.chr;
+  measurements[i][14][measurements_current_pos]= (char*) String(motion.f).c_str();
   
   mserial.printStr("no success = ");
   motion.f=LSM6DS3sensor.nonSuccessCounter;
   mserial.printStr(String(motion.chr));
-  measurements[measurements_current_pos][i][15]=motion.chr;
+  measurements[i][15][measurements_current_pos]= (char*) String(motion.f).c_str();
 }
 
 
 //***************************************************
 void ReadExternalAnalogData() {
-  digitalWrite(ENABLE_3v3_PWR,LOW); //enable 3v3
-  
-  union Data adc_ch_analogRead_raw; 
+
+    union Data adc_ch_analogRead_raw; 
   union Data ADC_CH_VOLTAGE; 
   union Data adc_ch_measured_voltage; 
   union Data adc_ch_calcukated_e_resistance; 
@@ -1681,32 +1703,28 @@ void ReadExternalAnalogData() {
   float adc_ch_measured_voltage_Sum = 0;
   float adc_ch_calcukated_e_resistance_sum = 0;
 
+  tft.pushImage (TFT_CURRENT_X_RES-75,0,16,18,MEASURE_ICON_16BIT_BITMAP);
+  // ToDo: Keep ON or turn it off at the end of measurments
+  // Enable power to ADC and I2C external plugs
+  digitalWrite(ENABLE_3v3_PWR,LOW); //enable 3v3
 
   int num_valid_sample_measurements_made = 0;
   mserial.clearLCDscreen();
-  mserial.printStr("Requesting measurement values and sampling ");
-  mserial.printStrln(String(NUM_SAMPLE_SAMPLING_READINGS));
+  mserial.printStrln(String(NUM_SAMPLE_SAMPLING_READINGS)+ " measurements");
+  mserial.printStrln("samples requested ");
+  mserial.printStrln(" ");
   delay(1000);
+
+  mserial.printStrln("Sampling interval (ms)");
+  mserial.printStrln(String(SAMPLING_INTERVAL));
+  delay(1000);
+  
   mserial.clearLCDscreen();
   mserial.setOutput2LCD(false);
 
   byte count = 0;
   for (byte i = 0; i < NUM_SAMPLE_SAMPLING_READINGS; i++) {
-    
-    tft.setCursor(40, 60);
-    tft.setTextColor(TFT_BLACK);
-    tft.println("Sampling n.: "+String(i)+"/"+String(NUM_SAMPLE_SAMPLING_READINGS)); 
-      
-    tft.print("ADC CH OUT: ");
-    tft.print(String(ADC_CH_VOLTAGE.chr));
-    tft.println(" Volt");
-    tft.print("ADC CH READ: ");
-    tft.print(String(adc_ch_measured_voltage.chr));
-    tft.println(" Volt");
-    tft.print("Calc. E.R.: ");
-    tft.print(String(adc_ch_calcukated_e_resistance.chr));
-    tft.println("  Ohm");
-
+          
     mserial.printStrln("");
     mserial.printStr(String(i));
     mserial.printStr(": ");
@@ -1714,68 +1732,58 @@ void ReadExternalAnalogData() {
     adc_ch_analogRead_raw.f = analogRead(EXT_IO_ANALOG_PIN);
     num_valid_sample_measurements_made = num_valid_sample_measurements_made + 1;
 
-    ADC_CH_VOLTAGE.f= analogRead(EXT_IO_ANALOG_PIN)/MCU_ADC_DIVIDER*ADC_CH_VOLTAGE.f;
+    ADC_CH_VOLTAGE.f= analogRead(EXT_IO_ANALOG_PIN)/MCU_ADC_DIVIDER * MCU_VDD;
+
     adc_ch_measured_voltage.f = (adc_ch_analogRead_raw.f / MCU_ADC_DIVIDER) * ADC_CH_VOLTAGE.f;
     adc_ch_measured_voltage_Sum = adc_ch_measured_voltage_Sum + adc_ch_measured_voltage.f;
     adc_ch_calcukated_e_resistance.f = (ADC_R1 * adc_ch_analogRead_raw.f) / (MCU_ADC_DIVIDER - adc_ch_analogRead_raw.f);
     adc_ch_calcukated_e_resistance_sum = adc_ch_calcukated_e_resistance_sum + adc_ch_calcukated_e_resistance.f;
-
+    
     mserial.printStr("ADC CH OUT: ");
-    mserial.printStr(String(ADC_CH_VOLTAGE.chr));
+    mserial.printStr(String(ADC_CH_VOLTAGE.f));
     mserial.printStrln(" Volt");
     mserial.printStr("ADC CH READ: ");
-    mserial.printStr(String(adc_ch_measured_voltage.chr));
+    mserial.printStr(String(adc_ch_measured_voltage.f));
     mserial.printStrln(" Volt");
     mserial.printStr("Calc. E.R.: ");
-    mserial.printStr(String(adc_ch_calcukated_e_resistance.chr));
+    mserial.printStr(String(adc_ch_calcukated_e_resistance.f));
     mserial.printStrln("  Ohm");
 
-    tft.setTextColor(TFT_WHITE);
-    tft.setCursor(40, 60);
-    tft.println("Sampling n.: "+String(i)+"/"+String(NUM_SAMPLE_SAMPLING_READINGS)); 
-      
-    tft.print("ADC CH OUT: ");
-    tft.print(String(ADC_CH_VOLTAGE.chr));
-    tft.println(" Volt");
-    tft.print("ADC CH READ: ");
-    tft.print(String(adc_ch_measured_voltage.chr));
-    tft.println(" Volt");
-    tft.print("Calc. E.R.: ");
-    tft.print(String(adc_ch_calcukated_e_resistance.chr));
-    tft.println("  Ohm");
-
-    measurements [measurements_current_pos][i][0]= (char*) rtc.getDateTime(true).c_str();
-    measurements [measurements_current_pos][i][1]=adc_ch_analogRead_raw.chr;
-    measurements [measurements_current_pos][i][2]=ADC_CH_VOLTAGE.chr;
-    measurements [measurements_current_pos][i][3]=adc_ch_measured_voltage.chr;
-    measurements [measurements_current_pos][i][4]=adc_ch_calcukated_e_resistance.chr;
+    // SAMPLING_READING POS,  SENSOR POS, MEASUREMENTS_BUFFER_ POS
+    measurements [i][0][measurements_current_pos]= (char*) rtc.getDateTime(true).c_str();
+    measurements [i][1][measurements_current_pos]= (char*) String(adc_ch_analogRead_raw.f).c_str();
+    measurements [i][2][measurements_current_pos]= (char*) String(ADC_CH_VOLTAGE.f).c_str();
+    measurements [i][3][measurements_current_pos]= (char*) String(adc_ch_measured_voltage.f).c_str();
+    measurements [i][4][measurements_current_pos]= (char*) String(adc_ch_calcukated_e_resistance.f).c_str();
     
     onBoardSensorMeasurements(i);
-    
+
     delay(SAMPLING_INTERVAL);
 
     if (adc_ch_analogRead_raw.f==0) {
         mserial.clearLCDscreen();
         tft.setTextColor(TFT_WHITE);
         tft.setCursor(30, 60);
-        tft.println("Zero value measur. found");
+        tft.println("Zero val. measurement");
         tft.println("consider change ref. R");
-        tft.println("jumoer pin on the Smart DAQ");
+        tft.println("dip switch on the DAQ");
 
-        mserial.printStrln("Zero value measur. founda: "+String(adc_ch_analogRead_raw.chr));
+        mserial.printStrln("Zero value measur. founda: "+String(adc_ch_analogRead_raw.f));
         statusLED( (byte*)(const byte[]){LED_RED}, 100,2); 
 
         tft.setTextColor(TFT_BLACK);
         tft.setCursor(30, 60);
-        tft.println("Zero value measur. found");
+        tft.println("Zero val. measurement");
         tft.println("consider change ref. R");
-        tft.println("jumoer pin on the Smart DAQ");
+        tft.println("dip switch on the DAQ");
         tft.setTextColor(TFT_WHITE);
     }
   }
-  // ToDo: slection of keeping POWER ON 
-  digitalWrite(ENABLE_3v3_PWR,HIGH); //disbale 3v3 
 
+  // ToDo: Keep ON or turn it off at the end of measurments
+  // Enable power to ADC and I2C external plugs
+  digitalWrite(ENABLE_3v3_PWR,HIGH); 
+  
   float adc_ch_measured_voltage_avg = adc_ch_measured_voltage_Sum / num_valid_sample_measurements_made;
   float adc_ch_calcukated_e_resistance_avg = adc_ch_calcukated_e_resistance_sum / num_valid_sample_measurements_made;
   
@@ -1783,18 +1791,20 @@ void ReadExternalAnalogData() {
   mserial.clearLCDscreen();
   mserial.setOutput2LCD(true);
   mserial.printStrln("");
-  mserial.printStrln("Total measurements: ");
+  mserial.printStrln("Total data samples: ");
   mserial.printStrln(String(num_valid_sample_measurements_made));
-
-  mserial.printStrln("Average ADC CH voltage: ");
+  mserial.printStrln("");
+  mserial.printStrln("Avg ADC CH volt.: ");
   mserial.printStr(String(adc_ch_measured_voltage_avg));
-  mserial.printStrln(" Volt")
-  ;
+  mserial.printStrln(" Volt");
+  mserial.printStrln("");
   mserial.printStrln("Average ADC CH ER: ");
   mserial.printStr(String(adc_ch_calcukated_e_resistance_avg));
   mserial.printStrln(" Ohm");
   delay(5000);
   mserial.clearLCDscreen();
+  tft.pushImage (TFT_CURRENT_X_RES-75,0,16,18,MEASURE_GREY_ICON_16BIT_BITMAP);
+
 }
 
 
@@ -1809,6 +1819,7 @@ void startSHT(bool result) {
       NUMBER_OF_SENSORS=NUMBER_OF_SENSORS+1;
       SHTsensorAvail = true;
       statusLED( (byte*)(const byte[]){LED_GREEN}, 100,1); 
+      NUMBER_OF_SENSORS_DATA_VALUES = NUMBER_OF_SENSORS_DATA_VALUES + 2;
     }else{
       SHTsensorAvail = false;
       statusLED( (byte*)(const byte[]){LED_RED}, 100,1); 
@@ -1897,7 +1908,6 @@ bool connect2WIFInetowrk(){
   if (WiFi.status() == WL_CONNECTED)
     return true;
 
-
   WiFi.disconnect(true);
   WiFi.mode(WIFI_STA); //  Station Mode   
   mserial.printStrln("Connecting to the WIFI Network: \"" + String(WIFI_SSID)+"\"");
@@ -1908,23 +1918,25 @@ bool connect2WIFInetowrk(){
   
   while (statusWIFI != WL_CONNECTED) {
       if(CURRENT_CLOCK_FREQUENCY < WIFI_FREQUENCY)
-        mserial.println("MCU clock frequency below min for WIFI connectivity");
+        mserial.printStrln("MCU clock frequency below min for WIFI connectivity");
         break;
 
-    statusLED( (byte*)(const byte[]){LED_BLUE}, 100,500); 
     if (cnt == 0) {
           mserial.printStrln("WIFI Begin...");
           tftPrintText(0,160,"Starting WiFi...",2,"center", TFT_WHITE, true); 
           WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
           delay(300);
       }
+    statusLED( (byte*)(const byte[]){LED_BLUE}, 100,0.300);
+    turnOffLedAll();
+    delay(0.300);
     statusWIFI = WiFi.waitForConnectResult();
     
     if(WiFi_prev_state != statusWIFI){
         WiFi_prev_state = statusWIFI;
         mserial.printStrln("("+String(statusWIFI)+"): "+get_wifi_status(statusWIFI));
         tftPrintText(0,160, (char*) String(get_wifi_status(statusWIFI)).c_str(),2,"center", TFT_WHITE, true); 
-        statusLED( (byte*)(const byte[]){LED_RED, LED_GREEN}, 100,1000); 
+        statusLED( (byte*)(const byte[]){LED_RED, LED_GREEN}, 100,1); 
     }
 
     mserial.printStr(".");
@@ -1957,11 +1969,14 @@ String get_wifi_status(int status){
         case WL_SCAN_COMPLETED:
         return "WL_SCAN_COMPLETED(2): Successful connection is established";
         case WL_NO_SSID_AVAIL:
-        return "WL_NO_SSID_AVAIL(1): SSID cannot be reached";
+          statusLED( (byte*)(const byte[]){LED_RED}, 100, 1);
+          return "SSID cannot be reached";
         case WL_CONNECT_FAILED:
-        return "WL_CONNECT_FAILED (4): Password is incorrect";
+          statusLED( (byte*)(const byte[]){LED_RED}, 100, 1);
+          return "WL_CONNECT_FAILED (4): Password is incorrect";
         case WL_CONNECTION_LOST:
-        return "WL_CONNECTION_LOST (5)";
+          blinkStatusLED( (byte*)(const byte[]){LED_BLUE}, 100, 0.300, 5);
+          return "WL_CONNECTION_LOST (5)";
         case WL_CONNECTED:
         return "WL_CONNECTED (3)";
         case WL_DISCONNECTED:
@@ -2018,12 +2033,13 @@ void WiFiEvent(WiFiEvent_t event) {
     case SYSTEM_EVENT_STA_START:
       tft.pushImage (TFT_CURRENT_X_RES-50,0,25,18,WIFI_ORANGE_ICON_16BIT_BITMAP);
       mserial.printStrln("WiFi client started");
-      tftPrintText(0,160,"WiFi client started",2,"center", TFT_WHITE, true); 
+      tftPrintText(0,160,"WiFi client started",1,"center", TFT_WHITE, true); 
+      tftPrintText(0,160," ",2,"center", TFT_BLACK, true); 
       break;
     case SYSTEM_EVENT_STA_STOP:
       mserial.printStrln("WiFi clients stopped");
       tftPrintText(0,160,"WiFi clients stopped",2,"center", TFT_WHITE, true); 
-        break;
+      break;
     case SYSTEM_EVENT_STA_CONNECTED:
       mserial.printStrln("Connected to access point");
       tftPrintText(0,160,"Connected to access point",2,"center", TFT_WHITE, true); 
@@ -2036,8 +2052,8 @@ void WiFiEvent(WiFiEvent_t event) {
       xSemaphoreGive(MemLockSemaphoreWIFI); // exit critical section
       mserial.printStrln("Disconnected from WiFi access point");
       tftPrintText(0,160,"Disconnected from WiFi AP",2,"center", TFT_WHITE, true); 
-      tft.pushImage (TFT_CURRENT_X_RES-50,0,25,18,WIFI_GREY_ICON_16BIT_BITMAP);
-      //WiFi.begin(ssid, password);
+      tft.pushImage(TFT_CURRENT_X_RES-50,0,25,18,WIFI_GREY_ICON_16BIT_BITMAP);
+      delay(100);
       break;
     case SYSTEM_EVENT_STA_AUTHMODE_CHANGE:
       mserial.printStrln("Authentication mode of access point has changed");
