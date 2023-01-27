@@ -467,7 +467,7 @@ class mSerial {
 
     void clearLCDscreen(){
           this->tftLine=1;
-          tft.setCursor(0, 20);
+          tft.setCursor(0, 0);
           tft.fillScreen(TFT_BLACK);
     }
 
@@ -789,13 +789,13 @@ See more http://henrysbench.capnfatz.com/henrys-bench/arduino-adafruit-gfx-libra
     delay(2000);
   }
   
-  tftPrintText(0,160, (char*)String("PSRAM "+String(ESP.getPsramSize()/8/1024/1024)+"Mb").c_str(),2,"center", TFT_WHITE, true);
+  tftPrintText(0,160, (char*)String("PSRAM "+String(ESP.getPsramSize()/1024/1024)+"Mb").c_str(),2,"center", TFT_WHITE, true);
   delay(2000);
   
-  mserial.printStrln("Total heap: "+String(ESP.getHeapSize()/8/1024/1024)+"Mb");
-  mserial.printStrln("Free heap: "+String(ESP.getFreeHeap()/8/1024/1024)+"Mb");
-  mserial.printStrln("Total PSRAM: "+String(ESP.getPsramSize()/8/1024/1024)+"Mb");
-  mserial.printStrln("Free PSRAM: "+String(ESP.getFreePsram()/8/1024/1024)+"Mb");
+  mserial.printStrln("Total heap: "+String(ESP.getHeapSize()/1024/1024)+"Mb");
+  mserial.printStrln("Free heap: "+String(ESP.getFreeHeap()/1024/1024)+"Mb");
+  mserial.printStrln("Total PSRAM: "+String(ESP.getPsramSize()/1024/1024)+"Mb");
+  mserial.printStrln("Free PSRAM: "+String(ESP.getFreePsram()/1024/1024)+"Mb");
 
   mserial.printStrln("set RTC clock to firmware Date & Time ...");  
   rtc.setTimeStruct(CompileDateTime(__DATE__, __TIME__)); 
@@ -869,7 +869,7 @@ See more http://henrysbench.capnfatz.com/henrys-bench/arduino-adafruit-gfx-libra
     mserial.printStrln(" bytes");
 
     mserial.printStrln("");
-    tftPrintText(0,160,(char*) String(String(roundf(totalBytes/8/1024/1024))+" / "+ String(roundf(freeBytes/8/1024/1024))+" Mb free").c_str(),2,"center", TFT_WHITE, true); 
+    tftPrintText(0,160,(char*) String(String(roundf(totalBytes/1024/1024))+" / "+ String(roundf(freeBytes/1024/1024))+" Mb free").c_str(),2,"center", TFT_WHITE, true); 
     delay(1000);
 
     mserial.printStrln("Listing Files and Directories: ");
@@ -1695,41 +1695,32 @@ void getLSM6DS3sensorData(int i) {
 //***************************************************
 void ReadExternalAnalogData() {
 
-    union Data adc_ch_analogRead_raw; 
+  union Data adc_ch_analogRead_raw; 
   union Data ADC_CH_VOLTAGE; 
   union Data adc_ch_measured_voltage; 
   union Data adc_ch_calcukated_e_resistance; 
 
   float adc_ch_measured_voltage_Sum = 0;
   float adc_ch_calcukated_e_resistance_sum = 0;
+  int num_valid_sample_measurements_made = 0;
 
+  mserial.setOutput2LCD(false);
+    
+  //tft.pushImage (10,65,250,87,AEONLABS_16BIT_BITMAP_LOGO);
+
+  tft.fillRect(10, 65 , 250, 87, TFT_BLACK);
   tft.pushImage (TFT_CURRENT_X_RES-75,0,16,18,MEASURE_ICON_16BIT_BITMAP);
+  
   // ToDo: Keep ON or turn it off at the end of measurments
   // Enable power to ADC and I2C external plugs
   digitalWrite(ENABLE_3v3_PWR,HIGH); //enable 3v3
 
-  int num_valid_sample_measurements_made = 0;
-  mserial.clearLCDscreen();
-  mserial.printStrln(String(NUM_SAMPLE_SAMPLING_READINGS)+ " measurements");
-  mserial.printStrln("samples requested ");
-  mserial.printStrln(" ");
-
-  mserial.printStrln("Sampling interval (ms)");
-  mserial.printStrln(String(SAMPLING_INTERVAL));
-  mserial.printStrln(" ");
-  
   ADC_CH_VOLTAGE.f= analogRead(EXT_IO_ANALOG_PIN)/MCU_ADC_DIVIDER * MCU_VDD;
-  mserial.printStr("ADC CH OUT: ");
-  mserial.printStr(String(ADC_CH_VOLTAGE.f));
-  mserial.printStrln(" Volt");
+  tftPrintText(0,25,(char*) String(String(NUM_SAMPLE_SAMPLING_READINGS)+ " measurements\nsamples requested\n\nSampling interval (ms)\n"+String(SAMPLING_INTERVAL)+"\n\nADC CH OUT: "+String(ADC_CH_VOLTAGE.f)+" Volt").c_str(),2,"left", TFT_WHITE, true); 
   delay(1000);
 
-  mserial.clearLCDscreen();
-  mserial.setOutput2LCD(false);
-
-  byte count = 0;
+  int zerosCount=0;
   for (byte i = 0; i < NUM_SAMPLE_SAMPLING_READINGS; i++) {
-          
     mserial.printStrln("");
     mserial.printStr(String(i));
     mserial.printStr(": ");
@@ -1766,23 +1757,16 @@ void ReadExternalAnalogData() {
     delay(SAMPLING_INTERVAL);
 
     if (adc_ch_analogRead_raw.f==0) {
-        mserial.clearLCDscreen();
-        tft.setTextColor(TFT_WHITE);
-        tft.setCursor(30, 60);
-        tft.println("Zero value found");
-        tft.println("consider chg ref. R");
-        tft.println(" switch on the DAQ");
-
-        mserial.printStrln("Zero value measur. founda: "+String(adc_ch_analogRead_raw.f));
-        statusLED( (byte*)(const byte[]){LED_RED}, 100,2); 
-
-        tft.setTextColor(TFT_BLACK);
-        tft.setCursor(30, 60);
-        tft.println("Zero value found");
-        tft.println("consider chg ref. R");
-        tft.println(" switch on the DAQ");
-        tft.setTextColor(TFT_WHITE);
+      zerosCount++;
     }
+  }
+
+  tft.pushImage (TFT_CURRENT_X_RES-75,0,16,18,MEASURE_GREY_ICON_16BIT_BITMAP);
+
+  if (zerosCount>0) {
+    tftPrintText(0,25,(char*) String(String(zerosCount)+" zero(s) found\nconsider chg ref. R\nswitch on the DAQ" ).c_str(),2,"left", TFT_WHITE, true); 
+    mserial.printStrln("Zero value measur. founda: "+String(adc_ch_analogRead_raw.f));
+    statusLED( (byte*)(const byte[]){LED_RED}, 100,2); 
   }
 
   // ToDo: Keep ON or turn it off at the end of measurments
@@ -1792,24 +1776,9 @@ void ReadExternalAnalogData() {
   float adc_ch_measured_voltage_avg = adc_ch_measured_voltage_Sum / num_valid_sample_measurements_made;
   float adc_ch_calcukated_e_resistance_avg = adc_ch_calcukated_e_resistance_sum / num_valid_sample_measurements_made;
   
-  tft.setTextColor(TFT_WHITE);
-  mserial.clearLCDscreen();
-  mserial.setOutput2LCD(true);
-  mserial.printStrln("");
-  mserial.printStrln("Total data samples: ");
-  mserial.printStrln(String(num_valid_sample_measurements_made));
-  mserial.printStrln("");
-  mserial.printStrln("Avg ADC CH volt.: ");
-  mserial.printStr(String(adc_ch_measured_voltage_avg));
-  mserial.printStrln(" Volt");
-  mserial.printStrln("");
-  mserial.printStrln("Average ADC CH ER: ");
-  mserial.printStr(String(adc_ch_calcukated_e_resistance_avg));
-  mserial.printStrln(" Ohm");
-  delay(5000);
-  mserial.clearLCDscreen();
-  tft.pushImage (TFT_CURRENT_X_RES-75,0,16,18,MEASURE_GREY_ICON_16BIT_BITMAP);
+  tftPrintText(0,25,(char*) String("Total data samples: \n"+String(num_valid_sample_measurements_made)+"\n"+"Avg ADC CH volt.:\n"+String(adc_ch_measured_voltage_avg)+"\n Volt\n\nAverage ADC CH ER:\n"+String(adc_ch_calcukated_e_resistance_avg)+" Ohm"  ).c_str(),2,"left", TFT_WHITE, true); 
 
+  delay(5000);
 }
 
 
