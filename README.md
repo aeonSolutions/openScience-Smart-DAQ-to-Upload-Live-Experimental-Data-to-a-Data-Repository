@@ -22,6 +22,8 @@ https://ssrn.com/abstract=4210504 . See the [WIKI](https://github.com/aeonSoluti
 
 **Most recent update**
 
+The LDAD is officially up and running!  Well the very first  release candidate of the firmware. Now, on this code revision,  electrical resistance and measurement voltage are correctly measured. And this means the smart DAQ is now ready to be installed on all specimens in a experimental campaign before configure with the correct calibration curves (temperature compensated). From now on all changes will be towards improving usability and user experience in a laboratory.
+
 The C firmware code now includes PSRAM support for temporary storage of  measurments data (buffer). See [this](https://stackoverflow.com/questions/75004548/multidimensional-char-string-array-initialization-and-usage-for-esp32-mcus-with/75004549#75004549) stack overflow question for more info. The 1.69" Display is now also available and a standard layout design and configuration is now shown when the smart DAQ is powered.
 
 A new PCB design layout made to fit a well known waterproof acrylic enclosure, is available with new DAQ capabilities. This new PCB design dimensions is the one selected to move forward on this sci. researh project.  See photos below.
