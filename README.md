@@ -127,25 +127,20 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
   -  1x 12 to 16bit (oversampling & digitization) digital terminal connector
   -  1x 12 to 16bit (oversampling & digitization) analogue terminal connector with manual scale selection ohmmeter via dip switch selection
 
-<br>
-
-
-**Smart PCB design wiht a built in 1.69" LCD TFT IPS display**
-
-Another version of this smart DAQ will be available next December that includes built in a 1.69" LCD TFT IPS display with ability to display LIVE experimental data being collected.. Stay tuned for updates. 
 
 <br>
 <br>
 
  **In real life this smart DAQ is able to:**
-- connect to all kinds of 3V to 5V Digital sensors;
+- connect to all kinds of 3.3V digital sensors;
 - connect to all kinds of sensors compatible with the I2C protocol. (max 118 sensors simultaneously)
 - measure voltage in the range of  [0;3.3V]
 - measure electrical resistance [0; 10^6] Ohm 
 - do temperature and humidity compensation on all measurements 
 - has a voltage reference sensor for improved accuracy on ADC measurements  
 - has a motion sensor to know if anyone moved a specimen during an experiment
-
+- can be powered using 4.2V LiPo batteries
+- 
 <br>
 <br>
 
