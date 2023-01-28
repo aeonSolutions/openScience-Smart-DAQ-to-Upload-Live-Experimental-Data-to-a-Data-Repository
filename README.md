@@ -14,7 +14,7 @@
 
 This Sci. research discusses an innovative proof-of-concept method for management of collected experimental data in real-time and compatible with any open environment. The proposed proof-of-concept smart DAQ device has the minimum hardware characteristics to handle data measurements collection from sensors locally connected to it, store it on a local CSV or SQLite database file and finally connect and synchronize data measurements collected with a data repository hosted remotely on a Dataverse. 
 
-This paper is currently being written, in an open enviroment format. Available as a prePrint draft document at Elsevier's SSRN platform.
+A paper is currently being written, in an open enviroment format. Available as a prePrint draft document at Elsevier's SSRN platform.
 https://ssrn.com/abstract=4210504 . See the [WIKI](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki) for how this kind of smart electronics can be connected for fail safe data and redundancy (and as a IoE DAQ device) on any experimental setup. 
 
 <br>
