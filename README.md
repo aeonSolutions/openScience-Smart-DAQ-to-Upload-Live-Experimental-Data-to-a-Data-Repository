@@ -43,8 +43,8 @@ This project is waiting for parts to arrive from aliExpress and for fabrication 
   - Calc MD5 hash of the dataset file yo compare with json result on upload 
   - OTA firmware update
   - Remove lock on a dataset (by an admin)
-  - Validate Json received on a new dataset upload
-  - Load dataset repository metadata
+  - ~~Validate Json received on a new dataset upload~~
+  - ~~Load dataset repository metadata~~
   - Output board startup diagnostics serial stream to a Bluetooth or WIFI data stream
   - accept GBRL like setup and config $ commands.
   - SQLite database to store measured experumental data and upload to a dataverse repository
