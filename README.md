@@ -136,7 +136,6 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
 - has a voltage reference sensor for improved accuracy on ADC measurements  
 - has a motion sensor to know if anyone moved a specimen during an experiment
 - can be powered using 4.2V LiPo batteries
-- 
 <br>
 <br>
 
