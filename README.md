@@ -20,6 +20,12 @@ https://ssrn.com/abstract=4210504 . See the [WIKI](https://github.com/aeonSoluti
 <br>
 <br>
 
+**Get a Notification on every PCB update**
+
+You can fill in your [mail here (Google form)](https://docs.google.com/forms/d/e/1FAIpQLScErMgQYRdA-umvCjvTPPrCO7Lg1QYowTxb7vfa8cTfrcPEAA/viewform?usp=pp_url) and I'll send a reminder when a new PCB prototype is made available here or a new revision for an existing PCB. Stay tuned!
+
+<br>
+
 **Most recent update**
 
 The LDAD is officially up and running!  Well, the very first release candidate of the firmware. Now, on this code revision,  electrical resistance and measurement voltage are correctly measured by the built-in multimeter. And this means the smart DAQ is now ready to be installed on all specimens in an experimental campaign before configuration with the correct calibration curves (temperature compensated). From now on all changes will be towards improving usability and user experience in a laboratory.
