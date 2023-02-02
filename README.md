@@ -32,7 +32,7 @@ The LDAD is officially up and running!  Well, the very first release candidate o
 
 The C firmware code now includes SRAM support for temporary storage of measured data in RAM up to 9175 samplings (for the 64Mbit IC) before flushing it into the onboard Flash storage. See [this](https://stackoverflow.com/questions/75004548/multidimensional-char-string-array-initialization-and-usage-for-esp32-mcus-with/75004549#75004549) stack overflow question for more info. The [1.69" Display](https://s.click.aliexpress.com/e/_DklsWrB) is now also available and a standard layout design and configuration is now shown when the smart DAQ is powered.
 
-A new PCB design layout made to fit a well known waterproof acrylic enclosure, is available with new DAQ capabilities. This new PCB design dimensions is the one selected to move forward on this sci. researh project.  See photos below.
+A new PCB design layout made to fit a well known [waterproof acrylic enclosure](https://s.click.aliexpress.com/e/_Dmudkjt), is available with new DAQ capabilities. This new PCB design dimensions is the one selected to move forward on this sci. researh project.  See photos below.
 
 <br>
 <br>
