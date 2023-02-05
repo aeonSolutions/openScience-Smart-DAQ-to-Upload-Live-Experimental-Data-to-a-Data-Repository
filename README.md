@@ -14,14 +14,14 @@
 
 This Sci. research presents an innovative method for experimental data acquisiiton and management of collected data in real-time and compatible with any open environment. The proposed smart DAQ device prototype has the minimum hardware characteristics to handle data measurements collection from sensors locally connected to it, store it on a local CSV or SQLite database file and finally connect and synchronize data measurements collected with a data repository hosted remotely on a Dataverse. 
 
-These Smart DAQ devices are of type "Internet of Everything" (IoE) Smart Devies and are able to connect amoung each other using swarm Inteligence. The main purpose is increase data integrity and trustworthyness among DAQ devies connected and on all experimental data collected during an experiment or research project.
+These Smart DAQ devices are of type "Internet of Everything" (IoE) Smart Devices and are able to connect with each other using swarm intelligence. The main purpose is to increase data integrity and trustworthiness among DAQ devices connected and on all experimental data collected during an experiment or research project.
 
 
-Experimental data collected is stored in a block format, meaning, a single block stores a individual piece of experimental data written to it, the hash of the previous block, and its own hash. 
+Experimental data collected is stored in a block format, meaning, a single block stores an individual piece of experimental data written to it, the hash of the previous block, and its own hash. 
 
 ![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/block.png)
 
-This is the main principle of operation behaind blockchian technologies, to make it really difficult to modify experimental data once it’s written to a block since hashes are internconencted ammong each other since the beginning of an experiement, experimental campaign and even since the begining of a research project. Every block written references the hash of its previous block. This way, any modification to the data stored in a block, the hash it stores changes forcing following blocks to also indicate a change (since they must have the hash of the previous block). To modify a block is needed a rewrite on all blocks.
+This is the main principle of operation behind blockchain technologies, to make it really difficult to modify experimental data once it’s written to a block since hashes are interconnected among each other since the beginning of an experiment, experimental campaign, and even since the beginning of a research project. Every block written references the hash of its previous block. This way, for any modification to the data stored in a block, the hash it stores changes forcing the following blocks to also indicate a change (since they must have the hash of the previous block). To modify a block is needed a rewrite on all blocks.
 
 ![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/blockchain.png)
 
