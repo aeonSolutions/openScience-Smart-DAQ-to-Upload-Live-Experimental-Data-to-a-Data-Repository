@@ -14,7 +14,7 @@
 
 This Sci. research presents an innovative method for experimental data acquisiiton and management of collected data in real-time and compatible with any open environment. The proposed smart DAQ device prototype has the minimum hardware characteristics to handle data measurements collection from sensors locally connected to it, store it on a local CSV or SQLite database file and finally connect and synchronize data measurements collected with a data repository hosted remotely on a Dataverse. 
 
-These Smart DAQ devices are able to connect amoung each other using swarm Inteligence with the purpose of increase data integrity and trustworthyness on all experimental data collected during an experiment or research project.
+These Smart DAQ devices are of type "Internet of Everything" (IoE) Smart Devies and are able to connect amoung each other using swarm Inteligence. The main purpose is increase data integrity and trustworthyness among DAQ devies connected and on all experimental data collected during an experiment or research project.
 
 ![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/block.png)
 
