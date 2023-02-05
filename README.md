@@ -21,7 +21,7 @@ Experimental data collected is stored in a block format, meaning, a single block
 
 ![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/block.png)
 
-This is the main principle of operation behaind blockchian technologies, to make it really difficult to modify experimental data once it’s written to a block since hashes are internconencted ammong each other since the begin of an experiemnt, experimental campaign and even since the begining of a research project. Every block written references the hash of its previous block. This way, any modification to data stored in a block, its hash it stores changes forcing the following blocks to also indicate a change (because it must have the hash of the previous block). To modify a block is needed a rewrite to all blocks.
+This is the main principle of operation behaind blockchian technologies, to make it really difficult to modify experimental data once it’s written to a block since hashes are internconencted ammong each other since the beginning of an experiement, experimental campaign and even since the begining of a research project. Every block written references the hash of its previous block. This way, any modification to the data stored in a block, the hash it stores changes forcing following blocks to also indicate a change (since they must have the hash of the previous block). To modify a block is needed a rewrite on all blocks.
 
 ![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/blockchain.png)
 
