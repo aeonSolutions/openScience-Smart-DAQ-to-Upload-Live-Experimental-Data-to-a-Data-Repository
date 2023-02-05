@@ -157,7 +157,7 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
 <br>
 <br>
 
- **In real life this smart DAQ is able to:**
+ **In everyday science at a laboratory this smart DAQ is able to:**
 - connect to all kinds of 3.3V digital sensors;
 - connect to all kinds of sensors compatible with the I2C protocol. (max 118 sensors simultaneously)
 - measure voltage in the range of  [0;3.3V]
