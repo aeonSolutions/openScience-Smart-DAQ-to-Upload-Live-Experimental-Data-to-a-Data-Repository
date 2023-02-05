@@ -22,11 +22,15 @@ These Smart DAQ devices are of type "Internet of Everything" (IoE) Smart Devices
 
 Experimental data collected is stored in a block format, meaning, a single block stores an individual piece of experimental data written to it, the hash of the previous block, and its own hash. 
 
-![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/block.png)
+<p align="center">
+  <img width="600" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/block.png">
+</p>
 
 This is the main principle of operation behind blockchain technologies, to make it really difficult to modify experimental data once it’s written to a block since hashes are interconnected among each other since the beginning of an experiment, experimental campaign, and even since the beginning of a research project. Every block written references the hash of its previous block. This way, for any modification to the data stored in a block, the hash it stores changes forcing the following blocks to also indicate a change (since they must have the hash of the previous block). To modify a block is needed a rewrite on all blocks.
 
-![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/blockchain.png)
+<p align="center">
+  <img width="600" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/blockchain.png">
+</p>
 
 **In everyday science at a labortory these Smart DAQ devices are able to connect among each other, in a swarm-like manner, and when doing so, increase experimental data trustworthiness and authenticity in an experiment part of a research project or experimental campaign.** Setting up a Swarm network of smart DAQ devices not only increases the quality of research results, by tagging each individual piece of experimental data collected from each individual sensor, with a unique data fingerprint ID (hash) at the exact same moment of data collection, broadcast it to other nearby smart DAQ devices and finally do data upload to a repository where a new, additional data fingerprint is added to existing ones (generated locally). This way is maintained and guaranteed data collection integrity locally, from the laboratory, until the moment is received and stored in a data repository in a cloud server.     
 
