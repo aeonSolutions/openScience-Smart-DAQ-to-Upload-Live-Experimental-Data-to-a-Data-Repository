@@ -179,7 +179,7 @@ This is the repository for the 12bit Smart DAQ Device with unique data fingerpri
   <img width="600" src="https://github.com/aeonSolutions/-openScienceResearch-12bit-LCD-1.69-TFT-Smart-DAQ-Device-with-unique-data-fingerprint/blob/main/Designs/smart_daq_front.png">
 </p>
 
-=====================================================================================
+<br>
 
 ## [Open Science: 12bit Smart DAQ Device with unique data fingerprint](https://github.com/aeonSolutions/openScienceResearch-12bit-Smart-DAQ-Device-with-unique-data-fingerprint-)
 
@@ -189,9 +189,6 @@ This is the repository for the 12bit Smart DAQ Device with unique data fingerpri
   <img width="600" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/LDAD%20fron.png">
 </p>
 
-=====================================================================================
-
-(November pcb revision)
 <br>
 <br>
 
