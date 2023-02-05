@@ -16,9 +16,14 @@ This Sci. research presents an innovative method for experimental data acquisiit
 
 These Smart DAQ devices are able to connect amoung each other using swarm Inteligence with the purpose of increase data integrity and trustworthyness on all experimental data collected during an experiment or research project.
 
+![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/block.png)
+
 Experimental data collected is stored in a block format, meaning, a single block stores a individual piece of experimental data written to it, the hash of the previous block, and its own hash. 
 
 It’s really difficult to change data once it’s written to a block because every block written to the blockchain references the hash of its previous block. This way, even if you lightly modify a block, its hash completely changes and so the following block will also have to change — because it must have the hash of the previous block — and so on for the following blocks. If you modify any block of the blockchain you must rewrite the whole chain.
+
+![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/blockchain.png)
+
 
 A paper is currently being written, in an open enviroment format. Available as a prePrint draft document at Elsevier's SSRN platform.
 https://ssrn.com/abstract=4210504 . See the [WIKI](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki) for how this kind of smart electronics can be connected for fail safe data and redundancy (and as a IoE DAQ device) on any experimental setup. 
