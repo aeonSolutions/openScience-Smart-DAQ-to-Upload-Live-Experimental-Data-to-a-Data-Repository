@@ -73,7 +73,11 @@ This project is waiting for parts to arrive from aliExpress and for fabrication 
   - SQLite database to store measured experumental data and upload to a dataverse repository
   - Swarm connectivity to other nearby Smart DAQ devices for experimental data redundancy and sharing (IoE - Internet of Everything). 
   - Blockchain like data storage and exchange of experimental data collected
-
+  - Experimental Data multiple Signing with unique Fingerprint ID requests to other Smart DAQ devices:
+    - from nearby devices on the same research project
+    - from nearby devices on the same Laboratory
+    - from nearby devices on the same campus
+    - from devices located elsewhere (on the internet) and available to do experimental data signing (obtained from a list of devices registered in a public server) 
 <br>
 
 **Smart DAQ setup and configuration**
