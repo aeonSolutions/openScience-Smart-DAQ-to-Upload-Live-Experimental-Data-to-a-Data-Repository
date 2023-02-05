@@ -26,7 +26,7 @@ This is the main principle of operation behind blockchain technologies, to make 
 
 ![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/blockchain.png)
 
-**In everyday science at a labortory these Smart DAQ devices are able to connect among each other, and when doing so, increase experimental data trustworthiness and authenticity in an experiment part of a research project or experimental campaign.** 
+**In everyday science at a labortory these Smart DAQ devices are able to connect among each other, in a swarm like manner, and when doing so, increase experimental data trustworthiness and authenticity in an experiment part of a research project or experimental campaign.** 
 
 A paper is currently being written, in an open-environment format. Available as a preprint draft document at Elsevier's SSRN platform. https://ssrn.com/abstract=4210504 . See the [WIKI](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki) for how this kind of smart electronics can be connected for fail-safe data and redundancy (and as an IoE DAQ device) on any experimental setup.
 <br>
