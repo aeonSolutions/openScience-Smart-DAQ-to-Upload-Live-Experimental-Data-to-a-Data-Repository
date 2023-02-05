@@ -65,6 +65,7 @@ This project is waiting for parts to arrive from aliExpress and for fabrication 
   - accept GBRL like setup and config $ commands.
   - SQLite database to store measured experumental data and upload to a dataverse repository
   - Swarm connectivity to other nearby Smart DAQ devices for experimental data redundancy and sharing (IoE - Internet of Everything). 
+  - Blockchain like data storage and exchange of experimental data collected
 
 <br>
 
