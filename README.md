@@ -177,7 +177,9 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
 
 This is the repository for the 12bit Smart DAQ Device with unique data fingerprint able to do experimental data upload to any data repository
  
-![](https://github.com/aeonSolutions/-openScienceResearch-12bit-LCD-1.69-TFT-Smart-DAQ-Device-with-unique-data-fingerprint/blob/main/Designs/smart_daq_front.png)
+<p align="center">
+  <img width="600" src="https://github.com/aeonSolutions/-openScienceResearch-12bit-LCD-1.69-TFT-Smart-DAQ-Device-with-unique-data-fingerprint/blob/main/Designs/smart_daq_front.png">
+</p>
 
 =====================================================================================
 
@@ -185,7 +187,9 @@ This is the repository for the 12bit Smart DAQ Device with unique data fingerpri
 
 This is the repository for the 12bit Smart DAQ Device with unique data fingerprint able to do experimental data upload to any data repository
  
-![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/LDAD%20fron.png)
+<p align="center">
+  <img width="600" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/LDAD%20fron.png">
+</p>
 
 =====================================================================================
 
@@ -197,8 +201,11 @@ This is the repository for the 12bit Smart DAQ Device with unique data fingerpri
 
 To test and validate proposed smart DAQ PCB electronics and its firmware as a solution for LIVE experimental data measurements on any test specimen part of a experimental campaign, This PCB electronics is being used to measure a predefined set of variables/parameters to further study several asphalt mixtures with known carbon fiber weight content in the asphalt matrix. Below is a YouTube link to an unedited short video showing one of the experimental setups.
 
-[![](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/youtube.png)](https://youtu.be/ycCJRiwse2M)
-
+<p align="center">
+  <a href="https://youtu.be/ycCJRiwse2M">
+   <img width="300" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/youtube.png">
+ </a>
+</p>
 
 <br />
 <br />
@@ -234,3 +241,5 @@ Liked any of my PCB KiCad Designs? Help and Support my open work to all by becom
 In return I will give a free PCB design in KiCad to all patreon supporters. To learn more go to patreon.com. Link below.
 
 [![](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/patreon_small.png)](https://www.patreon.com/ldad)
+
+
