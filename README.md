@@ -53,7 +53,6 @@ The C firmware code now includes SRAM support for temporary storage of measured 
 A new PCB design layout made to fit a well-known [waterproof acrylic enclosure](https://s.click.aliexpress.com/e/_Dmudkjt), is available with new DAQ capabilities. This new PCB design dimension is the one selected to move forward on this sci. research project. See the photos below.
 
 <br>
-<br>
 
 **Status**
 
