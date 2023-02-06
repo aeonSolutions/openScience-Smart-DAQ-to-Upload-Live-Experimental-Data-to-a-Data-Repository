@@ -16,7 +16,7 @@
 
 **The problem**
 
-Current scientific methods use traditional dataloggers (DAQ) for doing experimental data measurements and collection. This means collected data many times is stored in a paper format and most of the time in a conventional CSV excel data file. This is prone to errors and even worst forgery of experimental data. To this date, there are no dataloggers able to automate the experimental data acquisition in a scientific experiment, making it transparent and trustworthy beyond common critique found nowadays. 
+Current scientific methods use traditional dataloggers (DAQ) for doing experimental data measurements and collection. This means collected data many times is stored in a paper format, and most of the time in a conventional CSV excel data file. This is prone to errors and even worst forgery of experimental data. To this date, there are no dataloggers able to automate an experimental data acquisition in a scientific experiment, making it transparent and trustworthy beyond common critique found nowadays. 
 
 <br>
 
