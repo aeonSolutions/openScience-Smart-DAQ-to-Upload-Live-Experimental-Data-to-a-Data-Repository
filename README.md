@@ -12,6 +12,14 @@
 
 ## A Smart DAQ Device able to Upload Live Experimental Sensor Data to a Data Repository with a Unique Data Fingerprint ID
 
+<br>
+
+**The problem**
+Current scientific methods use traditional dataloggers (DAQ) for doing experimental data measurements and collection. This means collected data many times are stored in a paper format and most of the time in a conventional CSV excel data file. This is prone to errors and even worst forgery of experimental data. To this date, there are no dataloggers able to automate the experimental data acquisition in a scientific experiment, making it transparent and trustworthy beyond common critique found nowadays. 
+
+<br>
+
+**The idea**
 This Sci. research presents an innovative method for experimental data acquisition and management of collected data in real-time and is compatible with any open environment. The proposed smart DAQ device prototype has the minimum hardware characteristics to handle data measurements collected from sensors locally connected to it, store it on a local CSV or SQLite database file, and finally connect and synchronize data measurements collected with a data repository hosted remotely on a Dataverse.
 
 These Smart DAQ devices are of type "Internet of Everything" (IoE) Smart Devices and are able to connect with each other using swarm intelligence. The main purpose is to increase data integrity and trustworthiness among DAQ devices connected and on all experimental data collected during an experiment or research project.
