@@ -7,7 +7,10 @@
 <img src="https://us-central1-trackgit-analytics.cloudfunctions.net/token/ping/l95wbzce6vrs7sr48tbl" alt="trackgit-views" />
 </a>
 ![](https://views.whatilearened.today/views/github/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo.svg)
-
+[![Open Source Love svg1](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](#)
+[![GitHub Forks](https://img.shields.io/github/forks/aeonSolutions/Writing-Styles-Classification-Using-Stylometric-Analysis.svg?style=social&label=Fork&maxAge=2592000)](https://www.github.com/aeonSolutions/Writing-Styles-Classification-Using-Stylometric-Analysis/fork)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat&label=Contributions&colorA=red&colorB=black	)](#)
+[<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" data-canonical-src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="30" />](https://www.buymeacoffee.com/migueltomas)
 
 
 ## A Smart DAQ Device able to Upload Live Experimental Sensor Data to a Data Repository with a Unique Data Fingerprint ID
@@ -45,6 +48,7 @@ This is the main principle of operation behind blockchain technologies, to make 
 **In everyday science at a laboratory these Smart DAQ devices are able to connect among each other, in a swarm-like manner, and when doing so, increase experimental data trustworthiness and authenticity in an experiment part of a research project or experimental campaign.** Setting up a Swarm network of smart DAQ devices not only increases the quality of research results, by tagging each individual piece of experimental data collected from each individual sensor, with a unique data fingerprint ID (hash) at the exact same moment of data collection, broadcast it to other nearby smart DAQ devices and finally do data upload to a repository where a new, additional data fingerprint is added to existing ones (generated locally). This way is maintained and guaranteed data collection integrity locally, from the laboratory, until the moment is received and stored in a data repository in a cloud server.     
 
 A paper is currently being written, in an open-environment format. Available as a preprint draft document at Elsevier's SSRN platform. https://ssrn.com/abstract=4210504 . See the [WIKI](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki) for how this kind of smart electronics can be connected for fail-safe data and redundancy (and as an IoE DAQ device) on any experimental setup.
+I also have available [here](https://github.com/aeonSolutions/AeonLabs--Writing-Styles-Classification-Using-Stylometric-Analysis), an intelligent system that takes a single document and classifies different writing styles within the document using stylometric analysis, that is worth have a run in python. 
 <br>
 <br>
 
@@ -218,6 +222,15 @@ To test and validate proposed smart DAQ PCB electronics and its firmware as a so
 <br />
 <br />
 <br />
+## Author
+
+You can get in touch with me on my LinkedIn Profile:
+
+#### Miguel Tomas
+
+[![LinkedIn Link](https://img.shields.io/badge/Connect-Miguel--Tomas-blue.svg?logo=linkedin&longCache=true&style=social&label=Connect)](https://www.linkedin.com/in/migueltomas/)
+
+You can also follow my GitHub Profile to stay updated about my latest projects: [![GitHub Follow](https://img.shields.io/badge/Connect-Miguel--Tomas-blue.svg?logo=Github&longCache=true&style=social&label=Follow)](https://github.com/aeonSolutions)
 
 ______________________________________________________________________________________________________________________________
 ### License
@@ -233,7 +246,7 @@ ________________________________________________________________________________
 ### Be supportive of my dedication and work towards technology education and buy me a cup of coffee
 Buy me a cup of coffee, a slice of pizza or a book to help me study, eat and think new PCB design files.
 
-[<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" data-canonical-src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="70" />](https://www.buymeacoffee.com/migueltomas)
+[<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" data-canonical-src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="50" />](https://www.buymeacoffee.com/migueltomas)
 
 <br />
 <br />
