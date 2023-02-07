@@ -241,14 +241,12 @@ https://creativecommons.org/licenses/by-nc-sa/4.0/
 ______________________________________________________________________________________________________________________________
 
 <br />
-<br />
 
 ### Be supportive of my dedication and work towards technology education and buy me a cup of coffee
 Buy me a cup of coffee, a slice of pizza or a book to help me study, eat and think new PCB design files.
 
 [<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" data-canonical-src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="50" />](https://www.buymeacoffee.com/migueltomas)
 
-<br />
 <br />
 
 ### Make a donation on Paypal
