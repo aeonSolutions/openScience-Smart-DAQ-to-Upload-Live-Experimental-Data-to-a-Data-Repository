@@ -237,7 +237,7 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
 <br>
 <br>
 
-## PCB design files and circuit schematic
+## PCB Design Files and Circuit Schematic
 
 <br>
 
