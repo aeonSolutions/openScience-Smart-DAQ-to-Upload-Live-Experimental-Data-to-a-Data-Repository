@@ -138,6 +138,9 @@ https://guides.dataverse.org/en/5.12/api/client-libraries.html
 
 <br>
 
+| [<img src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/openAIRE_eu.png" alt="" width="80">](https://www.openaire.eu) | OpenAIRE's vision is
+to transform society through validated scientific knowledge and allow citizens, educators, funders, civil servants and industry to find ways to make science useful for themselves, their working environments and society.|
+|-------------|------|
 
 <br>
 
