@@ -131,6 +131,13 @@ https://guides.dataverse.org/en/5.12/api/client-libraries.html
 <br>
 <br>
 
+### Open Data Respsitories 
+
+| [<img src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/dataverse_org.png" alt="" width="150">](https://dataverse.org) | The Dataverse Project is an open source web application to share, preserve, cite, explore, and analyze research data. It facilitates making data available to others, and allows you to replicate others' work more easily. Researchers, journals, data authors, publishers, data distributors, and affiliated institutions all receive academic credit and web visibility. |
+|-------------|------|
+
+<br>
+
 ### OPEN Science Networks
 
 | [<img src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/RDA_org.png" alt="" width="150">](https://rd-alliance.org) | With over 10000 members from 145 countries, Research Data Alliance provides a neutral space where its members can come together to develop and adopt infrastructure that promotes data-sharing and data-driven research |
