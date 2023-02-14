@@ -131,6 +131,9 @@ https://guides.dataverse.org/en/5.12/api/client-libraries.html
 <br>
 <br>
 
+-----------------------------------------------------------------------------------
+<br>
+
 ### Open Data Respsitories 
 
 | [<img src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/dataverse_org.png" alt="" width="150">](https://dataverse.org) | The Dataverse Project is an open source web application to share, preserve, cite, explore, and analyze research data. It facilitates making data available to others, and allows you to replicate others' work more easily. Researchers, journals, data authors, publishers, data distributors, and affiliated institutions all receive academic credit and web visibility. |
@@ -158,6 +161,9 @@ https://guides.dataverse.org/en/5.12/api/client-libraries.html
 In the Wiki  the reader can find a [list of Open Science projects](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki) worth mention. And if you know one of interest, share it here too, for everyone to see and use.   
 
 <br>
+<br>
+
+-----------------------------------------------------------------------------------
 <br>
 
 ### Smart DAQ on a Laboratory Specimen
