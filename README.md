@@ -150,7 +150,7 @@ https://guides.dataverse.org/en/5.12/api/client-libraries.html
 
 <br>
 
-In the Wiki  the reader can find a [list of Open Science projects](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki) worth mention. And if you knoe one of interest, share it here too, for everyone to see and use.   
+In the Wiki  the reader can find a [list of Open Science projects](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki) worth mention. And if you know one of interest, share it here too, for everyone to see and use.   
 
 <br>
 <br>
