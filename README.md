@@ -142,6 +142,7 @@ https://guides.dataverse.org/en/5.12/api/client-libraries.html
 |-------------|------|
 
 <br>
+
 ### Smart DAQ on a laboratory specimen
 
 <p align="center">
@@ -157,6 +158,16 @@ On the photo above the smart DAQ is installed on an acrylic case and screwed wit
 </p>
 
 On the photo above is one of my many specimens I purposely fabricated to research self-sensing properties of a asphalt mixed with a known content of carbon fibers. This is a 10cm cylinder specimen and on the top is already setup my own design smart #DAQ (get it here on my GitHub ) with ability do upload LIVE experimental data to a #dataverse.
+
+**Proof of Concept**
+
+To test and validate proposed smart DAQ PCB electronics and its firmware as a solution for LIVE experimental data measurements on any test specimen part of a experimental campaign, This PCB electronics is being used to measure a predefined set of variables/parameters to further study several asphalt mixtures with known carbon fiber weight content in the asphalt matrix. Below is a YouTube link to an unedited short video showing one of the experimental setups.
+
+<p align="center">
+  <a href="https://youtu.be/ycCJRiwse2M">
+   <img width="600" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/youtube.png">
+ </a>
+</p>
 
 <br>
 <br>
@@ -224,19 +235,6 @@ This is the repository for the 12bit Smart DAQ Device with unique data fingerpri
 <br>
 <br>
 
-## Proof of Concept
-
-To test and validate proposed smart DAQ PCB electronics and its firmware as a solution for LIVE experimental data measurements on any test specimen part of a experimental campaign, This PCB electronics is being used to measure a predefined set of variables/parameters to further study several asphalt mixtures with known carbon fiber weight content in the asphalt matrix. Below is a YouTube link to an unedited short video showing one of the experimental setups.
-
-<p align="center">
-  <a href="https://youtu.be/ycCJRiwse2M">
-   <img width="600" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/youtube.png">
- </a>
-</p>
-
-<br />
-<br />
-<br />
 ## Author
 
 You can get in touch with me on my LinkedIn Profile:
