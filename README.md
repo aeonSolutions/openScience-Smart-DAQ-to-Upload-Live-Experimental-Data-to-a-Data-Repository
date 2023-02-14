@@ -133,7 +133,7 @@ https://guides.dataverse.org/en/5.12/api/client-libraries.html
 
 ### OPEN Science Networks
 
-| [<img src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/RDA_org.png" alt="" width="150">](https://rd-alliance.org) | With over 10000 members from 145 countries, Research Dat Alliance provides a neutral space where its members can come together to develop and adopt infrastructure that promotes data-sharing and data-driven research |
+| [<img src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/RDA_org.png" alt="" width="150">](https://rd-alliance.org) | With over 10000 members from 145 countries, Research Data Alliance provides a neutral space where its members can come together to develop and adopt infrastructure that promotes data-sharing and data-driven research |
 |-------------|------|
 
 <br>
@@ -142,6 +142,7 @@ https://guides.dataverse.org/en/5.12/api/client-libraries.html
 |-------------|------|
 
 <br>
+### Smart DAQ on a laboratory specimen
 
 <p align="center">
   <img width="600" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/12bitSmartDAQ2023january_2.jpeg">
