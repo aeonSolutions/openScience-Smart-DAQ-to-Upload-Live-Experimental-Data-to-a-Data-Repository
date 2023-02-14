@@ -239,6 +239,8 @@ The hardware specifications for the 12bit pcb with dimensions of 23.5x43.5mm are
 
 ## PCB design files and circuit schematic
 
+<br>
+
 ### [Open Science: 12bit Smart DAQ Device with unique data fingerprint and a 1.69" TFT LCD](https://github.com/aeonSolutions/-openScienceResearch-12bit-LCD-1.69-TFT-Smart-DAQ-Device-with-unique-data-fingerprint)
 
 This is the repository for the 12bit Smart DAQ Device with unique data fingerprint able to do experimental data upload to any data repository
