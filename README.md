@@ -144,11 +144,13 @@ https://guides.dataverse.org/en/5.12/api/client-libraries.html
 |-------------|------|
 
 <br>
-In the Wiki  the reader can find a [list of Open Science projects](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki) worth mention. And if you knoe one of interest, share it here too, for everyone to see and use.   
-<br>
 
 | [<img src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/openAIRE_eu.png" alt="" width="150">](https://www.openaire.eu) | OpenAIRE's vision is to transform society through validated scientific knowledge and allow citizens, educators, funders, civil servants and industry to find ways to make science useful for themselves, their working environments and society. |
 |-------------|------|
+
+<br>
+
+In the Wiki  the reader can find a [list of Open Science projects](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki) worth mention. And if you knoe one of interest, share it here too, for everyone to see and use.   
 
 <br>
 <br>
