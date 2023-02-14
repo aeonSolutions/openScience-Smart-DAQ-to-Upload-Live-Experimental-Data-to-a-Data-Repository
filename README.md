@@ -219,6 +219,18 @@ See a list with the hardware specifications for the 12bit pcb on the [WiKi](http
 
 <br>
 
+### [12bit Smart DAQ Device with unique data fingerprint and a 1.69" TFT LCD made for an Acrylic 52x48mm Enclosure](https://github.com/aeonSolutions/Open-Science-12bit-Smart-DAQ-Device-with-unique-data-fingerprint-made-for-an-Acrylic-52x48mm-/blob/main/README.md)
+
+This is the repository for the 12bit Smart DAQ Device made to fit an acrylic enclosure as seen on the photos above. 
+ 
+<p align="center">
+  <img width="350" src="https://github.com/aeonSolutions/-openScienceResearch-12bit-LCD-1.69-TFT-Smart-DAQ-Device-with-unique-data-fingerprint/blob/main/Designs/smart_daq_front.png">
+</p>
+
+<br>
+
+<br>
+
 ### [Open Science: 12bit Smart DAQ Device with unique data fingerprint and a 1.69" TFT LCD](https://github.com/aeonSolutions/-openScienceResearch-12bit-LCD-1.69-TFT-Smart-DAQ-Device-with-unique-data-fingerprint)
 
 This is the repository for the 12bit Smart DAQ Device with unique data fingerprint able to do experimental data upload to any data repository
