@@ -137,6 +137,7 @@ https://guides.dataverse.org/en/5.12/api/client-libraries.html
 |-------------|------|
 
 <br>
+
 | [<img src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/figshare_com.png" alt="" width="150">](https://figshare.com) | figshare is a repository where users can make all of their research outputs available in a citable, shareable and discoverable manner |
 |-------------|------|
 
