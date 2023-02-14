@@ -142,8 +142,9 @@ https://guides.dataverse.org/en/5.12/api/client-libraries.html
 |-------------|------|
 
 <br>
+<br>
 
-### Smart DAQ on a laboratory specimen
+### Smart DAQ on a Laboratory Specimen
 
 <p align="center">
   <img width="600" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/12bitSmartDAQ2023january_2.jpeg">
@@ -158,6 +159,8 @@ On the photo above the smart DAQ is installed on an acrylic case and screwed wit
 </p>
 
 On the photo above is one of my many specimens I purposely fabricated to research self-sensing properties of a asphalt mixed with a known content of carbon fibers. This is a 10cm cylinder specimen and on the top is already setup my own design smart #DAQ (get it here on my GitHub ) with ability do upload LIVE experimental data to a #dataverse.
+
+<br>
 
 **Proof of Concept**
 
