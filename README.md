@@ -209,7 +209,7 @@ See a list with the hardware specifications for the 12bit pcb on the [WiKi](http
 - measure voltage in the range of  [0;3.3V]
 - measure electrical resistance [0; 10^6] Ohm 
 - do temperature and humidity compensation on all measurements 
-- has a voltage reference sensor for improved accuracy on ADC measurements  
+- [has a voltage reference sensor for improved accuracy on ADC measurements](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki/Voltage-Reference-Sensor-Calibration)  
 - has a motion sensor to know if anyone moved a specimen during an experiment
 - can be powered using 4.2V LiPo batteries
 <br>
