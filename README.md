@@ -205,7 +205,7 @@ See a list with the hardware specifications for the 12bit pcb on the [WiKi](http
 
  **In everyday science at a laboratory this smart DAQ is able to:**
 - connect to all kinds of 3.3V digital sensors;
-- connect to all kinds of sensors compatible with the I2C protocol. (max 118 sensors simultaneously)
+- [connect to all kinds of sensors compatible with the I2C protocol](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki/Types-of-external-sensors-this-devices-is-able-to-connect) (max 118 sensors simultaneously)
 - measure voltage in the range of  [0;3.3V]
 - measure electrical resistance [0; 10^6] Ohm 
 - do temperature and humidity compensation on all measurements 
