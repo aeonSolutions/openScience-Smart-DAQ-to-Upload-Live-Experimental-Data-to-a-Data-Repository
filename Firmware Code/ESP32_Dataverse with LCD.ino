@@ -13,7 +13,7 @@
 #include "Wire.h"
 #include "SparkFunLSM6DS3.h"
 #include "SPI.h"
-#include <SHT31.h>
+#include <AHT20.h>
 
 #ifndef _FFAT_H_
   #include <FFat.h>
@@ -286,11 +286,11 @@ const char *DATA_VALIDATION_KEY = "A9CD7F1B6688159B54BBE862F638FF9D29E0FA5F87C69
 // Setup IO pins and Addresses **********************************************
 
 // external 3V3 power
-#define ENABLE_3v3_PWR 2
+#define ENABLE_3v3_PWR 33
 // Voltage reference
-#define VOLTAGE_REF_PIN 7
+#define VOLTAGE_REF_PIN 12
 // External PWM / Digital IO Pin
-#define EXT_IO_ANALOG_PIN 6
+#define EXT_IO_ANALOG_PIN 11
 
 // Reference resistances : loaded from config file
 float ADC_R1 = 1032;
@@ -301,17 +301,18 @@ uint8_t SELECTED_ADC_REF_RESISTANCE=0;
 float ADC_REF_RESISTANCE[4];
 
 // configuration: PCB specific
-const float MCU_VDD = 3.33;
-const float MCU_ADC_DIVIDER = 4095.0;
+const float MCU_VDD = 3.38;
+const float MCU_ADC_DIVIDER = 4096.0;
 
 //I2C Bus Pins
 #define SDA 8
 #define SCL 9
 
-//SHT31 sensor
-SHT31 sht31;
-#define SHT31_ADDRESS 0x44
-#define SHTFREQ 100000ul
+//AHT20 sensor
+AHT20 aht20;
+
+#define AHT20_ADDRESS 0x44
+#define AHT_FREQ 100000ul
 
 // LSM6DS3 motion sensor
 #define LSMADDR 0x64
@@ -321,11 +322,12 @@ LSM6DS3 LSM6DS3sensor( I2C_MODE, LSMADDR);
 
 // LCD  ***************************************************** 
 // ST7789 TFT module connections
-#define TFT_MOSI 8  // SDA Pin on ESP32
-#define TFT_SCLK 9  // SCL Pin on ESP32
-#define TFT_CS   13  // Chip select control pin
-#define TFT_DC   11  // Data Command control pin
-#define TFT_RST  33  // Reset pin (could connect to RST pin)
+#define TFT_MOSI 7  // SDA Pin on ESP32
+#define TFT_SCLK 6  // SCL Pin on ESP32
+#define TFT_CS   5  // Chip select control pin
+#define TFT_DC   4  // Data Command control pin
+#define TFT_RST  2  // Reset pin (could connect to RST pin)
+#define TFT_BUSY 1  // busy pin
 #define LCD_BACKLIT_LED 10
 
 // TFT screen resolution
@@ -339,25 +341,26 @@ LSM6DS3 LSM6DS3sensor( I2C_MODE, LSMADDR);
 #define TFT_PORTRAIT_FLIPED 4
 
 // onboard LED
-const byte LED_RED = 36;
-const byte LED_BLUE = 34;
-const byte LED_GREEN = 35;
+const byte LED_RED = 18;
+const byte LED_RED_CH = 7;
 
-const byte LED_RED_CH = 1;
-const byte LED_BLUE_CH = 0;
-const byte LED_GREEN_CH = 7;
+const byte LED_BLUE = 13;
+const byte LED_BLUE_CH = 2;
+
+const byte LED_GREEN = 14;
+const byte LED_GREEN_CH = 3;
 
 // Components Testing  **************************************
-bool SCAN_I2C_BUS = false;
-bool TEST_RGB_LED = false;
-bool TEST_FLASH_DRIVE=false;
-bool TEST_WIFI_SCAN =false;
+bool SCAN_I2C_BUS = true;
+bool TEST_RGB_LED = true;
+bool TEST_FLASH_DRIVE=true;
+bool TEST_WIFI_SCAN =true;
 bool TEST_WIFI_NETWORK_CONNECTION=true;
-bool TEST_SECURITY_IC=false;
-bool TEST_LCD=false;
+bool TEST_SECURITY_IC=true;
+bool TEST_LCD=true;
 
 // COMPONENTS STATUS AND AVAILABILITY
-bool SHTsensorAvail = false;
+bool AHTsensorAvail = false;
 bool MotionSensorAvail=false;
 uint8_t NUMBER_OF_SENSORS =0; 
 
@@ -368,10 +371,6 @@ void turnOffLedAll(){
   ledcWrite(LED_RED_CH, 4096);// Green
   ledcWrite(LED_BLUE_CH, 4096);//RED
   ledcWrite(LED_GREEN_CH, 4096);//Blue
-
-  //digitalWrite(LED_RED,HIGH);
-  //digitalWrite(LED_GREEN,HIGH);
-  //digitalWrite(LED_BLUE,HIGH);
 }
 
 
@@ -407,25 +406,25 @@ void statusLED(byte led[], byte brightness, float time=0) {
 
     if(led[i]==LED_BLUE)
       ch=LED_BLUE_CH;
+
     ledcWrite(ch, bright);
 
   }
   if(!greenPresent){
     ledcWrite(LED_GREEN, 4096);
-    //digitalWrite(LED_GREEN,HIGH);
   }
   if(!redPresent){
     ledcWrite(LED_RED, 4096);
-    //digitalWrite(LED_RED,HIGH);
   }
   if(!bluePresent){
     ledcWrite(LED_BLUE, 4096);
-    //digitalWrite(LED_BLUE,HIGH);
   }
+
   if (time>0){
     delay(time*1000);
     turnOffLedAll();
   }
+
 }  
 
 void blinkStatusLED(byte led[], byte brightness, float time=0, byte numberBlinks=1){
@@ -688,18 +687,14 @@ void setup() {
   WiFi.disconnect(true);
   WiFi.onEvent(WiFiEvent);
  
-  // setup LED for output
-  //pinMode(LED_RED, OUTPUT);
-  //pinMode(LED_BLUE, OUTPUT);
-  //pinMode(LED_GREEN, OUTPUT);
-  
+  // setup LED for output  
   ledcAttachPin(LED_RED, LED_RED_CH);
   ledcAttachPin(LED_BLUE, LED_BLUE_CH);
   ledcAttachPin(LED_GREEN, LED_GREEN_CH);
 
-  ledcSetup(LED_RED_CH, 4000, 8); // 12 kHz PWM, 8-bit resolution
-  ledcSetup(LED_BLUE_CH, 4000, 8); // 12 kHz PWM, 8-bit resolution
-  ledcSetup(LED_GREEN_CH, 4000, 8); // 12 kHz PWM, 8-bit resolution
+  ledcSetup(LED_RED_CH, 8000, 8); // 12 kHz PWM, 8-bit resolution
+  ledcSetup(LED_BLUE_CH, 8000, 8); // 12 kHz PWM, 8-bit resolution
+  ledcSetup(LED_GREEN_CH, 8000, 8); // 12 kHz PWM, 8-bit resolution
   turnOffLedAll();
 
   // LCD backligth
@@ -718,7 +713,7 @@ void setup() {
   mserial.start(SERIAL_DEFAULT_SPEED);// USB communication with mserial Monitor
   mserial.printStrln("OK");
   
-  bool SHT_begin_result=sht31.begin(SHT31_ADDRESS);
+  bool AHT_begin_result=aht20.begin(); // AHT20_ADDRESS
   delay(10);
   tft.begin ();                                 // initialize a ST7789 chip
   tft.setSwapBytes (true);                      // swap the byte order for pushImage() - corrects endianness
@@ -733,12 +728,6 @@ See more http://henrysbench.capnfatz.com/henrys-bench/arduino-adafruit-gfx-libra
 */
   TFT_setScreenRotation(TFT_LANDSCAPE_FLIPED);
   tft.fillScreen (TFT_BLACK);
-  tft.pushImage (10,65,250,87,AEONLABS_16BIT_BITMAP_LOGO);
-
-  // PosX, PoxY, text, text size, text align, text color, delete previous text true/false
-  tftPrintText(0,160,"Loading...",2,"center", TFT_WHITE, false);
-
-  delay(5000);
 
   if(TEST_LCD){
     mserial.printStrln("LCD optimized lines red blue...");
@@ -752,15 +741,22 @@ See more http://henrysbench.capnfatz.com/henrys-bench/arduino-adafruit-gfx-libra
     tft.fillScreen(TFT_BLACK);
     time = millis() - time;
     mserial.printStrln(String(time/1000)+" sec. \n");
-    delay(500);
+    delay(5000);
   }
+
+  tft.pushImage (10,65,250,87,AEONLABS_16BIT_BITMAP_LOGO);
+
+  // PosX, PoxY, text, text size, text align, text color, delete previous text true/false
+  tftPrintText(0,160,"Loading...",2,"center", TFT_WHITE, false);
+
+  delay(5000);
 
   mserial.setOutput2LCD(false);
 
   if(TEST_RGB_LED){
     tftPrintText(0,160,"Testing RGB LED",2,"center", TFT_WHITE, true);
     mserial.printStr("Testing RGB LED OFF...");
-    statusLED((byte*)(const byte[]){LED_RED}, HIGH); // ALL led ARE OFF
+    turnOffLedAll();
     delay(2000);
     mserial.printStrln("OK");
 
@@ -944,8 +940,8 @@ See more http://henrysbench.capnfatz.com/henrys-bench/arduino-adafruit-gfx-libra
   }
   
 
-  mserial.printStr("Starting SHT31 sensor...");
-  startSHT(SHT_begin_result);
+  mserial.printStr("Starting AHT20 sensor...");
+  startAHT(AHT_begin_result);
   delay(1000);
 
   mserial.printStr("Starting Motion Sensor...");
@@ -1537,8 +1533,8 @@ bool initializeDataMeasurementsFile(){
     DataHeader[2]="Vref (Volt)";
     DataHeader[3]="V (Volt)";
     DataHeader[4]="R (Ohm)";
-    DataHeader[5]="SHT TEMP (*C)";
-    DataHeader[6]="SHT Humidity (%)";
+    DataHeader[5]="AHT TEMP (*C)";
+    DataHeader[6]="AHT Humidity (%)";
     DataHeader[7]="Accel X";
     DataHeader[8]="Accel Y";
     DataHeader[9]="Accel Z";
@@ -1630,12 +1626,12 @@ void onBoardSensorMeasurements(int i){
     union Data t; 
     union Data h;
 
-    if (SHTsensorAvail) {  
-      mserial.printStr("SHT31 data: ");
-      sht31.read();
+    if (AHTsensorAvail) {  
+      mserial.printStr("AHT data: ");
+      aht20.triggerMeasurement();
   
-      t.f = sht31.getTemperature();
-      h.f = sht31.getHumidity();
+      t.f = aht20.getTemperature();
+      h.f = aht20.getHumidity();
   
       if (! isnan(t.f)) { // check if 'is not a number'
         mserial.printStr("Temp *C = ");
@@ -1846,25 +1842,25 @@ void ReadExternalAnalogData() {
 
 
 // ********************************************************
-void startSHT(bool result) {
+void startAHT(bool result) {
   if (result){
     mserial.printStr("DONE.");
-    mserial.printStrln("status code: " + String(sht31.readStatus()));
+    mserial.printStrln("status code: " + String(aht20.getStatus()));
 
-    tftPrintText(0,160,(char*) String("Init. SHT3x sensor (stat. code): "+String(sht31.readStatus())).c_str(),2,"center", TFT_WHITE, true); 
-    if (sht31.readStatus()==0){
+    tftPrintText(0,160,(char*) String("Init. AHT20 sensor (stat. code): "+String(aht20.getStatus())).c_str(),2,"center", TFT_WHITE, true); 
+    if (aht20.getStatus()==0){
       NUMBER_OF_SENSORS=NUMBER_OF_SENSORS+1;
-      SHTsensorAvail = true;
+      AHTsensorAvail = true;
       statusLED( (byte*)(const byte[]){LED_GREEN}, 100,1); 
       NUMBER_OF_SENSORS_DATA_VALUES = NUMBER_OF_SENSORS_DATA_VALUES + 2;
     }else{
-      SHTsensorAvail = false;
+      AHTsensorAvail = false;
       statusLED( (byte*)(const byte[]){LED_RED}, 100,1); 
     }
     mserial.printStrln("");
   }else{
-    mserial.printStr("SHT sensor not found ");
-    tftPrintText(0,160,(char*) String("SHT sensor not found").c_str(),2,"center", TFT_RED, true);
+    mserial.printStr("AHT sensor not found ");
+    tftPrintText(0,160,(char*) String("AHT sensor not found").c_str(),2,"center", TFT_RED, true);
     statusLED( (byte*)(const byte[]){LED_RED}, 100,1); 
   }
 }
