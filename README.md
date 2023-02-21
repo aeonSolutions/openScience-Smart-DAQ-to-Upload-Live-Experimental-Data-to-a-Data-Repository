@@ -71,8 +71,7 @@ A new PCB design layout made to fit a well-known [waterproof acrylic enclosure](
 <br>
 
 **Status**
-
-This project is waiting for parts to arrive from aliExpress and for fabrication of a revised PCB electronics from factory. Will resume at the end of February 2023. In 1 week time.
+The pcb hardware has now a status of fully tested and fully working. The next milestone is now firmware code being programmed. More updates in comming weeks. 
 
 <br>
 
