@@ -71,6 +71,7 @@ A new PCB design layout made to fit a well-known [waterproof acrylic enclosure](
 <br>
 
 **Status**
+
 The pcb hardware has now a status of fully tested and fully working. The next milestone is now firmware code being programmed. More updates in comming weeks. 
 
 <br>
