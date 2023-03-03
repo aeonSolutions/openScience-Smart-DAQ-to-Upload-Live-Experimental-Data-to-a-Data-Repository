@@ -95,7 +95,7 @@ The pcb hardware has now a status of fully tested and fully working. The next mi
     - from nearby devices on the same campus
     - from devices located elsewhere (on the internet) and available to do experimental data signing (obtained from a list of devices registered in a public server) 
   - Automatic geolocation of experimental data origins using the wifi network it connects
-  - Allow remote query of experimental data setup at any time of the day (and night) from the data repository server
+  - Allow remote query of a device's setup, for instance sensor calibration,  at any time of the day (and night) from the data repository server
 <br>
 
 **Smart DAQ setup and configuration**
