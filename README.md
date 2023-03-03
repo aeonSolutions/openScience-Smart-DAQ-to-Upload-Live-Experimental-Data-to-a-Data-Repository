@@ -94,6 +94,7 @@ The pcb hardware has now a status of fully tested and fully working. The next mi
     - from nearby devices on the same Laboratory
     - from nearby devices on the same campus
     - from devices located elsewhere (on the internet) and available to do experimental data signing (obtained from a list of devices registered in a public server) 
+  - Automatic geolocation of experimental data origins using the wifi network it connects 
 <br>
 
 **Smart DAQ setup and configuration**
