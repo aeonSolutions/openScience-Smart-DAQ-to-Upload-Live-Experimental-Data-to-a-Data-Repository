@@ -13,7 +13,7 @@
 [<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" data-canonical-src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="30" />](https://www.buymeacoffee.com/migueltomas)
 
 
-# Validation of Eaxperimental Data Origins: A Swarm of IoE DAQ Devices able to Deliver Unique Experimental Data using Blockchain-like Fingerprint ID to a Data Repository
+# Validation of Experimental xperimentals: A Swarm of IoE DAQ Devices able to Deliver Unique Experimental Data using Blockchain-like Fingerprint ID to a Data Repository
 
 <br>
 
