@@ -28,6 +28,12 @@ Current scientific methods use traditional dataloggers (DAQ) for doing experimen
 
 <br>
 
+**Vision**
+
+I can already see students in a laboratory all dressed up and equipped with their tablets and smart device kits, all sending the experimental data to a public data repository while at the same time receiving experimental data from other students.  All inside that tablet cooperating with each other,  and whithout the need to get to know each other.
+
+<br>
+
 **The idea**
 
 This Sci. research presents an innovative method for experimental data acquisition and management of collected data in real-time and is compatible with any open environment. The proposed smart DAQ device prototype has the minimum hardware characteristics to handle data measurements collected from sensors locally connected to it, store it on a local CSV or SQLite database file, and finally connect and synchronize data measurements collected with a data repository hosted remotely on a Dataverse.
