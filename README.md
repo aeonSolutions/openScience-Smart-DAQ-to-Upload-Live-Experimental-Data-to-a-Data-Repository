@@ -30,7 +30,7 @@ Current scientific methods use traditional dataloggers (DAQ) for doing experimen
 
 **Vision**
 
-I can already see students in a laboratory all dressed up and equipped with their tablets and smart device kits, all sending the experimental data to a public data repository while at the same time receiving experimental data from other students.  All inside that tablet cooperating with each other,  and whithout the need to get to know each other.
+I can already see students in a laboratory all dressed up and equipped with their tablets and smart device kits, all sending the experimental data to a public data repository while at the same time receiving experimental data from other students.  All inside that tablet cooperating, and whithout the need to get to know each other.
 
 <p align="center">
   <img src="https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/blob/main/Design/man-at-desk-writing-on-ipad-with-stylus-portrait_2000x2000.webp" height=500>
