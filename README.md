@@ -87,8 +87,13 @@ A new PCB design layout made to fit a well-known [waterproof acrylic enclosure](
 
 <br>
 
+<p align="center">
+  <a href="https://youtu.be/vR9sBQWugJY"> 
+    <img src="https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/blob/main/Design/smart%2012bit%20DAQ%20360.png" height=250>
+  </a>
+</p>
 
-https://youtu.be/vR9sBQWugJY
+<br>
 
 **Status**
 
