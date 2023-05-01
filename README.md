@@ -220,6 +220,8 @@ To test and validate proposed smart DAQ PCB electronics and its firmware as a so
   <a href="https://youtu.be/ycCJRiwse2M">
    <img width="600" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/youtube.png">
  </a>
+  <br>
+ <span> Click to view on Youtube</span>
 </p>
 
 <br>
