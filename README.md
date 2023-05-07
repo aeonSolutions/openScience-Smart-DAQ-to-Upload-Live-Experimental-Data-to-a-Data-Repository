@@ -124,7 +124,8 @@ The pcb hardware has now a status of fully tested and fully working. The next mi
   - Allow remote query of a device's setup, for instance sensor calibration,  at any time of the day (and night) from the data repository server
   - ✓ ~~Motion Detection of unauthorized handling of a specimen during an ongoing experiment~~
   - ✓ ~~Smart Device Language Pack Downloader and Language Selection~~
-  - ✓ ~~Certificate of Authority (CA) Updater~~
+  - ✓ ~~Github Certificate of Authority (CA) Updater~~
+  - ✓ ~~Dataverse Certificate of Authority (CA) Updater~~
 
 <br>
 
