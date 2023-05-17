@@ -131,7 +131,7 @@ The pcb hardware has now a status of fully tested and fully working. The next mi
 
 **Smart DAQ setup and configuration**
 - Multi environment smart DAQ manager coded in QT6 (Android, Windows, Lunux,...)  for setup and configuration of individual smart DAQ devices to each specimen or sample (using RFID NFC technolgies).
-- Ability to define a policy of experimental expected/ possible warnings on measured results (when in autonomous mode). The Android under development can be found here "[Mobile App for managing LDAD Smart DAQ devices](https://github.com/aeonSolutions/aeonlabs-Android-Mobile-App-for-managing-LDAD-Smart-DAQ-devices)".
+- Ability to define a policy of experimental expected/ possible warnings on measured results (when in autonomous mode). 
 
 <br>
 
@@ -141,7 +141,12 @@ The pcb hardware has now a status of fully tested and fully working. The next mi
 <br>
 <br>
 
-## Dataverse API C library
+## Related Open Source code and Software Apps
+
+### Mobile App for managing LDAD Smart DAQ devices
+The Android under development can be found here "[Mobile App for managing LDAD Smart DAQ devices](https://github.com/aeonSolutions/aeonlabs-Android-Mobile-App-for-managing-LDAD-Smart-DAQ-devices)".
+
+### Dataverse API C library
 
 In paralell is being written a C library to expedite API integration on smart DAQ devices or elsewhere. Follow the link to its repository:
 
