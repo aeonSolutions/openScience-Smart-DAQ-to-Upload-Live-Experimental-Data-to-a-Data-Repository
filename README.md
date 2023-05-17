@@ -144,10 +144,9 @@ The pcb hardware has now a status of fully tested and fully working. The next mi
 ## Related Open Source code and Software Apps
 
 ### Mobile App for managing LDAD Smart DAQ devices
-The Android under development can be found here "[Mobile App for managing LDAD Smart DAQ devices](https://github.com/aeonSolutions/aeonlabs-Android-Mobile-App-for-managing-LDAD-Smart-DAQ-devices)".
+The Android App under development able to connect these smart data acquisitin devives can be found here on the following repository "[Mobile App for managing LDAD Smart DAQ devices](https://github.com/aeonSolutions/aeonlabs-Android-Mobile-App-for-managing-LDAD-Smart-DAQ-devices)".
 
 ### Dataverse API C library
-
 In paralell is being written a C library to expedite API integration on smart DAQ devices or elsewhere. Follow the link to its repository:
 
 https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library
