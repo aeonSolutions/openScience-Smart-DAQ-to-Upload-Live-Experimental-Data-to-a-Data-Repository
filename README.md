@@ -79,6 +79,10 @@ I also have available [here](https://github.com/aeonSolutions/AeonLabs--Writing-
 
 <br>
 
+<p align="center">
+  <img src="https://github.com/aeonSolutions/Open-Science-12bit-Smart-DAQ-unique-data-fingerprint-made-for-an-Acrylic-52x48mm-/raw/main/media/20230427_182904.jpg" width="100%">
+</p>
+
 **Most recent update**
 
 The LDAD is officially up and running! Well, the very first release candidate of the firmware. Now, on this code revision, electrical resistance and measurement voltage are correctly measured by the built-in multimeter. And this means the smart DAQ is now ready to be installed on all specimens in an experimental campaign after configuration with the correct calibration curves (temperature compensated). From now on all changes will be towards improving usability and user experience in a laboratory.
