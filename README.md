@@ -254,6 +254,10 @@ See a list with the hardware specifications for the 12bit pcb on the [WiKi](http
 <br>
 <br>
 
+<p align="center">
+<img src="https://github.com/aeonSolutions/Open-Science-12bit-Smart-DAQ-unique-data-fingerprint-made-for-an-Acrylic-52x48mm-/blob/main/media/bnner.jpg" width="100%">
+</p>
+
 ## PCB Design Files and Circuit Schematic
 
 <br>
