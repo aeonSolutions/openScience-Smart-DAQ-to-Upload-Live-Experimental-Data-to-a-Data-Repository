@@ -24,12 +24,6 @@
 
 <br>
 
-**The problem**
-
-Current scientific methods use traditional dataloggers (DAQ) for doing experimental data measurements and collection. This means collected data many times is stored in a paper format, and most of the time in a conventional CSV excel data file. This is prone to errors and even worst, forgery of experimental data. To this date, there are no dataloggers able to automate an experimental data acquisition in a scientific experiment, making it transparent and trustworthy beyond common critique found nowadays. 
-
-<br>
-
 **Vision**
 
 (2007)
@@ -39,6 +33,12 @@ I can already see students in a laboratory all dressed up and equipped with thei
 <p align="center">
   <img src="https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/blob/main/Design/man-at-desk-writing-on-ipad-with-stylus-portrait_2000x2000.webp" height=500>
 </p>
+
+<br>
+
+**The problem**
+
+Current scientific methods use traditional dataloggers (DAQ) for doing experimental data measurements and collection. This means collected data many times is stored in a paper format, and most of the time in a conventional CSV excel data file. This is prone to errors and even worst, forgery of experimental data. To this date, there are no dataloggers able to automate an experimental data acquisition in a scientific experiment, making it transparent and trustworthy beyond common critique found nowadays. 
 
 <br>
 
@@ -98,7 +98,7 @@ A new PCB design layout made to fit a well-known [waterproof acrylic enclosure](
 
 <br>
 
-**Status**
+## ![](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/working_green.png) Status
 
 The pcb hardware has now a status of fully tested and fully working. The next milestone is now the firmware code being programmed. More updates in comming weeks. 
 
