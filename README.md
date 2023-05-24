@@ -12,6 +12,12 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat&label=Contributions&colorA=red&colorB=black	)](#)
 [<img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" data-canonical-src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height="30" />](https://www.buymeacoffee.com/migueltomas)
 
+<br>
+
+<p align="center">
+<img src="https://github.com/aeonSolutions/Open-Science-12bit-Smart-DAQ-unique-data-fingerprint-made-for-an-Acrylic-52x48mm-/blob/main/media/bnner.jpg" width="100%">
+</p>
+
 [PCB-Prototyping-Catalogue](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue)  >>  [Open Scientific Research](https://github.com/aeonSolutions/Open-Scientific-Research)  >>  Validation of Experimental Data Origins: A Swarm of DAQ devices able to Deliver Unique Experimental Data using Blockchain-like Fingerprint ID to a Data Repository
 
 # Validation of Experimental Data Origins: A Swarm of DAQ devices able to Deliver Unique Experimental Data using Blockchain-like Fingerprint ID to a Data Repository
@@ -249,10 +255,6 @@ See a list with the hardware specifications for the 12bit pcb on the [WiKi](http
 - can be powered using 4.2V LiPo batteries
 <br>
 <br>
-
-<p align="center">
-<img src="https://github.com/aeonSolutions/Open-Science-12bit-Smart-DAQ-unique-data-fingerprint-made-for-an-Acrylic-52x48mm-/blob/main/media/bnner.jpg" width="100%">
-</p>
 
 ## PCB Design Files and Circuit Schematic
 
