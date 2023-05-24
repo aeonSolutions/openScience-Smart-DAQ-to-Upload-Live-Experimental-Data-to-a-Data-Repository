@@ -236,7 +236,7 @@ To test and validate proposed smart DAQ PCB electronics and its firmware as a so
 <br>
 <br>
 
-### Smart PCB Hardware Specifications
+## Smart PCB Hardware Specifications
 
 See a list with the hardware specifications for the 12bit pcb on the [WiKi](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki).
 
