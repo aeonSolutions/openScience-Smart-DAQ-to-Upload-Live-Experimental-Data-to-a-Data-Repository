@@ -41,7 +41,6 @@ https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/wiki/AeonLabs-Solutio
 #include "USB.h"
 
 
-
 #ifndef  MSERIAL_DEF
   #define  MSERIAL_DEF
 

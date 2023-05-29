@@ -65,7 +65,8 @@ https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/wiki/AeonLabs-Solutio
 
     public:
       bool TEST_LCD;
-
+      bool LCD_DISABLED;
+      
       int8_t LCD_BACKLIT_LED;
 
       // TFT screen resolution

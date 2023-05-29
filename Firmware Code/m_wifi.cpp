@@ -61,6 +61,9 @@ void M_WIFI_CLASS::init(INTERFACE_CLASS* interface, FILE_CLASS* drive, ONBOARD_L
     this->REQUEST_DELTA_TIME_GEOLOCATION  = 10*60*1000; // 10 min 
     this->$espunixtimePrev= millis(); 
     
+    this->number_WIFI_networks=0;
+    this-> prevTimeErrMsg= millis() + 120000;
+
     this->HTTP_TTL= 20000; // 20 sec TTL
     this->lastTimeWifiConnectAttempt=millis();
     this->wifiMulti= new WiFiMulti();
@@ -116,20 +119,16 @@ bool M_WIFI_CLASS::start(uint32_t  connectionTimeout, uint8_t numberAttempts){
 
     WiFi.mode(WIFI_AP_STA);
     
-    char* roomName = (char*) this->drive->readFile("/room_name.txt").c_str();
-    char* customHostname = (char*) malloc(sizeof(char) * 64);
-    sprintf_P(customHostname, PSTR("AeonHome-%s"), SAVED_OR_DEFAULT_ROOM_NAME(roomName));
-    WiFi.mode(WIFI_STA);
-    WiFi.hostname(customHostname);
-
     this->connect2WIFInetowrk(numberAttempts);
     this->lastTimeWifiConnectAttempt=millis();
     return true;
 }
+
+
 // ********************************************
 
 bool M_WIFI_CLASS::checkErrorMessageTimeLimit(){
-  if( millis() - this-> prevTimeErrMsg > 60000 ){
+  if( abs( long(millis() - this-> prevTimeErrMsg) ) > 60000 ){
     this-> prevTimeErrMsg = millis();
     return false;
   }
@@ -792,7 +791,7 @@ void M_WIFI_CLASS::startFirmwareUpdate(){
   }
 
   
-  if ( this->interface->getBLEconnectivityStatus()){
+  if ( this->getBLEconnectivityStatus()){
     delay(500);
     this->interface->sendBLEstring("done. \nRequesting the lastest firmware revision....");
     delay(500);
@@ -819,7 +818,7 @@ void M_WIFI_CLASS::startFirmwareUpdate(){
     this->interface->onBoardLED->led[0] = this->interface->onBoardLED->LED_BLUE;
     this->interface->onBoardLED->statusLED(100,0); 
     this->interface->mserial->printStrln("new firmware version found. Starting update ...");
-    if ( interface->getBLEconnectivityStatus()){
+    if ( this->getBLEconnectivityStatus()){
       delay(500);
       this->interface->sendBLEstring("done. \nNew firmware version found. Starting to download and upodate. The Device will reboot when completed. ");
       delay(500);
@@ -830,7 +829,7 @@ void M_WIFI_CLASS::startFirmwareUpdate(){
     return;
   }else{
     this->interface->mserial->printStrln("no firmware update needed.");
-    if ( this->interface->getBLEconnectivityStatus()){
+    if ( this->getBLEconnectivityStatus()){
       delay(500);
       this->interface->sendBLEstring("done. \nNo new firmware available");
       delay(500);

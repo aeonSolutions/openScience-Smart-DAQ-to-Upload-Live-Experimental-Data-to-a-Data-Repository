@@ -48,8 +48,9 @@ void DISPLAY_LCD_CLASS::init(INTERFACE_CLASS* interface, M_WIFI_CLASS* mWifi){
   this->mWifi= mWifi;
 
   // LCD backligth
-  pinMode(LCD_BACKLIT_LED, OUTPUT);
-  
+  pinMode(this->LCD_BACKLIT_LED, OUTPUT);
+
+
   this->tft.begin ();                                          // initialize a ST7789 chip
   this->tft.setSwapBytes (true);                      // swap the byte order for pushImage() - corrects endianness
   this->oldText="";
@@ -65,7 +66,7 @@ void DISPLAY_LCD_CLASS::init(INTERFACE_CLASS* interface, M_WIFI_CLASS* mWifi){
   TFT_setScreenRotation(LCD_TFT_LANDSCAPE_FLIPED);
   this->tft.fillScreen(TFT_BLACK);
 
-  if(TEST_LCD){
+  if(this->TEST_LCD){
     this->interface->mserial->printStrln("LCD optimized lines red blue...");
     // optimized lines
     digitalWrite(LCD_BACKLIT_LED, HIGH); // Enable LCD backlight 
@@ -76,16 +77,13 @@ void DISPLAY_LCD_CLASS::init(INTERFACE_CLASS* interface, M_WIFI_CLASS* mWifi){
     this->interface->mserial->printStr("Black screen fill: ");
     
     uint16_t time = millis();
-    
     this->tft.fillScreen(TFT_BLACK);
-    
     time = millis() - time;
     
     this->interface->mserial->printStrln(String(time/1000)+" sec. \n");
     delay(5000);
- 
   }
-
+  
   this->tft.pushImage (10,65,250,87,AEONLABS_16BIT_BITMAP_LOGO);
 
   // PosX, PoxY, text, text size, text align, text color, delete previous text true/false
@@ -101,6 +99,8 @@ void DISPLAY_LCD_CLASS::init(INTERFACE_CLASS* interface, M_WIFI_CLASS* mWifi){
 // **************** LCD ****************************
 
 void DISPLAY_LCD_CLASS::testfastlines(uint16_t color1, uint16_t color2) {
+  if (this->LCD_DISABLED)
+    return;
   this->tft.fillScreen(TFT_BLACK);
   for (int16_t y=0; y < this->tft.height(); y+=5) {
     this->tft.drawFastHLine(0, y, this->tft.width(), color1);
@@ -112,6 +112,8 @@ void DISPLAY_LCD_CLASS::testfastlines(uint16_t color1, uint16_t color2) {
 
 // ***************************************************************
 void DISPLAY_LCD_CLASS::loadStatus(String text){
+  if (this->LCD_DISABLED)
+    return;
   this->tft.setTextColor(TFT_BLACK);
   this->tft.setTextSize(2);
   this->tft.setCursor(80, 120);
@@ -123,6 +125,8 @@ void DISPLAY_LCD_CLASS::loadStatus(String text){
 
 //************************************************************
 void DISPLAY_LCD_CLASS::tftPrintText(int x, int y, char text[], uint8_t textSize , char align[], uint16_t color, bool deletePrevText){
+    if (this->LCD_DISABLED)
+      return;
     /*
     align: left, center, right
     */
@@ -130,7 +134,6 @@ void DISPLAY_LCD_CLASS::tftPrintText(int x, int y, char text[], uint8_t textSize
     int posY=y;
     uint8_t pad=3; // pixel padding from the border
     uint8_t TEXT_CHAR_WIDTH=6;
-    
 
     if (align=="center"){
       posX= (this->TFT_CURRENT_X_RES/2) - strlen(text)*TEXT_CHAR_WIDTH*textSize/2;
@@ -139,7 +142,7 @@ void DISPLAY_LCD_CLASS::tftPrintText(int x, int y, char text[], uint8_t textSize
     } else if (align=="right"){
       posX=this->TFT_CURRENT_X_RES - strlen(text)*6*textSize-pad;
     }
-    
+
     if (strlen(text)*6*textSize>this->TFT_CURRENT_X_RES)
       posX=0;
 
@@ -147,7 +150,7 @@ void DISPLAY_LCD_CLASS::tftPrintText(int x, int y, char text[], uint8_t textSize
       posX=0;
       text= (char*)String("err PosX:"+String(text)).c_str();
     }
-    
+
     if (posY<0){
       posY=0;
       text=(char*)String("err PosY:"+String(text)).c_str();;
@@ -156,24 +159,28 @@ void DISPLAY_LCD_CLASS::tftPrintText(int x, int y, char text[], uint8_t textSize
     if (deletePrevText){
       this->tft.setTextColor(TFT_BLACK);
       this->tft.setTextSize(oldTextsize);
-      this->tft.setCursor(oldPosX, oldPosY);
-      this->tft.println(this->oldTFTtext);
+      this->tft.drawString(this->oldTFTtext, oldPosX, oldPosY);
     }
 
     this->tft.setTextSize(textSize);
     this->tft.setTextColor(color);
-    this->tft.setCursor(posX, posY);
-    this->tft.println(text);
+          this->interface->mserial->printStrln("here 6.3");
+    this->tft.drawString(text, posX, posY);
 
     this->oldTFTtext=text;
     this->oldPosX=posX;
     this->oldPosY=posY;
     this->oldTextsize=textSize; 
+  
+        this->interface->mserial->printStrln("here 11");
   }
 
 
 //**********************************************
 void DISPLAY_LCD_CLASS::TFT_setScreenRotation(uint8_t rotation){
+  if (this->LCD_DISABLED)
+    return;
+
   this->tft.setRotation(rotation);
   switch(rotation){
       case this->LCD_TFT_LANDSCAPE:

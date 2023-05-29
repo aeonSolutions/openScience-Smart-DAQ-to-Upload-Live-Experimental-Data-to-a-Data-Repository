@@ -75,7 +75,7 @@ void MEASUREMENTS::init(INTERFACE_CLASS* interface, DISPLAY_LCD_CLASS* display,M
 
     String units="";
     // 1D number of sample readings ; 2D number of sensor data measuremtns; 3D RAM buffer size
-    if ( PSRAMalloc.initializeDynamicVar(this->config.NUM_SAMPLE_SAMPLING_READINGS, (int) NUMBER_OF_SENSORS_DATA_VALUES , this->config.MEASUREMENTS_BUFFER_SIZE) )
+    if ( this->initializeDynamicVar(this->config.NUM_SAMPLE_SAMPLING_READINGS, (int) NUMBER_OF_SENSORS_DATA_VALUES , this->config.MEASUREMENTS_BUFFER_SIZE) )
     {
       this->interface->mserial->printStrln("Error Initializing Measruments Buffer.");
       this->display->tftPrintText(0,160,"ERR Exp. data Buffer",2,"center", TFT_WHITE, true); 
@@ -487,7 +487,7 @@ bool MEASUREMENTS::initializeDynamicVar(  int size1D, int size2D, int size3D){
     
     //Check memory validity
     if(this->measurements == NULL){
-       this->interface->mserial->("Heap men Alloc. FAIL");
+       this->interface->mserial->printStrln("Heap men Alloc. FAIL");
       return false;
     }
 
@@ -497,7 +497,7 @@ bool MEASUREMENTS::initializeDynamicVar(  int size1D, int size2D, int size3D){
         //Check memory validity
         if(this->measurements[i1D] == NULL){
          // this->freeAllocatedMemory(measurements,i1D);
-          this->interface->mserial->println("FAIL 1D alloc");
+          this->interface->mserial->printStrln("FAIL 1D alloc");
           return false;
         }
     }
@@ -509,7 +509,7 @@ bool MEASUREMENTS::initializeDynamicVar(  int size1D, int size2D, int size3D){
         //Check memory validity
         if(this->measurements[i1D][i2D] == NULL){
           //this->freeAllocatedMemory(measurements,i1D);
-          this->interface->mserial->("FAIL 2D alloc");
+          this->interface->mserial->printStrln("FAIL 2D alloc");
           return false;
         }
       }
@@ -523,7 +523,7 @@ bool MEASUREMENTS::initializeDynamicVar(  int size1D, int size2D, int size3D){
             //Check memory validity
             if(this->measurements[i1D][i2D][i3D] == NULL){
               //this->freeAllocatedMemory(measurements,i1D);
-              this->interface->mserial->("FAIL 3D alloc");
+              this->interface->mserial->printStrln("FAIL 3D alloc");
               return false;
             }
           }

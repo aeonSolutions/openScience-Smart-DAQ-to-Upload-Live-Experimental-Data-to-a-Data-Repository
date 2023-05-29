@@ -39,17 +39,6 @@ https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/wiki/AeonLabs-Solutio
 bool SCAN_I2C_BUS = false;
 bool TEST_FINGERPRINT_ID_IC=false;
 
-
-// MultiCore management ******************************************
-// *********************** == Dual Core Setup == ************************
-TaskHandle_t task_Core2_Loop;
-void Core2Loop(void* pvParameters) {
-  setup1();
-
-  for (;;)
-    loop1();
-}
-
 //----------------------------------------------------------------------------------
 #include <math.h>
 #include <cmath>
@@ -153,7 +142,7 @@ String valueReceived="";
 
 class MyServerCallbacks: public BLEServerCallbacks {
     void onConnect(BLEServer* pServer) {
-      interface->setBLEconnectivityStatus (true);
+      mWifi->setBLEconnectivityStatus (true);
       mserial->printStr("BLE connection init ", mserial->DEBUG_BOTH_USB_UART);
       
       interface->onBoardLED->led[0] = interface->onBoardLED->LED_BLUE;
@@ -212,7 +201,7 @@ class pCharacteristicRX_Callbacks: public BLECharacteristicCallbacks {
       }
       
       $BLE_CMD = rxValue;
-      interface->setBLEconnectivityStatus(true);
+      mWifi->setBLEconnectivityStatus(true);
       
       xSemaphoreTake(MemLockSemaphoreBLE_RX, portMAX_DELAY); 
         newCMDarrived=true; // this needs to be the last line       
@@ -232,6 +221,14 @@ class pCharacteristicRX_Callbacks: public BLECharacteristicCallbacks {
 // *************************  == SETUP == *****************
 // ********************************************************
 
+// *********************** == Dual Core Setup == ************************
+TaskHandle_t task_Core2_Loop;
+void Core2Loop(void* pvParameters) {
+  setup1();
+
+  for (;;)
+    loop1();
+}
 
 // ---------------------------------------------------------------
 void setup1() {
@@ -250,6 +247,7 @@ void setup1() {
 
 long int prevMeasurementMillis;
 
+
 void setup() { 
   // Firmware Build Version / revision ______________________________
   interface->firmware_version="1.0.0";
@@ -258,11 +256,9 @@ void setup() {
 
   interface->UARTserial = &UARTserial;
   mserial->start(115200);
-  
-  mserial->DEBUG_EN=false;
-  mserial->DEBUG_TYPE = mserial->DEBUG_TYPE_INFO;
-
-  interface->init(mserial, true); // debug EN ON
+  mserial->DEBUG_TO= mserial->DEBUG_TO_UART;
+  mserial->DEBUG_EN=true;
+  mserial->DEBUG_TYPE = mserial->DEBUG_TYPE_VERBOSE; // DEBUG_TYPE_INFO;
 
   // ......................................................................................................
   // .......................... START OF IO & PIN CONFIGURATION..............................................
@@ -289,6 +285,8 @@ void setup() {
   interface->onBoardLED->LED_RED_CH = 0;
   interface->onBoardLED->LED_BLUE_CH = 2;
   interface->onBoardLED->LED_GREEN_CH = 9;
+
+      mserial->printStr("onboard led init ");
   interface->onBoardLED->init();
 
   // ___________ MCU freq ____________________
@@ -300,8 +298,14 @@ void setup() {
   interface->onBoardLED->led[0] = interface->onBoardLED->LED_RED;
   interface->onBoardLED->statusLED(100, 0);
 
+  mserial->printStr("interface init ");
+  interface->init(mserial, true); // debug EN ON
+  
+  // ___________  LCD Display ____________________
   display->LCD_BACKLIT_LED=35;
+  display->LCD_DISABLED=true;
   display->init(interface, mWifi);
+
 
   //init storage drive
   drive->partition_info();
@@ -323,23 +327,6 @@ void setup() {
   // ......................................................................................................
   // .......................... END OF IO & PIN CONFIGURATION..............................................
   // ......................................................................................................
-
-  
-  /*
-  Partition Table Information =========================================================
-  8Mb Flash				
-  # Name	   Type	 SubType	  Offset	     Size
-  nvs	      data	 nvs	      0x9000	    0x5000
-  otadata	  data	 ota	      0xe000	    0x2000
-  factory	  app	  factory	    0x10000	    0x1C0000
-  ota_0	    app	  ota_0	      0x2C0000	  0x1C0000
-  ota_1	    app	  ota_1	      0x480000	  0x1C0000
-  eeprom	  data	 0x99	      0x640000	  0x1000
-  storage	  data	 fatfs	    0x641000	  0x1C0000
-  ====================================================================================
-  */
-
-
   if (SCAN_I2C_BUS){
     onBoardSensors->I2Cscanner();
   }
@@ -394,26 +381,9 @@ void setup() {
 
   measurements->init(interface, display, mWifi, onBoardSensors);
 
- 
-
   digitalWrite(13, HIGH); 
   delay(2000);
-
-  //Service Discovery
-  strcpy_P(SSDP.schemaURL, PSTR("description.xml"));
-  SSDP.port = 80;
-  strcpy_P(SSDP.friendlyName, PSTR("Thermometer"));
-  strcpy_P(SSDP.presentationURL, PSTR("status"));
-  strcpy_P(SSDP.modelName, PSTR("SimpleHome"));
-  strcpy_P(SSDP.modelNumber, PSTR("0"));
-  strcpy_P(SSDP.modelURL, PSTR("https://github.com/Domi04151309/HomeApp"));
-  strcpy_P(SSDP.deviceType, PSTR("upnp:rootdevice"));
-  SSDP.begin();
-
   
-
-
-
   dataverse->init(interface, mWifi, mserial);
 
   //Init GBRL 
@@ -458,7 +428,7 @@ void GBRLcommands(String command, uint8_t sendTo){
 
 void BLE_init(){
   // Create the BLE Device 
-  BLEDevice::init(String("SCC " + interface->config.DEVICE_BLE_NAME).c_str());  // max 29 chars
+  BLEDevice::init(String("LDAD " + interface->config.DEVICE_BLE_NAME).c_str());  // max 29 chars
   
   // Create the BLE Server 
   pServer = BLEDevice::createServer(); 
@@ -535,7 +505,7 @@ void loop1() {
   // ............................................................................. 
   // disconnected for at least 3min
   // change MCU freq to min
-  if (  interface->getBLEconnectivityStatus()==false && ( millis() - mWifi->$espunixtimeDeviceDisconnected > 180000) && interface->CURRENT_CLOCK_FREQUENCY >= interface->WIFI_FREQUENCY){
+  if (  mWifi->getBLEconnectivityStatus()==false && ( millis() - mWifi->$espunixtimeDeviceDisconnected > 180000) && interface->CURRENT_CLOCK_FREQUENCY >= interface->WIFI_FREQUENCY){
     mserial->printStrln("setting min MCU freq.");
     btStop();
     //BLEDevice::deinit(); // crashes the device
@@ -546,7 +516,7 @@ void loop1() {
 
     changeMcuFreq(interface, interface->MIN_MCU_FREQUENCY);
     interface->CURRENT_CLOCK_FREQUENCY = interface->MIN_MCU_FREQUENCY;
-    interface->setBLEconnectivityStatus(false);
+    mWifi->setBLEconnectivityStatus(false);
 
     interface->onBoardLED->led[0] = interface->onBoardLED->LED_RED;
     interface->onBoardLED->led[1] = interface->onBoardLED->LED_GREEN;
@@ -670,3 +640,4 @@ void loop1() {
     xSemaphoreGive(interface->MemLockSemaphoreCore2);   
   }
 }
+// -----------------------------------------------------------------
