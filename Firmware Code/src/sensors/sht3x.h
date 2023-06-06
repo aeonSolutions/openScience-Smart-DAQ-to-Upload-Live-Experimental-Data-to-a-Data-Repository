@@ -62,7 +62,7 @@ https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/wiki/AeonLabs-Solutio
       SHT3X_SENSOR();
       void init(INTERFACE_CLASS* interface,  uint8_t SHT3X_ADDRESS);
       bool requestMeasurements();
-      void startAHT();
+      void startSHT3X();
 
       bool commands(String $BLE_CMD, uint8_t sendTo );
  

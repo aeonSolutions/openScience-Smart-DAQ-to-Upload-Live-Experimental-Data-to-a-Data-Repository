@@ -39,7 +39,7 @@ AHT20_SENSOR::AHT20_SENSOR() {
   this->AHT20_ADDRESS = 0x38;
   this->numSensors=2;
   this->measurement = new float[numSensors];
-  this->measurement_label = new String[] {"Temperature", "Humidity"};
+  this->measurement_label = new String[2] {"Temperature", "Humidity"};
 }
 
 void AHT20_SENSOR::init(INTERFACE_CLASS* interface, uint8_t AHT20_ADDRESS){
@@ -81,14 +81,14 @@ void AHT20_SENSOR::startAHT() {
     float aht_humidity = aht20->getHumidity();
 
     if (isnan(aht_temp)) { // check if 'is not a number'
-      this->mserial->printStrln("Failed to read temperature");
+      this->interface->mserial->printStrln("Failed to read temperature");
       this->measurement[0] = -500;
     }else{
       this->measurement[0] = aht_temp;
     }
 
     if (isnan(aht_humidity)) { // check if 'is not a number'
-      this->mserial->printStrln("Failed to read humidity");
+      this->interface->mserial->printStrln("Failed to read humidity");
       this->measurement[1] = -500;
     }else{
       this->measurement[1] = aht_humidity;
@@ -112,7 +112,7 @@ void AHT20_SENSOR::startAHT() {
 bool AHT20_SENSOR::commands(String $BLE_CMD, uint8_t sendTo ){
   String dataStr="";
   if($BLE_CMD.indexOf("$lang dw ")>-1){
-    return this->set_device_language($BLE_CMD, sendTo);
+
   }
 
   return false;

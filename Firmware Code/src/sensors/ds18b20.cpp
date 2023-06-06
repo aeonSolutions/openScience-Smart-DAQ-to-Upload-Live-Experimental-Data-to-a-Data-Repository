@@ -39,7 +39,7 @@ DS18B20_SENSOR::DS18B20_SENSOR() {
   this->EXT_IO_ANALOG_PIN=2;
   this->numSensors=1;
   this->measurement = new float[numSensors];
-  this->measurement_label = new String[] {"Temperature"};
+  this->measurement_label = new String[1] {"Temperature"};
 }
 
 void DS18B20_SENSOR::init(INTERFACE_CLASS* interface, uint8_t EXT_IO_ANALOG_PIN){
@@ -111,7 +111,7 @@ void DS18B20_SENSOR::ProbeSensorStatus(uint8_t sendTo){
 bool DS18B20_SENSOR::commands(String $BLE_CMD, uint8_t sendTo ){
   String dataStr="";
   if($BLE_CMD.indexOf("$lang dw ")>-1){
-    return this->set_device_language($BLE_CMD, sendTo);
+
   }
 
   return false;

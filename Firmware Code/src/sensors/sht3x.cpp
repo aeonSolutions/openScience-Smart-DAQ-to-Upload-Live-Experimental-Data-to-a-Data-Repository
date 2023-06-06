@@ -39,7 +39,7 @@ SHT3X_SENSOR::SHT3X_SENSOR() {
   this->SHT3X_ADDRESS = 0x38;
   this->numSensors=2;
   this->measurement = new float[numSensors];
-  this->measurement_label = new String[] {"Temperature", "Humidity"};
+  this->measurement_label = new String[2] {"Temperature", "Humidity"};
 }
 
 void SHT3X_SENSOR::init(INTERFACE_CLASS* interface, uint8_t SHT3X_ADDRESS){
@@ -47,7 +47,7 @@ void SHT3X_SENSOR::init(INTERFACE_CLASS* interface, uint8_t SHT3X_ADDRESS){
   this->interface->mserial->printStr("\ninit AHT20 sensor ...");
   this->SHT3X_ADDRESS = SHT3X_ADDRESS;
 
-  this->sht3x= new SHT31(this->SHT3X_ADDRESS);
+  this->sht3x= new SHT31();
   this->startSHT3X();
 
   this->interface->mserial->printStrln("done.");
@@ -75,20 +75,20 @@ void SHT3X_SENSOR::startSHT3X() {
       startSHT3X(); 
     }  
 
-    this->sht3x.read();
+    //this->sht3x.read();
 
     float sht_temp = sht3x->getTemperature();
     float sht_humidity = sht3x->getHumidity();
 
     if (isnan(sht_temp)) { // check if 'is not a number'
-      this->mserial->printStrln("Failed to read temperature");
+      this->interface->mserial->printStrln("Failed to read temperature");
       this->measurement[0] = -500;
     }else{
       this->measurement[0] = sht_temp;
     }
 
     if (isnan(sht_humidity)) { // check if 'is not a number'
-      this->mserial->printStrln("Failed to read humidity");
+      this->interface->mserial->printStrln("Failed to read humidity");
       this->measurement[1] = -500;
     }else{
       this->measurement[1] = sht_humidity;
@@ -111,7 +111,7 @@ void SHT3X_SENSOR::startSHT3X() {
 bool SHT3X_SENSOR::commands(String $BLE_CMD, uint8_t sendTo ){
   String dataStr="";
   if($BLE_CMD.indexOf("$lang dw ")>-1){
-    return this->set_device_language($BLE_CMD, sendTo);
+
   }
 
   return false;
