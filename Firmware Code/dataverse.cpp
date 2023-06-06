@@ -42,7 +42,7 @@ DATAVERSE_CLASS::DATAVERSE_CLASS(){
 
 void DATAVERSE_CLASS::init(INTERFACE_CLASS* interface, M_WIFI_CLASS* mWifi, MEASUREMENTS* measurements){
     this->interface=interface;
-    this->interface->mserial->printStr("init dataverse ...");
+    this->interface->mserial->printStr("\nInit dataverse ...");
     this->mWifi= mWifi;
     this->measurements = measurements;
 

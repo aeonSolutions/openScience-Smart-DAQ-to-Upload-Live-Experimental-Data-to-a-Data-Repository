@@ -255,23 +255,28 @@ void setup() {
   interface->LIGHT_SLEEP_EN = false;
 
   // External Ports IO Pin assignment ________________________________
-  interface-> EXT_PLUG_PWR_EN = 2;
+  interface-> EXT_PLUG_PWR_EN = 33;
+  
+  measurements->ENABLE_3v3_PWR_PIN = 33;
+  measurements->EXT_IO_ANALOG_PIN = 2;
+  measurements->VOLTAGE_REF_PIN = 12;
+
   pinMode(interface->EXT_PLUG_PWR_EN, OUTPUT);
   digitalWrite(interface->EXT_PLUG_PWR_EN , LOW);
 
   // Battery Power Monitor ___________________________________
-  interface->BATTERY_ADC_IO = 1;
+  interface->BATTERY_ADC_IO = 21;
   pinMode(interface->BATTERY_ADC_IO, INPUT);
 
   // ________________ Onboard LED  _____________
   interface->onBoardLED = new ONBOARD_LED_CLASS();
-  interface->onBoardLED->LED_RED = 11;
-  interface->onBoardLED->LED_BLUE = 13;
-  interface->onBoardLED->LED_GREEN = 10;
+  interface->onBoardLED->LED_RED = 6;
+  interface->onBoardLED->LED_BLUE = 5;
+  interface->onBoardLED->LED_GREEN = 14;
 
-  interface->onBoardLED->LED_RED_CH = 0;
-  interface->onBoardLED->LED_BLUE_CH = 2;
-  interface->onBoardLED->LED_GREEN_CH = 9;
+  interface->onBoardLED->LED_RED_CH = 5;
+  interface->onBoardLED->LED_BLUE_CH = 4;
+  interface->onBoardLED->LED_GREEN_CH = 3;
 
   // ___________ MCU freq ____________________
   interface-> SAMPLING_FREQUENCY = 240;
@@ -350,17 +355,15 @@ void setup() {
   mserial->printStrln(" MHz\n");
 
   interface->setMCUclockFrequency( interface->WIFI_FREQUENCY);
-  mserial->printStrln("setting to Boot min CPU Freq = " + String(getCpuFrequencyMhz()));
+  mserial->printStrln("setting Boot MCU Freq to " + String(getCpuFrequencyMhz()) +"MHz");
   mserial->printStrln("");
-
-
 
   // init BLE
   BLE_init();
 
   //init wifi
   mWifi->init(interface, drive, interface->onBoardLED);
-  mWifi->OTA_FIRMWARE_SERVER_URL = "https://github.com/aeonSolutions/AeonLabs-Smart-Power-Switch-Outlet/releases/download/openFirmware/firmware.bin";
+  mWifi->OTA_FIRMWARE_SERVER_URL = "https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/releases/download/openFirmware/firmware.bin";
 
   mWifi->WIFIscanNetworks();
 
@@ -369,9 +372,6 @@ void setup() {
 
   interface->onBoardLED->led[0] = interface->onBoardLED->LED_RED;
   interface->onBoardLED->statusLED(100, 0);
-
-
-  mserial->printStrln("[APP] Free memory: " + String(esp_get_free_heap_size()) + " bytes");
   
   //init measurements
   measurements->init(interface, display, mWifi, onBoardSensors);
@@ -391,10 +391,8 @@ void setup() {
   mWifi->$espunixtimeDeviceDisconnected = millis();
 
   prevMeasurementMillis = millis();
-  mserial->printStrln("Free memory: " + addThousandSeparators( std::string( String(esp_get_free_heap_size() ).c_str() ) ) + " bytes");
   
-    mserial->printStrln("Starting MCU cores... \n");
-
+  mserial->printStr("Starting MCU cores... ");
 /*
   xTaskCreatePinnedToCore (
     loop2,     // Function to implement the task
@@ -407,8 +405,10 @@ void setup() {
   );
 */
   MemLockSemaphoreBLE_RX = xSemaphoreCreateMutex();
+  mserial->printStrln("done. ");
 
-  mserial->printStrln("\nsetup is completed. You may start using the " + String(DEVICE_NAME) );
+  mserial->printStrln("Free memory: " + addThousandSeparators( std::string( String(esp_get_free_heap_size() ).c_str() ) ) + " bytes");
+  mserial->printStrln("\nSetup is completed. You may start using the " + String(DEVICE_NAME) );
   mserial->printStrln("Type $? for a List of commands.\n");
 
   interface->onBoardLED->led[0] = interface->onBoardLED->LED_GREEN;
@@ -501,9 +501,7 @@ void loop2 (void* pvParameters) {
 
 //************************** == Core 2: Connectivity WIFI & BLE == ***********************************************************
 void loop(){  
-  if (millis() - beacon > 10000) {
-    mserial->printStrln(" beacon ");
-    
+  if (millis() - beacon > 60000) {    
     beacon = millis();
     mserial->printStrln("(" + String(beacon) + ") Free memory: " + addThousandSeparators( std::string( String(esp_get_free_heap_size() ).c_str() ) ) + " bytes\n", mSerial::DEBUG_TYPE_VERBOSE, mSerial::DEBUG_ALL_USB_UART_BLE);
   }

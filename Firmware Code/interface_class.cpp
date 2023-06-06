@@ -38,7 +38,7 @@ https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/wiki/AeonLabs-Solutio
 #include "mserial.h"
 #include <WiFiMulti.h>
 #include "lang_base.h"
-#include "lang_scc.h"
+#include "lang_12daq.h"
 
 INTERFACE_CLASS::INTERFACE_CLASS(){
   this->firmware_version="-.-.-";
@@ -101,7 +101,7 @@ void INTERFACE_CLASS::settings_defaults(){
    
   this->Measurments_EN=false;
   this->Measurments_NEW=false;
-  this->config.SENSOR_DATA_FILENAME="concrete_curing.csv";
+  this->config.SENSOR_DATA_FILENAME="measurements.csv";
   this->config.DEVICE_PASSWORD="";
   
   this->config.MOTION_SENSITIVITY = 0.07;
@@ -131,7 +131,7 @@ void INTERFACE_CLASS::settings_defaults(){
         this->UARTserial->print("The current Serial Baud speed on the UART Port is ");
         this->UARTserial->println(this->MCU_FREQUENCY_SERIAL_SPEED);
 
-      this->mserial->printStrln("Setting to min CPU Freq = " + String(getCpuFrequencyMhz()));
+      this->mserial->printStrln("Setting MCU Freq to  " + String(getCpuFrequencyMhz()) + "MHz" );
       this->McuFrequencyBusy = false;
     xSemaphoreGive(this->McuFreqSemaphore);
     return true;

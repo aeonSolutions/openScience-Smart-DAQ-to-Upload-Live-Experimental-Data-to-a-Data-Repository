@@ -44,7 +44,7 @@ DISPLAY_LCD_CLASS::DISPLAY_LCD_CLASS() {
 // *************************************************************************************
 void DISPLAY_LCD_CLASS::init(INTERFACE_CLASS* interface, M_WIFI_CLASS* mWifi){
   this->interface=interface;
-  this->interface->mserial->printStr("init LCD Display Library ...");
+  this->interface->mserial->printStr("\nInit LCD Display Library ...");
   this->mWifi= mWifi;
 
   // LCD backligth

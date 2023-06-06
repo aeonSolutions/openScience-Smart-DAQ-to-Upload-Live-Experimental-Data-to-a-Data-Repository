@@ -66,12 +66,12 @@ void mSerial::start(int baud) {
   if (this->DEBUG_EN) {
     if ( this->DEBUG_TO == this->DEBUG_BOTH_USB_UART || this->DEBUG_TO == this->DEBUG_TO_USB ){    
       Serial.begin(115200);
-      Serial.println("mSerial started on the USB PORT.");
+      Serial.println("\nmSerial started on the USB PORT.");
     }
 
     if ( this->DEBUG_TO == this->DEBUG_BOTH_USB_UART || this->DEBUG_TO == this->DEBUG_TO_UART ){
       this->UARTserial->begin(baud);
-      this->UARTserial->println("mSerial started on the UART PORT.");
+      this->UARTserial->println("\nmSerial started on the UART PORT.");
     }
   }
 }

@@ -46,7 +46,7 @@ ONBOARD_SENSORS::ONBOARD_SENSORS(){
 
 void ONBOARD_SENSORS::init(INTERFACE_CLASS* interface, mSerial* mserial){
     this->mserial=mserial;
-    this->mserial->printStrln("Onboard Sensors:");
+    this->mserial->printStrln("\nInit onboard sensors...");
     
     this->interface=interface;
     this->i2c_err_t[0]="I2C_ERROR_OK";
@@ -74,7 +74,7 @@ void ONBOARD_SENSORS::init(INTERFACE_CLASS* interface, mSerial* mserial){
     this->numtimesMotionDetected=0;
 
     time(&this->$espunixtimePrev);
-
+    this->mserial->printStrln("done.");
 }
 
 // ***************************************************************
@@ -110,7 +110,7 @@ void ONBOARD_SENSORS::startAHT() {
         this->mserial->printStrln(" <<>> calibrated: " + String( this->aht20->isCalibrated() == 1 ? "True" : "False" ) );
     }else{
         this->AHTsensorAvail = false;
-        this->mserial->printStrln("AHT sensor not found ");
+        this->mserial->printStrln("AHT sensor not found at specified address (0x"+String(this->AHT20_ADDRESS, HEX)+")");
         interface->onBoardLED->led[0] = interface->onBoardLED->LED_RED;
         interface->onBoardLED->statusLED(100,2); 
     }
@@ -118,19 +118,20 @@ void ONBOARD_SENSORS::startAHT() {
 // ********************************************************
 
 void ONBOARD_SENSORS::startLSM6DS3(){
-  this->mserial->printStr("Starting Motion Sensor...");
+
 
   if ( LSM6DS3sensor.begin() != 0 ) {
-    this->mserial->printStrln("\nError starting the sensor at specified address");
+    this->mserial->printStrln("\nError starting the motion sensor at specified address (0x"+String(this->LSM6DS3_ADDRESS, HEX)+")");
     interface->onBoardLED->led[0] = interface->onBoardLED->LED_RED;
     interface->onBoardLED->statusLED(100,2); 
     this->MotionSensorAvail=false;
   } else {
-    this->mserial->printStrln("done.");
+    this->mserial->printStr("Starting Motion Sensor...");
     interface->onBoardLED->led[0] = interface->onBoardLED->LED_GREEN;
     interface->onBoardLED->statusLED(100,0); 
     this->NUMBER_OF_ONBOARD_SENSORS=this->NUMBER_OF_ONBOARD_SENSORS+1;
     this->MotionSensorAvail = true; 
+    this->mserial->printStrln("done.");
   }
 }
 

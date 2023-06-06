@@ -81,7 +81,6 @@ bool FILE_CLASS::init(fs::LittleFSFS &fs, String partitionName, uint8_t maxFiles
         return false;
     }
 
-    this->mserial->printStrln("File system mounted");
     this->mserial->printStrln("Total space: " + addThousandSeparators( std::string( String(fs.totalBytes() ).c_str() ) ) + " bytes");
     this->mserial->printStrln("used space: " + addThousandSeparators( std::string( String(fs.usedBytes() ).c_str() ) )  + " bytes\n" );
     return true;
@@ -89,7 +88,7 @@ bool FILE_CLASS::init(fs::LittleFSFS &fs, String partitionName, uint8_t maxFiles
 
 // ************************************************************
 void FILE_CLASS::partition_info(){
-    this->mserial->printStrln("Storage Partition list:", mSerial::DEBUG_TYPE_VERBOSE, mSerial::DEBUG_ALL_USB_UART_BLE);
+    this->mserial->printStrln("\nStorage Partition list:", mSerial::DEBUG_TYPE_VERBOSE, mSerial::DEBUG_ALL_USB_UART_BLE);
     partloop(ESP_PARTITION_TYPE_DATA);
     partloop(ESP_PARTITION_TYPE_APP);
 

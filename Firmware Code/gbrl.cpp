@@ -45,7 +45,7 @@ GBRL::GBRL() {
 
 void GBRL::init(INTERFACE_CLASS* interface, M_WIFI_CLASS* mWifi){
   this->interface=interface;
-  this->interface->mserial->printStr("init GBRL ...");
+  this->interface->mserial->printStr("\ninit GBRL ...");
   this->mWifi= mWifi;
   this->interface->mserial->printStrln("done.");
 }

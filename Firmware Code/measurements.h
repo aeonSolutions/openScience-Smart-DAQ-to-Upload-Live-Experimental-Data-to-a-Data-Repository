@@ -47,6 +47,10 @@ extern "C"
 #include <semphr.h>
 #include "onboard_sensors.h"
 
+#include "sensors/ds18b20.h"
+#include "sensors/sht3x.h"
+#include "sensors/aht20.h"
+
 #ifndef MEASUREMENTS_COMMANDS  
   #define MEASUREMENTS_COMMANDS
   
@@ -59,6 +63,11 @@ class MEASUREMENTS {
         DISPLAY_LCD_CLASS* display = NULL;
         ONBOARD_SENSORS* onBoardSensors = NULL;
 
+        DS18B20_SENSOR* ds18b20 = nullptr;
+        SHT3X_SENSOR* sht3x =nullptr;
+        AHT20_SENSOR* aht20 = nullptr;
+        SHT3X_SENSOR* sht3x = nullptr;
+
         unsigned long LAST_DATASET_UPLOAD = 0;
         unsigned long LAST_DATA_MEASUREMENTS = 0;
         unsigned long MAX_LATENCY_ALLOWED;
@@ -70,13 +79,6 @@ class MEASUREMENTS {
         char ****measurements = NULL; //pointer to pointer
         int measurements_current_pos=0;
 
-        // external 3V3 power
-        uint8_t ENABLE_3v3_PWR;
-        // Voltage reference
-        uint8_t VOLTAGE_REF_PIN;
-        // External PWM / Digital IO Pin
-        uint8_t EXT_IO_ANALOG_PIN;
-
         const float MCU_ADC_DIVIDER = 4096.0;
         uint8_t SELECTED_ADC_REF_RESISTANCE;
 
@@ -85,9 +87,16 @@ class MEASUREMENTS {
         bool history(String $BLE_CMD, uint8_t sendTo);
         bool measurementInterval(String $BLE_CMD, uint8_t sendTo);
         bool cfg_commands(String $BLE_CMD, uint8_t sendTo);
-        bool  gbrl_summary_measurement_config( uint8_t sendTo);
+        bool gbrl_summary_measurement_config( uint8_t sendTo);
+        bool sw_commands(String $BLE_CMD, uint8_t sendTo);
 
     public:
+        // external 3V3 power
+        uint8_t ENABLE_3v3_PWR_PIN;
+        // Voltage reference
+        uint8_t VOLTAGE_REF_PIN;
+        // External PWM / Digital IO Pin
+        uint8_t EXT_IO_ANALOG_PIN;
 
         bool hasNewMeasurementValues;
         float last_measured_probe_temp;
@@ -100,14 +109,7 @@ class MEASUREMENTS {
 
            // ...................................................     
         typedef struct{
-            String EXPERIMENTAL_DATA_FILENAME = "ER_measurements.csv";
-
-            // Measurements: Live Data Acquisition  ******************************
-            union Data {
-            int i;
-            float f;
-            char chr[20];
-            };  
+            String EXPERIMENTAL_DATA_FILENAME = "measurements.csv";
             
             // Measurements: RAM Storage of Live Data  ******************************
             // array size is the number of sensors to do data collection
@@ -123,7 +125,11 @@ class MEASUREMENTS {
             float ADC_REF_RESISTANCE[4];
 
             // configuration: PCB specific
-            float MCU_VDD = 3.38;
+            float    MCU_VDD = 3.38;
+
+            bool     channel_1_switch_en;
+            uint8_t  channel_1_switch_on_pos;
+            String   channel_2_sensor_type; 
 
         } config_strut;
 
@@ -142,7 +148,9 @@ class MEASUREMENTS {
 
         void settings_defaults();
         // **********************************
-        void ReadExternalAnalogData();
+        void readSensorMeasurements();
+        void readExternalAnalogData();
+        void readOnboardSensorData(int i);
         void runExternalMeasurements();
         void units();
 

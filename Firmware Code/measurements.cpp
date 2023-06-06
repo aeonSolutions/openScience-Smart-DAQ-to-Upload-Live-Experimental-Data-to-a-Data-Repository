@@ -40,12 +40,12 @@ https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/wiki/AeonLabs-Solutio
 #include <LittleFS.h>
 #include "m_atsha204.h"
 #include "lcd_icons.h"
-
+#include "m_file_functions.h"
 
 
 MEASUREMENTS::MEASUREMENTS() {
     // external 3V3 power
-    this->ENABLE_3v3_PWR = 38;
+    this->ENABLE_3v3_PWR_PIN = 38;
     // Voltage reference
     this->VOLTAGE_REF_PIN = 7;
     // External PWM / Digital IO Pin
@@ -57,17 +57,23 @@ MEASUREMENTS::MEASUREMENTS() {
 //****************************************************************
 void MEASUREMENTS::init(INTERFACE_CLASS* interface, DISPLAY_LCD_CLASS* display,M_WIFI_CLASS* mWifi, ONBOARD_SENSORS* onBoardSensors ){    
     this->interface = interface;
-    this->interface->mserial->printStr("init MEASUREMENTS library ...");
+    this->interface->mserial->printStrln("\ninit measurements library ...");
     this->mWifi = mWifi;
     this->display = display;
-    this->onBoardSensors =  onBoardSensors;    
+    this->onBoardSensors =  onBoardSensors;
+
+    // ADC 
+    pinMode(this->EXT_IO_ANALOG_PIN, INPUT);
+
+    this->ds18b20 = new DS18B20_SENSOR();
+    this->ds18b20->init(this->interface, this->EXT_IO_ANALOG_PIN);
 
     // ADC Power
-    pinMode(this->ENABLE_3v3_PWR, OUTPUT);
+    pinMode(this->ENABLE_3v3_PWR_PIN, OUTPUT);
 
     this->settings_defaults();
 
-    this->interface->mserial->printStrln("Initializing Dynamic memory with:");
+    this->interface->mserial->printStrln("Initializing Dynamic memory:");
     this->interface->mserial->printStrln("Number of SAMPLING READINGS:"+ String(this->config.NUM_SAMPLE_SAMPLING_READINGS));
     this->interface->mserial->printStrln("Number of Sensor Data values per reading:" + String(this->NUMBER_OF_SENSORS_DATA_VALUES));
     this->interface->mserial->printStrln("PSRAM buffer size:" + String(this->config.MEASUREMENTS_BUFFER_SIZE));
@@ -125,9 +131,13 @@ void MEASUREMENTS::settings_defaults(){
     this->config.ADC_REF_RESISTANCE[2] = 198000;
     this->config.ADC_REF_RESISTANCE[3] = 2000000;
 
+    this->config.channel_1_switch_en = false;
+    this->config.channel_1_switch_on_pos = 0;
+    this->config.channel_2_sensor_type = "off"; 
+
       // ADC Power
-    pinMode(ENABLE_3v3_PWR, OUTPUT);
-    digitalWrite(ENABLE_3v3_PWR,LOW); // disabled
+    pinMode(ENABLE_3v3_PWR_PIN, OUTPUT);
+    digitalWrite(ENABLE_3v3_PWR_PIN,LOW); // disabled
 }
 
 // *****************************************************
@@ -259,8 +269,7 @@ void MEASUREMENTS::runExternalMeasurements(){
       this->interface->McuFrequencyBusy=false;
     xSemaphoreGive(this->interface->McuFreqSemaphore); // exit critical section    
 
-    this->mWifi->updateInternetTime();
-    this->ReadExternalAnalogData();
+    this->readSensorMeasurements();
     
     this->interface->mserial->printStrln("Saving collected data....");
     if(datasetFileIsBusyUploadData){
@@ -268,7 +277,7 @@ void MEASUREMENTS::runExternalMeasurements(){
       this->interface->onBoardLED->led[0] = this->interface->onBoardLED->LED_RED;
       this->interface->onBoardLED->statusLED(100, 2);
     }
-    if(measurements_current_pos+1 > this->config.MEASUREMENTS_BUFFER_SIZE){
+    if(this->measurements_current_pos+1 > this->config.MEASUREMENTS_BUFFER_SIZE){
       this->interface->mserial->printStr("[mandatory wait]");  
       this->interface->onBoardLED->led[0] = this->interface->onBoardLED->LED_RED;
       this->interface->onBoardLED->statusLED(100, 0);
@@ -285,7 +294,7 @@ void MEASUREMENTS::runExternalMeasurements(){
         delay(500);
       }
       if(datasetFileIsBusyUploadData){
-        measurements_current_pos++;
+        this->measurements_current_pos++;
         this->interface->mserial->printStr("skipping file save.");  
       }else{
         this->initSaveDataset();
@@ -320,9 +329,77 @@ void MEASUREMENTS::runExternalMeasurements(){
   }
 }
 
-// *****************************************************************************
-void MEASUREMENTS::ReadExternalAnalogData() {
+// *************************************************************************
+void MEASUREMENTS::readOnboardSensorData(int i, int pos){
+    this->onBoardSensors->request_onBoard_Sensor_Measurements();
 
+    measurements[i][pos][this->measurements_current_pos]= (char*) String( this->onBoardSensors->aht_temp ).c_str();
+    measurements[i][pos+1][this->measurements_current_pos]= (char*) String( this->onBoardSensors->aht_humidity ).c_str();
+
+    measurements[i][pos+2][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_Motion_X).c_str();  
+    measurements[i][pos+3][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_Motion_Y).c_str();
+    measurements[i][pos+4][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_Motion_Z).c_str();
+
+    measurements[i][pos+5][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_GYRO_X).c_str();
+    measurements[i][pos+6][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_GYRO_Y).c_str();  
+    measurements[i][pos+7][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_GYRO_Z).c_str();
+
+    measurements[i][pos+8][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_TEMP).c_str();
+    measurements[i][pos+9][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_errors).c_str();
+}
+
+// ****************************************************************
+void readChannel2SensorMeasurements(int i, int pos){
+ // SHT3x sensor
+  if(this->channel_2_sensor_type == "sht3x"){
+    if (this->channel_1_switch_on_pos == 0){ // channel 1 is disabled
+      measurements [i][pos][this->measurements_current_pos]= (char*) this->interface->rtc.getDateTime(true).c_str();
+      pos++;
+    }
+    measurements [i][pos][this->measurements_current_pos]= (char*) String(this->sht3x->measurement[0]).c_str(); // Temp
+    measurements [i][pos][this->measurements_current_pos]= (char*) String(this->sht3x->measurement[1]).c_str();  // Humidity
+  }
+   
+  // AHT20 sensor
+  if(this->channel_2_sensor_type == "aht20"){
+    if (this->channel_1_switch_on_pos == 0){ // channel 1 is disabled
+      measurements [i][pos][this->measurements_current_pos]= (char*) this->interface->rtc.getDateTime(true).c_str();
+      pos++;
+    }
+    measurements [i][pos][this->measurements_current_pos]= (char*) String(this->aht20->measurement[0]).c_str(); // Temp
+    measurements [i][pos][this->measurements_current_pos]= (char*) String(this->aht20->measurement[1]).c_str();  // Humidity
+  }
+
+ // other sensors 
+ // ...
+
+}
+// *****************************************************************************
+void MEASUREMENTS::readSensorMeasurements() {
+  if(this->channel_1_switch_on_pos == 1){ // DS18B20 sensor
+    int zerosCount=0;
+    for (byte i = 0; i < this->config.NUM_SAMPLE_SAMPLING_READINGS; i++) {
+      this->interface->mserial->printStrln("");
+      this->interface->mserial->printStr(String(i));
+      this->interface->mserial->printStr(": ");
+
+      this->readOnboardSensorData(i, 0); // 10 readings
+
+      this->ds18b20->requestMeasurements(); 
+      measurements [i][10][this->measurements_current_pos]= (char*) this->interface->rtc.getDateTime(true).c_str();
+      measurements [i][11][this->measurements_current_pos]= (char*) String(this->ds18b20->measurement[0]).c_str();
+      
+      this->readChannel2SensorMeasurements(i,12);
+      
+      delay(this->config.SAMPLING_INTERVAL);
+    }
+  }else if (this->channel_1_switch_on_pos > 1){
+    this->readExternalAnalogData();
+  }
+
+}
+
+void MEASUREMENTS::readExternalAnalogData() {
   float adc_ch_analogRead_raw; 
   float ADC_CH_REF_VOLTAGE; 
   float adc_ch_measured_voltage; 
@@ -339,7 +416,7 @@ void MEASUREMENTS::ReadExternalAnalogData() {
   
   // ToDo: Keep ON or turn it off at the end of measurments
   // Enable power to ADC and I2C external plugs
-  digitalWrite(ENABLE_3v3_PWR,HIGH); //enable 3v3
+  digitalWrite(this->ENABLE_3v3_PWR_PIN,HIGH); //enable 3v3
 
   /*
   Set the attenuation for a particular pin
@@ -398,29 +475,16 @@ void MEASUREMENTS::ReadExternalAnalogData() {
     this->interface->mserial->printStr(String(adc_ch_calcukated_e_resistance));
     this->interface->mserial->printStrln("  Ohm");
 
+    this->readOnboardSensorData(i, 0); // 10 readings
+
     // SAMPLING_READING POS,  SENSOR POS, MEASUREMENTS_BUFFER_ POS
-    measurements [i][0][measurements_current_pos]= (char*) this->interface->rtc.getDateTime(true).c_str();
-    measurements [i][1][measurements_current_pos]= (char*) String(adc_ch_analogRead_raw).c_str();
-    measurements [i][2][measurements_current_pos]= (char*) String(ADC_CH_REF_VOLTAGE).c_str();
-    measurements [i][3][measurements_current_pos]= (char*) String(adc_ch_measured_voltage).c_str();
-    measurements [i][4][measurements_current_pos]= (char*) String(adc_ch_calcukated_e_resistance).c_str();
+    measurements [i][10][this->measurements_current_pos]= (char*) this->interface->rtc.getDateTime(true).c_str();
+    measurements [i][11][this->measurements_current_pos]= (char*) String(adc_ch_analogRead_raw).c_str();
+    measurements [i][12][this->measurements_current_pos]= (char*) String(ADC_CH_REF_VOLTAGE).c_str();
+    measurements [i][13][this->measurements_current_pos]= (char*) String(adc_ch_measured_voltage).c_str();
+    measurements [i][14][this->measurements_current_pos]= (char*) String(adc_ch_calcukated_e_resistance).c_str();
     
-
-    this->onBoardSensors->request_onBoard_Sensor_Measurements();
-
-    measurements[i][5][measurements_current_pos]= (char*) String( this->onBoardSensors->aht_temp ).c_str();
-    measurements[i][6][measurements_current_pos]= (char*) String( this->onBoardSensors->aht_humidity ).c_str();
-
-    measurements[i][7][measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_Motion_X).c_str();  
-    measurements[i][8][measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_Motion_Y).c_str();
-    measurements[i][9][measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_Motion_Z).c_str();
-
-    measurements[i][10][measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_GYRO_X).c_str();
-    measurements[i][11][measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_GYRO_Y).c_str();  
-    measurements[i][12][measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_GYRO_Z).c_str();
-
-    measurements[i][13][measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_TEMP).c_str();
-    measurements[i][14][measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_errors).c_str();
+    this->readChannel2SensorMeasurements(i,15);
 
     delay(this->config.SAMPLING_INTERVAL);
 
@@ -443,7 +507,7 @@ void MEASUREMENTS::ReadExternalAnalogData() {
 
   // ToDo: Keep ON or turn it off at the end of measurments
   // Enable power to ADC and I2C external plugs
-  digitalWrite(ENABLE_3v3_PWR,LOW); 
+  digitalWrite(this->ENABLE_3v3_PWR_PIN,LOW); 
   
   float adc_ch_measured_voltage_avg = adc_ch_measured_voltage_Sum / num_valid_sample_measurements_made;
   float adc_ch_calcukated_e_resistance_avg = adc_ch_calcukated_e_resistance_sum / num_valid_sample_measurements_made;
@@ -534,14 +598,14 @@ bool MEASUREMENTS::initializeDynamicVar(  int size1D, int size2D, int size3D){
 // --------------------------------------------------------------------------
 
 bool MEASUREMENTS::saveSettings(fs::FS &fs){
-    this->interface->mserial->printStrln( this->interface->DeviceTranslation("save_mat_settings")  + "...");
+    this->interface->mserial->printStrln( this->interface->DeviceTranslation("save_daq_settings")  + "...");
 
-    if (fs.exists("/maturity.cfg") )
-        fs.remove("/maturity.cfg");
+    if (fs.exists("/measurements.cfg") )
+        fs.remove("/measurements.cfg");
 
-    File settingsFile = fs.open("/maturity.cfg", FILE_WRITE); 
+    File settingsFile = fs.open("/measurements.cfg", FILE_WRITE); 
     if ( !settingsFile ){
-        this->interface->mserial->printStrln( this->interface->DeviceTranslation("err_create_mat_settings") + ".");
+        this->interface->mserial->printStrln( this->interface->DeviceTranslation("err_create_daq_settings") + ".");
         settingsFile.close();
         return false;
     }
@@ -554,14 +618,14 @@ bool MEASUREMENTS::saveSettings(fs::FS &fs){
 // --------------------------------------------------------------------
 
 bool MEASUREMENTS::readSettings(fs::FS &fs){    
-    File settingsFile = fs.open("/maturity.cfg", FILE_READ);
+    File settingsFile = fs.open("/measurements.cfg", FILE_READ);
     if (!settingsFile){
-        this->interface->mserial->printStrln( this->interface->DeviceTranslation("err_notfound_mat_settings")  + ".");
+        this->interface->mserial->printStrln( this->interface->DeviceTranslation("err_notfound_daq_settings")  + ".");
         settingsFile.close();
         return false;
     }
     if (settingsFile.size() == 0){
-        this->interface->mserial->printStrln( this->interface->DeviceTranslation("err_invalid_mat_settings") + ".");
+        this->interface->mserial->printStrln( this->interface->DeviceTranslation("err_invalid_daq_settings") + ".");
         settingsFile.close();
         return false;    
     }
@@ -583,24 +647,27 @@ bool MEASUREMENTS::readSettings(fs::FS &fs){
         return false;
 
     String dataStr="Measurements GBRL Commands:\n" \
-                    "set sw off          - Set all switch off\n" \
-                    "set sw1 [on/off]    - Position 1 on the Switch for the Temperature Sensor\n" \
-                    "set sw2 [on/off]    - Position 2 on the Switch: Ohmmeter 1K dvider\n" \
-                    "set sw3 [on/off]    - Position 3 on the Switch: Ohmmeter 20K dvider\n" \
-                    "set sw4 [on/off]    - Position 4 on the Switch: Ohmmeter 200K dvider\n" \
-                    "set sw5 [on/off]    - Position 5 on the Switch: Ohmmeter 2M dvider\n" \
-                    "set sensor [sht3x]  - Set I2C sensor to the selected\n" \
+                    "$view ch1              - View port 1 configuration\n" \
+                    "$set sw off            - Set all switch off\n" \
+                    "$set sw1 on            - Position 1 on the Switch for the Temperature Sensor\n" \
+                    "$set sw2 on            - Position 2 on the Switch: Ohmmeter 1K dvider\n" \
+                    "$set sw3 on            - Position 3 on the Switch: Ohmmeter 20K dvider\n" \
+                    "$set sw4 on            - Position 4 on the Switch: Ohmmeter 200K dvider\n" \
+                    "$set sw5 on            - Position 5 on the Switch: Ohmmeter 2M dvider\n" \
+                    "\n" \                           
+                    "$view ch2              - View port 2 configuration\n" \
+                    "$set ch2 [off/sht3x]   - Connect the selected sensor to port 2 (I2C)\n" \
                     "\n" \                    
-                    "$ufid               - "+ this->interface->DeviceTranslation("ufid") +" unique fingerprint ID\n" \
-                    "$me new             - "+ this->interface->DeviceTranslation("me_new") +"\n" \
-                    "$me start           - "+ this->interface->DeviceTranslation("me_start") +"\n" \
-                    "$me end             - "+ this->interface->DeviceTranslation("me_end") +"\n" \
-                    "$me status          - "+ this->interface->DeviceTranslation("me_status") +"\n" \
+                    "$ufid                  - "+ this->interface->DeviceTranslation("ufid") +" unique fingerprint ID\n" \
+                    "$me new                - "+ this->interface->DeviceTranslation("me_new") +"\n" \
+                    "$me start              - "+ this->interface->DeviceTranslation("me_start") +"\n" \
+                    "$me end                - "+ this->interface->DeviceTranslation("me_end") +"\n" \
+                    "$me status             - "+ this->interface->DeviceTranslation("me_status") +"\n" \
                     "\n" \        
-                    "$history            - "+ this->interface->DeviceTranslation("history") +"\n" \
-                    "$ns                 - "+ this->interface->DeviceTranslation("ns") +"\n" \
-                    "$mi                 - "+ this->interface->DeviceTranslation("mi") +"\n" \      
-                    "$set mi [sec]       - "+ this->interface->DeviceTranslation("set_mi") +"\n\n";
+                    "$history               - "+ this->interface->DeviceTranslation("history") +"\n" \
+                    "$ns                    - "+ this->interface->DeviceTranslation("ns") +"\n" \
+                    "$mi                    - "+ this->interface->DeviceTranslation("mi") +"\n" \      
+                    "$set mi [sec]          - "+ this->interface->DeviceTranslation("set_mi") +"\n\n";
 
     this->interface->sendBLEstring( dataStr, sendTo);
       
@@ -611,51 +678,82 @@ bool MEASUREMENTS::readSettings(fs::FS &fs){
 
 
 bool MEASUREMENTS::gbrl_commands(String $BLE_CMD, uint8_t sendTo){
-    long int hourT; 
-    long int minT; 
-    long int secT; 
-    long int daysT;
     String dataStr="";
-    long int $timedif;
+
+    if($BLE_CMD.indexOf("$set ch2")>-1){
+      dataStr = "";
+      if ($BLE_CMD == "$set ch2 sht3x"){
+        dataStr = "A SHT3x sensor is now connected to channel 2.\n";
+        this->config.channel_2_sensor_type = "sht3x";
+      }
+      if ($BLE_CMD == "$set ch2 off"){
+        dataStr = "Channel 2 is now disabled.\n";
+        this->config.channel_2_sensor_type = "off";
+      }
+      if (dataStr != ""){
+        this->interface->sendBLEstring( dataStr + "\n" , sendTo); 
+        this->saveSettings();
+        return true;
+      }
+    }
+
+    if ($BLE_CMD == "$view ch2"){
+      dataStr = "Channel 2 current configuration is : " + String(this->config.channel_2_sensor_type) +"\n";
+      this->interface->sendBLEstring( dataStr , sendTo); 
+      return true;
+    }
+
+    if ($BLE_CMD == "$view ch1"){
+      dataStr = "Current configuration on the channel 1 switch is :\n";
+      if (this->config.channel_1_switch_en){
+        dataStr += "Enabled, switch " + String(this->config.channel_1_switch_on_pos) + " is ON all other are set to OFF.\n";
+      } else {
+        dataStr += "Disabled. (all switches are set to OFF)\n";
+      }
+      this->interface->sendBLEstring( dataStr + "\n" , sendTo); 
+      return true;
+    }
+
+    if($BLE_CMD.indexOf("$set sw")>-1){
+      return this->sw_commands( $BLE_CMD,  sendTo);
+    }
 
     if ($BLE_CMD == "$ufid"){
-        if (this->DATASET_NUM_SAMPLES == 0){
-            dataStr = this->interface->DeviceTranslation("no_data_entries") + "." +String(char(10));
-            this->interface->sendBLEstring( dataStr, sendTo);
-            return true;
-        }
-        dataStr =  this->interface->DeviceTranslation("calc_ufid") + "..." + this->interface->BaseTranslation("wait_moment")  + "." +String(char(10));
-        this->interface->sendBLEstring( dataStr, sendTo);
-        
-        this->interface->setMCUclockFrequency(this->interface->MAX_FREQUENCY);
-        
-        dataStr += "Unique Data Fingerprint ID:"+String(char(10));
-        dataStr += CryptoICserialNumber(this->interface)+"-"+macChallengeDataAuthenticity(this->interface, String(this->interface->rtc.getDateTime(true)) + String(roundFloat(this->last_measured_probe_temp,2)) );
-        dataStr += String(char(10) + String(char(10)) );
-        
-        this->interface->setMCUclockFrequency(this->interface->CURRENT_CLOCK_FREQUENCY);
-        this->interface->sendBLEstring( dataStr, sendTo);
-        return true;
+      if (this->DATASET_NUM_SAMPLES == 0){
+          dataStr = this->interface->DeviceTranslation("no_data_entries") + "." +String(char(10));
+          this->interface->sendBLEstring( dataStr, sendTo);
+          return true;
+      }
+      dataStr =  this->interface->DeviceTranslation("calc_ufid") + "..." + this->interface->BaseTranslation("wait_moment")  + "." +String(char(10));
+      this->interface->sendBLEstring( dataStr, sendTo);
+      
+      this->interface->setMCUclockFrequency(this->interface->MAX_FREQUENCY);
+      
+      dataStr += "Unique Data Fingerprint ID:"+String(char(10));
+      dataStr += CryptoICserialNumber(this->interface)+"-"+macChallengeDataAuthenticity(this->interface, String(this->interface->rtc.getDateTime(true)) + String(roundFloat(this->last_measured_probe_temp,2)) );
+      dataStr += String(char(10) + String(char(10)) );
+      
+      this->interface->setMCUclockFrequency(this->interface->CURRENT_CLOCK_FREQUENCY);
+      this->interface->sendBLEstring( dataStr, sendTo);
+      return true;
     }
-
 
     if($BLE_CMD == "$mi"){
-        dataStr= this->interface->DeviceTranslation("curr_measure_interval") + " " + String(roundFloat(this->config.MEASUREMENT_INTERVAL/(60*1000) ,2)) + String(" min") + String(char(10));
-        this->interface->sendBLEstring( dataStr, sendTo);
-        return true;
+      dataStr= this->interface->DeviceTranslation("curr_measure_interval") + " " + String(roundFloat(this->config.MEASUREMENT_INTERVAL/(60*1000) ,2)) + String(" min") + String(char(10));
+      this->interface->sendBLEstring( dataStr, sendTo);
+      return true;
     }
 
-
     if( $BLE_CMD == "$me status"){
-        if( this->Measurments_EN == false){
-            dataStr = this->interface->DeviceTranslation("measure_not_started") +  String("\n\n");
-        } else{
-            dataStr = this->interface->DeviceTranslation("measure_already_started") + String("\n");
-            dataStr += this->interface->DeviceTranslation("measure_num_records") + " " + String(this->DATASET_NUM_SAMPLES) + "\n\n";
-        }
+      if( this->Measurments_EN == false){
+          dataStr = this->interface->DeviceTranslation("measure_not_started") +  String("\n\n");
+      } else{
+          dataStr = this->interface->DeviceTranslation("measure_already_started") + String("\n");
+          dataStr += this->interface->DeviceTranslation("measure_num_records") + " " + String(this->DATASET_NUM_SAMPLES) + "\n\n";
+      }
 
-        this->interface->sendBLEstring( dataStr, sendTo); 
-        return true;
+      this->interface->sendBLEstring( dataStr, sendTo); 
+      return true;
     }
     if( $BLE_CMD == "$me new"){
         this->Measurments_NEW=true;
@@ -715,6 +813,60 @@ bool MEASUREMENTS::gbrl_commands(String $BLE_CMD, uint8_t sendTo){
    return ( result || result2 || result3 || result4 );
 
 }
+
+// ****************************************************
+bool MEASUREMENTS::sw_commands(String $BLE_CMD, uint8_t sendTo){
+    String dataStr="";
+
+    if($BLE_CMD.indexOf("$set sw off")>-1){
+      this->config.channel_1_switch_en=false;
+      this->config.channel_1_switch_on_pos=0;
+      uint8_t SELECTED_ADC_REF_RESISTANCE=0;      
+      dataStr =" All channel 1 switches set to OFF postion\n";
+    }
+
+    if($BLE_CMD.indexOf("$set sw1 on")>-1){
+      this->config.channel_1_switch_en=true;
+      this->config.channel_1_switch_on_pos=1;
+      dataStr =" position 1 on channel 1 switch set to ON postion. All other are set to OFF\n";
+    }
+      
+    if($BLE_CMD.indexOf("$set sw2 on")>-1){
+      this->config.channel_1_switch_en=true;
+      this->config.channel_1_switch_on_pos=2;
+      this->SELECTED_ADC_REF_RESISTANCE = 0;
+
+      dataStr =" position 2 on on channel 1 switch set to ON postion ("+ addThousandSeparators( std::string( String(this->config.ADC_REF_RESISTANCE[this->SELECTED_ADC_REF_RESISTANCE]).c_str() ) ) +" Ohm). All other are set to OFF\n";
+    }
+
+    if($BLE_CMD.indexOf("$set sw3 on")>-1){
+      this->config.channel_1_switch_en=true;
+      this->config.channel_1_switch_on_pos=3;
+      this->SELECTED_ADC_REF_RESISTANCE = 1;
+      dataStr =" position 3 on on channel 1 switch set to ON postion ("+ addThousandSeparators( std::string( String(this->config.ADC_REF_RESISTANCE[this->SELECTED_ADC_REF_RESISTANCE] ).c_str()) ) +" Ohm). All other are set to OFF\n";
+    }
+
+    if($BLE_CMD.indexOf("$set sw4 on")>-1){
+      this->config.channel_1_switch_en=true;
+      this->config.channel_1_switch_on_pos=4;
+      this->SELECTED_ADC_REF_RESISTANCE = 2;
+      dataStr =" position 4 on on channel 1 switch set to ON postion ("+ addThousandSeparators( std::string( String(this->config.ADC_REF_RESISTANCE[this->SELECTED_ADC_REF_RESISTANCE] ).c_str() )) +" Ohm). All other are set to OFF\n";
+    }
+
+   if($BLE_CMD.indexOf("$set sw5 on")>-1){
+      this->config.channel_1_switch_en=true;
+      this->config.channel_1_switch_on_pos=5;
+      this->SELECTED_ADC_REF_RESISTANCE = 3;
+      dataStr =" position 5 on on channel 1 switch set to ON postion ("+ addThousandSeparators( std::string( String(this->config.ADC_REF_RESISTANCE[this->SELECTED_ADC_REF_RESISTANCE] ).c_str() )) +" Ohm). All other are set to OFF\n";
+    }
+    
+    this->saveSettings();
+
+    this->interface->sendBLEstring( dataStr + "\n" , sendTo); 
+    return true;
+  
+}
+
 // ********************************************************
 bool MEASUREMENTS:: gbrl_summary_measurement_config( uint8_t sendTo){
     String dataStr = this->interface->DeviceTranslation("config_summary") +  ":\n";
