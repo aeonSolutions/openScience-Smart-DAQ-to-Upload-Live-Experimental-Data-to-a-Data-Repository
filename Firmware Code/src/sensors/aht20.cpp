@@ -35,14 +35,14 @@ https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/wiki/AeonLabs-Solutio
 #include "aht20.h"
 #include "Arduino.h"
 
-DS18B20_SENSOR::DS18B20_SENSOR() {
+AHT20_SENSOR::AHT20_SENSOR() {
   this->AHT20_ADDRESS = 0x38;
   this->numSensors=2;
   this->measurement = new float[numSensors];
   this->measurement_label = new String[] {"Temperature", "Humidity"};
 }
 
-void DS18B20_SENSOR::init(INTERFACE_CLASS* interface, uint8_t AHT20_ADDRESS){
+void AHT20_SENSOR::init(INTERFACE_CLASS* interface, uint8_t AHT20_ADDRESS){
   this->interface=interface;
   this->interface->mserial->printStr("\ninit AHT20 sensor ...");
   this->AHT20_ADDRESS = AHT20_ADDRESS;
@@ -54,7 +54,7 @@ void DS18B20_SENSOR::init(INTERFACE_CLASS* interface, uint8_t AHT20_ADDRESS){
 }
 
 // ********************************************************
-void ONBOARD_SENSORS::startAHT() {
+void AHT20_SENSOR::startAHT() {
   
     Wire.begin();
 
@@ -72,7 +72,7 @@ void ONBOARD_SENSORS::startAHT() {
 }
 
 // *************************************************
- bool DS18B20_SENSOR::requestMeasurements(){
+ bool AHT20_SENSOR::requestMeasurements(){
     if (this->sensorAvailable == false) {
       startAHT(); 
     }  
@@ -99,7 +99,7 @@ void ONBOARD_SENSORS::startAHT() {
 
 
 // *********************************************************
- bool DS18B20_SENSOR::helpCommands(uint8_t sendTo ){
+ bool AHT20_SENSOR::helpCommands(uint8_t sendTo ){
     String dataStr="GBRL commands:\n" \
                     "$help $?                           - View available GBRL commands\n" \
                     "$lang set [country code]           - Change the smart device language\n\n";
@@ -109,7 +109,7 @@ void ONBOARD_SENSORS::startAHT() {
  }
 // ******************************************************************************************
 
-bool DS18B20_SENSOR::commands(String $BLE_CMD, uint8_t sendTo ){
+bool AHT20_SENSOR::commands(String $BLE_CMD, uint8_t sendTo ){
   String dataStr="";
   if($BLE_CMD.indexOf("$lang dw ")>-1){
     return this->set_device_language($BLE_CMD, sendTo);
