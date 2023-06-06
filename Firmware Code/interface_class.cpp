@@ -42,34 +42,32 @@ https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/wiki/AeonLabs-Solutio
 
 INTERFACE_CLASS::INTERFACE_CLASS(){
   this->firmware_version="-.-.-";
-}
-
-void INTERFACE_CLASS::init( mSerial* mserial, bool DEBUG_ENABLE) {  
-  this->mserial=mserial;
-  this->mserial->DEBUG_EN=DEBUG_ENABLE;
-  this->onBoardLED = new ONBOARD_LED_CLASS();
-
-  // I2C IOs  __________________________
-  this->I2C_SDA_IO_PIN = 8;
-  this->I2C_SCL_IO_PIN = 9;
-  // Power Saving ____________________________________
-  this->LIGHT_SLEEP_EN=false;
-  // External Ports IO Pin assignment ________________________________
-  this-> EXT_PLUG_PWR_EN = 2;
-  // ________________ Onborad LED  _____________
-  this->onBoardLED->LED_RED = 11;
-  this->onBoardLED->LED_BLUE = 13;
-  this->onBoardLED->LED_GREEN = 10;
-
-  this->onBoardLED->LED_RED_CH = 0;
-  this->onBoardLED->LED_BLUE_CH = 2;
-  this->onBoardLED->LED_GREEN_CH = 9;
+  
   // ___________ MCU freq ____________________
   this->SAMPLING_FREQUENCY = 80; 
   this->MAX_FREQUENCY=240;
   this->WIFI_FREQUENCY = 80; // min WIFI MCU Freq is 80-240
   this->MIN_MCU_FREQUENCY = 40;
   this->SERIAL_DEFAULT_SPEED = 115200;
+
+    // I2C IOs  __________________________
+  this->I2C_SDA_IO_PIN = 8;
+  this->I2C_SCL_IO_PIN = 9;
+  
+  // Power Saving ____________________________________
+  this->LIGHT_SLEEP_EN=false;
+
+  // External Ports IO Pin assignment ________________________________
+  this-> EXT_PLUG_PWR_EN = 2;
+  this->BATTERY_ADC_IO= 1;
+
+}
+
+void INTERFACE_CLASS::init( mSerial* mserial, bool DEBUG_ENABLE) {  
+  this->mserial=mserial;
+  this->mserial->DEBUG_EN=DEBUG_ENABLE;
+
+  this->BL = Pangodream_18650_CL( this->BATTERY_ADC_IO, 1.7, 20);
 
   this->loadDefaultLanguagePack( );
 
@@ -114,7 +112,32 @@ void INTERFACE_CLASS::settings_defaults(){
   this->mserial->printStrln("settings defaults loaded.");
 }
 // ****************************************************
+  bool INTERFACE_CLASS::setMCUclockFrequency(int clockFreq){
+    xSemaphoreTake(this->McuFreqSemaphore, portMAX_DELAY);
+      this->McuFrequencyBusy = true;
+        this->UARTserial->flush();
+        
+        setCpuFrequencyMhz(Freq);
+        this->CURRENT_CLOCK_FREQUENCY=Freq;
+        if (Freq < 80) {
+          this->MCU_FREQUENCY_SERIAL_SPEED = 80 / Freq * this->SERIAL_DEFAULT_SPEED;
+        } else {
+          this->MCU_FREQUENCY_SERIAL_SPEED = this->SERIAL_DEFAULT_SPEED;
+        }
+        
+        this->UARTserial->end();  
+        delay(300);
+        this->UARTserial->begin(this->MCU_FREQUENCY_SERIAL_SPEED);
+        this->UARTserial->print("The current Serial Baud speed on the UART Port is ");
+        this->UARTserial->println(this->MCU_FREQUENCY_SERIAL_SPEED);
 
+      this->mserial->printStrln("Setting to min CPU Freq = " + String(getCpuFrequencyMhz()));
+      this->McuFrequencyBusy = false;
+    xSemaphoreGive(this->McuFreqSemaphore);
+    return true;
+  };
+
+// ***************************************************************
     String INTERFACE_CLASS::DeviceTranslation(String key){
       if ( this->deviceLangJson.isNull() == false ){
         if(this->deviceLangJson.containsKey(key)){

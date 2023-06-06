@@ -85,7 +85,7 @@ class ONBOARD_SENSORS {
     bool motionDetect();
     bool motionShakeDetected(uint8_t numShakes);
 
-    bool commands(String $BLE_CMD, uint8_t sendTo);
+    bool gbrl_commands(String $BLE_CMD, uint8_t sendTo);
     bool helpCommands(uint8_t sendTo);
     void initRollTheshold();
 };

@@ -54,11 +54,6 @@ https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/wiki/AeonLabs-Solutio
   //* Pangodream_18650_CL BL(ADC_PIN, CONV_FACTOR, READS);
   #include "BAT_18650_CL.h"
 
-  #define BATTERY_CONV_FACTOR 1.7
-  #define BATTERY_READS 20
-  #define BATTERY_ADC_IO_NUM 21
-  
-
 class INTERFACE_CLASS {
   private:
     uint8_t number_WIFI_networks;
@@ -112,8 +107,8 @@ class INTERFACE_CLASS {
     int8_t I2C_SCL_IO_PIN;
 
    // ******************** Battery  **************************
-    static constexpr int8_t BATTERY_ADC_IO = BATTERY_ADC_IO_NUM;
-    Pangodream_18650_CL BL = Pangodream_18650_CL( BATTERY_ADC_IO_NUM, 1.7, 20);
+    int8_t BATTERY_ADC_IO;
+    Pangodream_18650_CL BL;
 
     // ******************* MCU frequency  *********************
     //function takes the following frequencies as valid values:
@@ -185,6 +180,7 @@ class INTERFACE_CLASS {
 
     void init_NTP_Time(char* ntpServer_="pool.ntp.org", long gmtOffset_sec_=0, int daylightOffset_sec=3600, long NTP_request_interval_=64000);
 
+    bool setMCUclockFrequency(int clockFreq);
 
     bool loadDeviceLanguagePack(String country, uint8_t sendTo );
     bool loadBaseLanguagePack(String country, uint8_t sendTo );

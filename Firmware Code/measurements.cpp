@@ -39,8 +39,9 @@ https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/wiki/AeonLabs-Solutio
 #include "FS.h"
 #include <LittleFS.h>
 #include "m_atsha204.h"
-#include "manage_mcu_freq.h"
 #include "lcd_icons.h"
+
+
 
 MEASUREMENTS::MEASUREMENTS() {
     // external 3V3 power
@@ -54,28 +55,28 @@ MEASUREMENTS::MEASUREMENTS() {
 
 
 //****************************************************************
-void MEASUREMENTS::init(INTERFACE_CLASS* interface, DISPLAY_LCD_CLASS* display,M_WIFI_CLASS* mWifi, ONBOARD_SENSORS* onBoardSensors ){
-    this->interface=interface;
+void MEASUREMENTS::init(INTERFACE_CLASS* interface, DISPLAY_LCD_CLASS* display,M_WIFI_CLASS* mWifi, ONBOARD_SENSORS* onBoardSensors ){    
+    this->interface = interface;
     this->interface->mserial->printStr("init MEASUREMENTS library ...");
-    this->mWifi= mWifi;
+    this->mWifi = mWifi;
     this->display = display;
-    this->onBoardSensors =  onBoardSensors;
-    
+    this->onBoardSensors =  onBoardSensors;    
+
     // ADC Power
-    pinMode(ENABLE_3v3_PWR, OUTPUT);
+    pinMode(this->ENABLE_3v3_PWR, OUTPUT);
 
     this->settings_defaults();
 
-    this->interface->mserial->printStrln("Sensor detection completed. Initializing Dynamic memory with:");
+    this->interface->mserial->printStrln("Initializing Dynamic memory with:");
     this->interface->mserial->printStrln("Number of SAMPLING READINGS:"+ String(this->config.NUM_SAMPLE_SAMPLING_READINGS));
-    this->interface->mserial->printStrln("Number of Sensor Data values per reading:" + String(NUMBER_OF_SENSORS_DATA_VALUES));
+    this->interface->mserial->printStrln("Number of Sensor Data values per reading:" + String(this->NUMBER_OF_SENSORS_DATA_VALUES));
     this->interface->mserial->printStrln("PSRAM buffer size:" + String(this->config.MEASUREMENTS_BUFFER_SIZE));
     this->display->tftPrintText(0,160,(char*) String("Buff. size:"+ String(this->config.MEASUREMENTS_BUFFER_SIZE)).c_str(),2,"center", TFT_WHITE, true); 
     delay(2000);
 
     String units="";
     // 1D number of sample readings ; 2D number of sensor data measuremtns; 3D RAM buffer size
-    if ( this->initializeDynamicVar(this->config.NUM_SAMPLE_SAMPLING_READINGS, (int) NUMBER_OF_SENSORS_DATA_VALUES , this->config.MEASUREMENTS_BUFFER_SIZE) )
+    if ( false == this->initializeDynamicVar(this->config.NUM_SAMPLE_SAMPLING_READINGS, (int) this->NUMBER_OF_SENSORS_DATA_VALUES , this->config.MEASUREMENTS_BUFFER_SIZE) )
     {
       this->interface->mserial->printStrln("Error Initializing Measruments Buffer.");
       this->display->tftPrintText(0,160,"ERR Exp. data Buffer",2,"center", TFT_WHITE, true); 
@@ -85,13 +86,13 @@ void MEASUREMENTS::init(INTERFACE_CLASS* interface, DISPLAY_LCD_CLASS* display,M
 
     }else{
         this->interface->mserial->printStrln("Measurements Buffer Initialized successfully.");
-        float bufSize= sizeof(char)*(this->config.NUM_SAMPLE_SAMPLING_READINGS*NUMBER_OF_SENSORS_DATA_VALUES*this->config.MEASUREMENTS_BUFFER_SIZE); // bytes
+        float bufSize= sizeof(char)*(this->config.NUM_SAMPLE_SAMPLING_READINGS * this->NUMBER_OF_SENSORS_DATA_VALUES * this->config.MEASUREMENTS_BUFFER_SIZE); // bytes
         units=" B";
         if (bufSize>1024){
             bufSize=bufSize/1024;
             units=" Kb";
         }
-        this->interface->mserial->printStrln("Buffer size:" + String(bufSize));
+        this->interface->mserial->printStrln("Buffer size:" + String(bufSize) + units);
         this->display->tftPrintText(0,160,(char*) String("Buf size:"+String(bufSize)+ units).c_str(),2,"center", TFT_WHITE, true); 
         delay(1000);
         this->display->tftPrintText(0,160,"Exp. Data RAM ready",2,"center", TFT_WHITE, true); 
@@ -253,7 +254,7 @@ void MEASUREMENTS::runExternalMeasurements(){
 
     xSemaphoreTake(this->interface->McuFreqSemaphore, portMAX_DELAY); // enter critical section
       this->interface->McuFrequencyBusy=true;
-      changeMcuFreq(interface, this->interface->SAMPLING_FREQUENCY);
+      this->interface->setMCUclockFrequency(this->interface->SAMPLING_FREQUENCY);
       this->interface->mserial->printStrln("Setting to ADC read CPU Freq = " +String(getCpuFrequencyMhz()));
       this->interface->McuFrequencyBusy=false;
     xSemaphoreGive(this->interface->McuFreqSemaphore); // exit critical section    
@@ -293,7 +294,7 @@ void MEASUREMENTS::runExternalMeasurements(){
 
     xSemaphoreTake(this->interface->McuFreqSemaphore, portMAX_DELAY); // enter critical section
       this->interface->McuFrequencyBusy=true;
-      changeMcuFreq(interface, this->interface->MIN_MCU_FREQUENCY);
+      this->interface->setMCUclockFrequency( this->interface->MIN_MCU_FREQUENCY);
       this->interface->mserial->printStrln("Setting to min CPU Freq. = " +String(getCpuFrequencyMhz()));
       this->interface->McuFrequencyBusy=false;
     xSemaphoreGive(this->interface->McuFreqSemaphore); // exit critical section    
@@ -456,26 +457,6 @@ void MEASUREMENTS::ReadExternalAnalogData() {
   delay(5000);
 }
 
-// GBRL commands --------------------------------------------------------------
- bool MEASUREMENTS::helpCommands(uint8_t sendTo ){
-    String dataStr="GBRL commands:\n" \
-                    "$help $?                           - View available GBRL commands\n" \
-                    "$dt                                - Device Time\n" \
-                    "$lang set [country code]           - Change the smart device language\n\n";
-
-    this->interface->sendBLEstring( dataStr,  sendTo ); 
-    return false; 
- }
-// ******************************************************************************************
-
-bool MEASUREMENTS::commands(String $BLE_CMD, uint8_t sendTo ){
-  String dataStr="";
-
-  if($BLE_CMD.indexOf("$lang dw ")>-1){
-
-  }
-}
-
 // ******************************************************
 bool MEASUREMENTS::initializeDynamicVar(  int size1D, int size2D, int size3D){    
     int i1D = 0; //Variable for looping Row
@@ -550,5 +531,325 @@ bool MEASUREMENTS::initializeDynamicVar(  int size1D, int size2D, int size3D){
       free(measurements);
   }
 
-// END class PSRAMallocClass   ************************************************************
+// --------------------------------------------------------------------------
+
+bool MEASUREMENTS::saveSettings(fs::FS &fs){
+    this->interface->mserial->printStrln( this->interface->DeviceTranslation("save_mat_settings")  + "...");
+
+    if (fs.exists("/maturity.cfg") )
+        fs.remove("/maturity.cfg");
+
+    File settingsFile = fs.open("/maturity.cfg", FILE_WRITE); 
+    if ( !settingsFile ){
+        this->interface->mserial->printStrln( this->interface->DeviceTranslation("err_create_mat_settings") + ".");
+        settingsFile.close();
+        return false;
+    }
+
+    settingsFile.print( String(this->config.MEASUREMENT_INTERVAL) + String(';'));
+
+    settingsFile.close();
+    return true;
+}
+// --------------------------------------------------------------------
+
+bool MEASUREMENTS::readSettings(fs::FS &fs){    
+    File settingsFile = fs.open("/maturity.cfg", FILE_READ);
+    if (!settingsFile){
+        this->interface->mserial->printStrln( this->interface->DeviceTranslation("err_notfound_mat_settings")  + ".");
+        settingsFile.close();
+        return false;
+    }
+    if (settingsFile.size() == 0){
+        this->interface->mserial->printStrln( this->interface->DeviceTranslation("err_invalid_mat_settings") + ".");
+        settingsFile.close();
+        return false;    
+    }
+
+    String temp= settingsFile.readStringUntil(';');
+
+    this->config.MEASUREMENT_INTERVAL = atol(settingsFile.readStringUntil( ';' ).c_str() ); 
+
+    settingsFile.close();
+    return true;
+}
+
+// -------------------------------------------------------------------------------
+
+// *********************************************************
+// GBRL commands --------------------------------------------------------------
+ bool MEASUREMENTS::helpCommands(String $BLE_CMD, uint8_t sendTo){
+    if($BLE_CMD != "$?" && $BLE_CMD !="$help" )
+        return false;
+
+    String dataStr="Measurements GBRL Commands:\n" \
+                    "set sw off          - Set all switch off\n" \
+                    "set sw1 [on/off]    - Position 1 on the Switch for the Temperature Sensor\n" \
+                    "set sw2 [on/off]    - Position 2 on the Switch: Ohmmeter 1K dvider\n" \
+                    "set sw3 [on/off]    - Position 3 on the Switch: Ohmmeter 20K dvider\n" \
+                    "set sw4 [on/off]    - Position 4 on the Switch: Ohmmeter 200K dvider\n" \
+                    "set sw5 [on/off]    - Position 5 on the Switch: Ohmmeter 2M dvider\n" \
+                    "set sensor [sht3x]  - Set I2C sensor to the selected\n" \
+                    "\n" \                    
+                    "$ufid               - "+ this->interface->DeviceTranslation("ufid") +" unique fingerprint ID\n" \
+                    "$me new             - "+ this->interface->DeviceTranslation("me_new") +"\n" \
+                    "$me start           - "+ this->interface->DeviceTranslation("me_start") +"\n" \
+                    "$me end             - "+ this->interface->DeviceTranslation("me_end") +"\n" \
+                    "$me status          - "+ this->interface->DeviceTranslation("me_status") +"\n" \
+                    "\n" \        
+                    "$history            - "+ this->interface->DeviceTranslation("history") +"\n" \
+                    "$ns                 - "+ this->interface->DeviceTranslation("ns") +"\n" \
+                    "$mi                 - "+ this->interface->DeviceTranslation("mi") +"\n" \      
+                    "$set mi [sec]       - "+ this->interface->DeviceTranslation("set_mi") +"\n\n";
+
+    this->interface->sendBLEstring( dataStr, sendTo);
+      
+    return false;
+ }
+
+// -------------------------------------------------------------------------------
+
+
+bool MEASUREMENTS::gbrl_commands(String $BLE_CMD, uint8_t sendTo){
+    long int hourT; 
+    long int minT; 
+    long int secT; 
+    long int daysT;
+    String dataStr="";
+    long int $timedif;
+
+    if ($BLE_CMD == "$ufid"){
+        if (this->DATASET_NUM_SAMPLES == 0){
+            dataStr = this->interface->DeviceTranslation("no_data_entries") + "." +String(char(10));
+            this->interface->sendBLEstring( dataStr, sendTo);
+            return true;
+        }
+        dataStr =  this->interface->DeviceTranslation("calc_ufid") + "..." + this->interface->BaseTranslation("wait_moment")  + "." +String(char(10));
+        this->interface->sendBLEstring( dataStr, sendTo);
+        
+        this->interface->setMCUclockFrequency(this->interface->MAX_FREQUENCY);
+        
+        dataStr += "Unique Data Fingerprint ID:"+String(char(10));
+        dataStr += CryptoICserialNumber(this->interface)+"-"+macChallengeDataAuthenticity(this->interface, String(this->interface->rtc.getDateTime(true)) + String(roundFloat(this->last_measured_probe_temp,2)) );
+        dataStr += String(char(10) + String(char(10)) );
+        
+        this->interface->setMCUclockFrequency(this->interface->CURRENT_CLOCK_FREQUENCY);
+        this->interface->sendBLEstring( dataStr, sendTo);
+        return true;
+    }
+
+
+    if($BLE_CMD == "$mi"){
+        dataStr= this->interface->DeviceTranslation("curr_measure_interval") + " " + String(roundFloat(this->config.MEASUREMENT_INTERVAL/(60*1000) ,2)) + String(" min") + String(char(10));
+        this->interface->sendBLEstring( dataStr, sendTo);
+        return true;
+    }
+
+
+    if( $BLE_CMD == "$me status"){
+        if( this->Measurments_EN == false){
+            dataStr = this->interface->DeviceTranslation("measure_not_started") +  String("\n\n");
+        } else{
+            dataStr = this->interface->DeviceTranslation("measure_already_started") + String("\n");
+            dataStr += this->interface->DeviceTranslation("measure_num_records") + " " + String(this->DATASET_NUM_SAMPLES) + "\n\n";
+        }
+
+        this->interface->sendBLEstring( dataStr, sendTo); 
+        return true;
+    }
+    if( $BLE_CMD == "$me new"){
+        this->Measurments_NEW=true;
+        this->Measurments_EN=false;
+        this->DATASET_NUM_SAMPLES=0;
+        dataStr= this->interface->DeviceTranslation("new_started") +  String("\n\n");
+        this->interface->sendBLEstring( dataStr, sendTo); 
+        return true;
+    }
+    if($BLE_CMD == "$me start"){
+        if (this->Measurments_EN){
+            dataStr = this->interface->DeviceTranslation("measure_already_started_on") +  " " + String(this->measurement_Start_Time) + String("\n\n");
+            this->interface->sendBLEstring( dataStr, sendTo); 
+        }else{
+            this->DATASET_NUM_SAMPLES=0;
+            this->Measurments_NEW=true;
+            this->Measurments_EN=true;
+            this->measurement_Start_Time = this->interface->rtc.getDateTime(true);
+
+            dataStr = this->interface->DeviceTranslation("measure_started_on") +  " " + String(this->measurement_Start_Time) + String("\n");
+            this->interface->sendBLEstring( dataStr, sendTo); 
+            
+            this->gbrl_summary_measurement_config(sendTo);
+        }
+        return true;
+
+    }
+    if( $BLE_CMD=="$me end"){
+        if(this->Measurments_EN==false){
+            dataStr= this->interface->DeviceTranslation("measure_already_ended")  + String( char(10));
+        }else{
+            this->Measurments_EN=false;
+            dataStr= this->interface->DeviceTranslation("measure_ended_on") +  " " + String(this->interface->rtc.getDateTime(true)) + String( char(10));
+        }
+        this->interface->sendBLEstring( dataStr, sendTo); 
+        return true;
+    }
+    if($BLE_CMD=="$ns"){
+        dataStr = this->interface->DeviceTranslation("num_data_measure") +  ": " + String(this->DATASET_NUM_SAMPLES+1) + String(char(10));
+        this->interface->sendBLEstring( dataStr, sendTo);
+        return true;
+    }
+    bool result =false;
+    result = this->helpCommands( $BLE_CMD,  sendTo);
+    
+    bool result2 =false;
+    result2 = this->history($BLE_CMD,  sendTo);
+    
+    bool result3 =false;
+    result3 = this->cfg_commands($BLE_CMD,  sendTo);
+    
+    bool result4 =false;
+    result4 = this->measurementInterval($BLE_CMD,  sendTo);    
+    
+    //this->gbrl_menu_selection();
+   
+   return ( result || result2 || result3 || result4 );
+
+}
+// ********************************************************
+bool MEASUREMENTS:: gbrl_summary_measurement_config( uint8_t sendTo){
+    String dataStr = this->interface->DeviceTranslation("config_summary") +  ":\n";
+    dataStr += this->interface->DeviceTranslation("mi_interval") +  ": " + String(this->config.MEASUREMENT_INTERVAL/1000) + " sec.\n\n";
+    this->interface->sendBLEstring( dataStr , sendTo); 
+    return true;
+}
+
+
+// *******************************************************
+bool MEASUREMENTS::cfg_commands(String $BLE_CMD, uint8_t sendTo){
+    String dataStr="";
+    long int hourT; 
+    long int minT; 
+    long int secT; 
+    long int daysT;
+    long int $timedif;
+
+    if($BLE_CMD.indexOf("$cfg mi ")>-1){
+        String value= $BLE_CMD.substring(11, $BLE_CMD.length());
+        if (isNumeric(value)){
+            long int val= (long int) value.toInt();
+            if(val>0){
+                this->config.MEASUREMENT_INTERVAL=val*1000; // mili seconds 
+                this->saveSettings(LittleFS);
+
+                hourT = (long int) ( this->config.MEASUREMENT_INTERVAL/(3600*1000) );
+                minT  = (long int) ( this->config.MEASUREMENT_INTERVAL/(60*1000) - (hourT*60));
+                secT  = (long int) ( this->config.MEASUREMENT_INTERVAL/1000 - (hourT*3600) - (minT*60));
+                daysT = (long int) (hourT/24);
+                hourT = (long int) ( (this->config.MEASUREMENT_INTERVAL/(3600*1000) ) - (daysT*24));
+                
+                dataStr = this->interface->DeviceTranslation("new_mi_accepted") +  "\r\n\n";        
+                dataStr += " ["+String(daysT)+"d "+ String(hourT)+"h "+ String(minT)+"m "+ String(secT)+"s "+ String("]\n\n");
+                this->interface->sendBLEstring( dataStr, sendTo);
+            }else{
+                dataStr= this->interface->BaseTranslation("invalid_input") +  "\r\n";
+                this->interface->sendBLEstring( dataStr, sendTo);
+            }
+            return true;
+        }
+    }
+    return false;
+}
+
+// *******************************************************
+bool MEASUREMENTS::measurementInterval(String $BLE_CMD, uint8_t sendTo){
+    if($BLE_CMD !="$MEASURE INTERVAL" && $BLE_CMD !="$measure interval")
+        return false;
+
+    long int hourT; 
+    long int minT; 
+    long int secT; 
+    long int daysT;
+    long int $timedif;
+    String dataStr="";
+
+    hourT = (long int) (this->config.MEASUREMENT_INTERVAL/(3600*1000) );
+    minT = (long int) (this->config.MEASUREMENT_INTERVAL/(60*1000) - (hourT*60));
+    secT =  (long int) (this->config.MEASUREMENT_INTERVAL/1000 - (hourT*3600) - (minT*60));
+    daysT = (long int) (hourT/24);
+    hourT = (long int) ((this->config.MEASUREMENT_INTERVAL/(3600*1000) ) - (daysT*24));
+
+    dataStr= this->interface->DeviceTranslation("mi_interval")  + String(char(10)) + String(daysT)+"d "+ String(hourT)+"h "+ String(minT)+"m "+ String(secT)+"s "+ String(char(10));
+    this->interface->sendBLEstring( dataStr, sendTo);
+    return true;
+}
+
+
+// ********************************************************
+bool MEASUREMENTS::history(String $BLE_CMD, uint8_t sendTo){
+    if($BLE_CMD != "$history"  )
+        return false;
+
+    long int hourT; 
+    long int minT; 
+    long int secT; 
+    long int daysT;
+    String dataStr="";
+    long int $timedif;
+    time_t timeNow;
+    time(&timeNow);
+
+    dataStr = this->interface->DeviceTranslation("calc_mi_st_val") +  "..."+ this->interface->BaseTranslation("wait_moment") +"." +String(char(10));
+    this->interface->sendBLEstring( dataStr, sendTo);
+
+    this->interface->setMCUclockFrequency(this->interface->MAX_FREQUENCY);
+
+    dataStr = "\n"+ this->interface->DeviceTranslation("data_history") +String(char(10));
+
+    File file = LittleFS.open("/" + this->interface->config.SENSOR_DATA_FILENAME, "r");
+    int counter=0; 
+
+    long int sumTimeDelta=0;
+
+    while (file.available()) {
+        this->interface->sendBLEstring( "#", sendTo);
+
+        if (counter == 0 ) {
+            // raed the header
+            String bin2 = file.readStringUntil( char(10) );
+            bin2 = file.readStringUntil( char(10) );
+        }
+
+        String bin = file.readStringUntil( ';' ); // RTC Date & Time
+
+        long int timeStart = atol(file.readStringUntil( (char) ';' ).c_str() ); //start time of measure 
+
+        long int timeDelta = atol(file.readStringUntil( (char) ';' ).c_str() ); // delta time since last measure
+        sumTimeDelta+=timeDelta; //elapsed time since start time of measure
+
+        float temp = (file.readStringUntil( (char) ';' ).toFloat()); // probe temp.
+
+        String rest = file.readStringUntil( char(10) ); // remaider of data string line
+
+        $timedif = (timeStart+sumTimeDelta) - timeStart;
+        hourT = (long int) ($timedif / (3600*1000));
+        minT = (long int) ($timedif/ (60*1000) - (hourT*60));
+        secT =  (long int) ($timedif/1000 - (hourT*3600) - (minT*60));
+        daysT = (long int) (hourT/24);
+        hourT = (long int) (($timedif/(3600*1000) ) - (daysT*24));
+
+        dataStr +=  ": ["+String(daysT)+"d "+ String(hourT)+"h "+ String(minT)+"m "+ String(secT)+"s "+ String("]  ");    
+        dataStr +=  this->interface->DeviceTranslation("probe_temp") + ": ";
+        dataStr += String(roundFloat(temp,2))+String(char(176))+String("C  ");
+
+        counter++; 
+    }
+
+    file.close();
+  
+    dataStr += "--------------- \n";
+    this->interface->sendBLEstring( dataStr, sendTo);
+    this->interface->setMCUclockFrequency( this->interface->CURRENT_CLOCK_FREQUENCY);
+  return true;
+}
+
 // *********************************************************

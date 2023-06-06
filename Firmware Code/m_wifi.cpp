@@ -35,7 +35,6 @@ https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/wiki/AeonLabs-Solutio
 #include "m_wifi.h"
 #include "time.h"
 #include "ESP32Time.h"
-#include "manage_mcu_freq.h"
 #include "HTTPClient.h"
 #include "Config.h"
 #include "m_file_functions.h"
@@ -48,6 +47,7 @@ https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/wiki/AeonLabs-Solutio
 M_WIFI_CLASS::M_WIFI_CLASS(){
   this->MemLockSemaphoreWIFI = xSemaphoreCreateMutex();
   this->WIFIconnected=false;
+  this->BLE_IS_DEVICE_CONNECTED=false;
 }
 
 
@@ -68,11 +68,13 @@ void M_WIFI_CLASS::init(INTERFACE_CLASS* interface, FILE_CLASS* drive, ONBOARD_L
     this->lastTimeWifiConnectAttempt=millis();
     this->wifiMulti= new WiFiMulti();
     this->prevTimeErrMsg = millis() - 60000;
+    
     WiFi.onEvent(WIFIevent);
     WiFi.onEvent(WiFiGotIP, WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
 
     configTime(this->interface->config.gmtOffset_sec, this->interface->config.daylightOffset_sec, this->config.ntpServer.c_str());
-
+    
+    this->BLE_IS_DEVICE_CONNECTED=false;
     this->interface->mserial->printStrln("done");
 }
 // **************************************************
@@ -93,35 +95,39 @@ void M_WIFI_CLASS::settings_defaults(){
 // ************************************************
 
 bool M_WIFI_CLASS::start(uint32_t  connectionTimeout, uint8_t numberAttempts){
-
-    if (WiFi.status() == WL_CONNECTED)
-      return true;
-
-    this->connectionTimeout=connectionTimeout;
-    
-    if (this->getNumberWIFIconfigured() == 0 ){
-      this->lastTimeWifiConnectAttempt=millis();
-      if ( this->checkErrorMessageTimeLimit() ){
-        this->interface->mserial->printStrln("WIFI: You need to add a wifi network first", this->interface->mserial->DEBUG_TYPE_ERRORS);
-      }
-      
-      this->startAP();
-      return false;
-    }
-
-    if ( this->interface->CURRENT_CLOCK_FREQUENCY < this->interface->WIFI_FREQUENCY )
-      this->resumeWifiMode();
-
-    for(uint8_t i=0; i < 5; i++){
-      if (this->config.ssid[i] !="")
-        this->wifiMulti->addAP(this->config.ssid[i].c_str(), this->config.password[i].c_str());        
-    }
-
-    WiFi.mode(WIFI_AP_STA);
-    
-    this->connect2WIFInetowrk(numberAttempts);
-    this->lastTimeWifiConnectAttempt=millis();
+  if (WiFi.status() == WL_CONNECTED)
     return true;
+
+  this->connectionTimeout=connectionTimeout;
+  
+  if (this->getNumberWIFIconfigured() == 0 ){
+    this->lastTimeWifiConnectAttempt=millis();
+    if ( this->checkErrorMessageTimeLimit() ){
+      this->interface->mserial->printStrln("WIFI: You need to add a wifi network first", this->interface->mserial->DEBUG_TYPE_ERRORS);
+      this->interface->onBoardLED->led[0] = this->interface->onBoardLED->LED_RED;
+      this->interface->onBoardLED->statusLED(100, 1);
+    }
+    
+    // this->startAP(); web server
+    return false;
+  }
+
+  if ( this->interface->CURRENT_CLOCK_FREQUENCY < this->interface->WIFI_FREQUENCY )
+    this->resumeWifiMode();
+
+  for(uint8_t i=0; i < 5; i++){
+    if (this->config.ssid[i] !="")
+      this->wifiMulti->addAP(this->config.ssid[i].c_str(), this->config.password[i].c_str());        
+  }
+
+  interface->onBoardLED->led[0] = interface->onBoardLED->LED_BLUE;
+  interface->onBoardLED->statusLED(100, 1);
+
+  WiFi.mode(WIFI_STA);
+  
+  this->connect2WIFInetowrk(numberAttempts);
+  this->lastTimeWifiConnectAttempt=millis();
+  return true;
 }
 
 
@@ -243,19 +249,22 @@ void M_WIFI_CLASS::setNumberWIFIconfigured(uint8_t num){
     delay(100);
     WiFi.mode(WIFI_MODE_NULL);
 
-    changeMcuFreq(interface, interface->MIN_MCU_FREQUENCY);
+    this->interface->setMCUclockFrequency( interface->MIN_MCU_FREQUENCY);
     interface->CURRENT_CLOCK_FREQUENCY = interface->MIN_MCU_FREQUENCY;
     this->$espunixtimeDeviceDisconnected = millis();
  }
 
 // ********************************************************
  void M_WIFI_CLASS::resumeWifiMode(){
-      this->interface->mserial->printStrln("WIFI: setting MCU clock to EN WIFI");
-      changeMcuFreq(interface, interface->WIFI_FREQUENCY);
+    xSemaphoreTake(this->interface->McuFreqSemaphore, portMAX_DELAY);
+      this->interface->McuFrequencyBusy = true;
+
+      this->interface->setMCUclockFrequency( interface->WIFI_FREQUENCY);
       interface->CURRENT_CLOCK_FREQUENCY = interface->WIFI_FREQUENCY;
 
-      interface->onBoardLED->led[0] = interface->onBoardLED->LED_BLUE;
-      interface->onBoardLED->statusLED(100, 1);
+      this->interface->mserial->printStrln("setting to WIFI EN CPU Freq = " + String(getCpuFrequencyMhz()));
+      this->interface->McuFrequencyBusy = false;
+  xSemaphoreGive(this->interface->McuFreqSemaphore);
  }
 // ********************************************************
 
@@ -280,11 +289,16 @@ String M_WIFI_CLASS::get_wifi_status(int status){
 
 // *********************************************************
 void M_WIFI_CLASS::WIFIscanNetworks(bool override){
+
   if ( WiFi.status() == WL_CONNECTED && override == false )
     return;
-    
-  String dataStr = "";
+  
+  WiFi.mode(WIFI_STA);
+  WiFi.disconnect();
   int n = WiFi.scanNetworks();
+  
+  String dataStr = "";
+
   if (n == 0) {
     this->interface->sendBLEstring( "no nearby WIFI networks found\n", mSerial::DEBUG_ALL_USB_UART_BLE);
   } else {

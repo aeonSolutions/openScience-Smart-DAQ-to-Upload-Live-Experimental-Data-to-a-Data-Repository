@@ -43,13 +43,14 @@ https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/wiki/AeonLabs-Solutio
   #include <LittleFS.h>
   #include <ArduinoJson.h>
   #include "m_wifi.h"
+  #include "measurements.h"
 
   class DATAVERSE_CLASS {
 
   private:
     INTERFACE_CLASS* interface;
     M_WIFI_CLASS* mWifi;
-    mSerial* mserial;
+    MEASUREMENTS* measurements;
 
     String DATASET_REPOSITORY_URL; 
     bool ErrMsgShown;
@@ -105,7 +106,7 @@ https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/wiki/AeonLabs-Solutio
 
     DATAVERSE_CLASS();
 
-    void init(INTERFACE_CLASS* interface,  M_WIFI_CLASS* mWifi, mSerial* mserial);
+    void init(INTERFACE_CLASS* interface,  M_WIFI_CLASS* mWifi, MEASUREMENTS* measurements);
     
     bool readSettings(fs::FS &fs = LittleFS );
     bool saveSettings(fs::FS &fs = LittleFS );
@@ -113,6 +114,8 @@ https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/wiki/AeonLabs-Solutio
     void UploadToDataverse(bool ble_connected);
     String GetInfoFromDataverse(String url);
     void getDatasetMetadata();
+
+    void syncronizeToDataverse();
 
     bool gbrl_commands(String $BLE_CMD, uint8_t sendTo);
     bool helpCommands(String $BLE_CMD, uint8_t sendTo);

@@ -34,17 +34,17 @@ https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/wiki/AeonLabs-Solutio
 
 #include "dataverse.h"
 #include <Arduino.h>
-#include "manage_mcu_freq.h"
+
 
 DATAVERSE_CLASS::DATAVERSE_CLASS(){
 
 }
 
-void DATAVERSE_CLASS::init(INTERFACE_CLASS* interface, M_WIFI_CLASS* mWifi, mSerial* mserial){
-    this->mserial=mserial;
-    this->mserial->printStr("init dataverse ...");
+void DATAVERSE_CLASS::init(INTERFACE_CLASS* interface, M_WIFI_CLASS* mWifi, MEASUREMENTS* measurements){
     this->interface=interface;
+    this->interface->mserial->printStr("init dataverse ...");
     this->mWifi= mWifi;
+    this->measurements = measurements;
 
     this->config.API_TOKEN = "a85f5973-34dc-4133-a32b-c70dfef9d001";
     this->config.API_TOKEN_EXPIRATION_DATE="";
@@ -62,7 +62,7 @@ void DATAVERSE_CLASS::init(INTERFACE_CLASS* interface, M_WIFI_CLASS* mWifi, mSer
   // ToDo: load Dataverse settings
     this->ErrMsgShown = false;
 
-    this->mserial->printStrln("done.");
+    this->interface->mserial->printStrln("done.");
 }
     
 // *********************************************************
@@ -91,14 +91,68 @@ bool DATAVERSE_CLASS::readSettings(fs::FS &fs){
   return true;
 }
 
+// *********************************************************
+//            Syncronize with Dataverse
+// *********************************************************
+
+void DATAVERSE_CLASS::syncronizeToDataverse(){
+  if ( (this->config.UPLOAD_DATASET_DELTA_TIME < ( millis() -  this->LAST_DATASET_UPLOAD )) ) {
+    this->LAST_DATASET_UPLOAD = millis();
+        this->interface->mserial->printStrln(" status time 1");
+
+  }else{
+    return;
+  }
+    this->interface->mserial->printStrln(" status time 2");
+
+  if (false == mWifi->start(10000, 5) ){ // TTL , n attempts
+    return;
+  }
+    this->interface->mserial->printStrln(" status time 3");
+  
+  if ( WiFi.status() != WL_CONNECTED )
+    return;
+    this->interface->mserial->printStrln(" status time 4");
+
+  this->interface->mserial->printStrln("");
+  this->interface->mserial->printStrln("Upload Data to the Dataverse...");
+
+  while (measurements->datasetFileIsBusySaveData) {
+    this->interface->mserial->printStr("busy Saving data... ");
+    delay(500);
+  }
+    this->interface->mserial->printStrln(" status time 5");
+  
+  this->interface->onBoardLED->led[0] = this->interface->onBoardLED->LED_BLUE;
+  this->interface->onBoardLED->statusLED(100, 0);
+  xSemaphoreTake(measurements->MemLockSemaphoreDatasetFileAccess, portMAX_DELAY);
+    measurements->datasetFileIsBusyUploadData = true;
+  xSemaphoreGive(measurements->MemLockSemaphoreDatasetFileAccess);
+
+  this->interface->mserial->printStrln(" get dataset metadata...");
+  this->getDatasetMetadata();
+
+  this->interface->onBoardLED->led[0] = this->interface->onBoardLED->LED_GREEN;
+  this->interface->onBoardLED->statusLED(100, 2);
+  this->interface->onBoardLED->led[0] = this->interface->onBoardLED->LED_BLUE;
+  this->interface->onBoardLED->statusLED(100, 0);
+
+  this->UploadToDataverse(0);
+
+  this->interface->onBoardLED->led[0] = this->interface->onBoardLED->LED_GREEN;
+  this->interface->onBoardLED->statusLED(100, 2);
+
+  xSemaphoreTake(measurements->MemLockSemaphoreDatasetFileAccess, portMAX_DELAY);
+    measurements->datasetFileIsBusyUploadData = false;
+  xSemaphoreGive(measurements->MemLockSemaphoreDatasetFileAccess);
+
+};
 
 // *********************************************************
 //            Upload Dataset to Harvard's Dataverse
 // *********************************************************
 void DATAVERSE_CLASS::UploadToDataverse(bool ble_connected) {
-
   unsigned long  $timedif;
-
 
   if (this->config.UPLOAD_DATAVERSE_EN==false || this->interface->Measurments_EN==false)
       return;
@@ -114,7 +168,7 @@ void DATAVERSE_CLASS::UploadToDataverse(bool ble_connected) {
   if (WiFi.status() != WL_CONNECTED ){
     if (this->ErrMsgShown == false){
       this->ErrMsgShown = true;
-      this->mserial->printStrln("DATAVERSE: unable to connect to WIFI.");
+      this->interface->mserial->printStrln("DATAVERSE: unable to connect to WIFI.");
       interface->onBoardLED->led[0] = interface->onBoardLED->LED_RED;
       interface->onBoardLED->statusLED(100, 1);
     }
@@ -146,9 +200,9 @@ void DATAVERSE_CLASS::UploadToDataverse(bool ble_connected) {
       if (error) {
         if (this->ErrMsgShown == false){
           this->ErrMsgShown = true;
-          this->mserial->printStr("unable to retrive dataset lock status. Upload not possible. ERR: "+ String(error.f_str()));
+          this->interface->mserial->printStr("unable to retrive dataset lock status. Upload not possible. ERR: "+ String(error.f_str()));
         }
-        //this->mserial->printStrln(rawResponse);
+        //this->interface->mserial->printStrln(rawResponse);
         interface->onBoardLED->led[0] = interface->onBoardLED->LED_RED;
         interface->onBoardLED->statusLED(100, 5);
         this->mWifi->resumePowerSavingMode();
@@ -157,14 +211,14 @@ void DATAVERSE_CLASS::UploadToDataverse(bool ble_connected) {
          String stat = datasetObject["status"];
          if(datasetObject.containsKey("lockType")){
            String locktype = String(datasetObject["data"]["lockType"].as<char*>());           
-           this->mserial->printStrln("There is a Lock on the dataset: "+ locktype); 
-           this->mserial->printStrln("Upload of most recent data is not possible without removal of the lock.");  
+           this->interface->mserial->printStrln("There is a Lock on the dataset: "+ locktype); 
+           this->interface->mserial->printStrln("Upload of most recent data is not possible without removal of the lock.");  
            // Do unlocking 
                 
          }else{
             if (this->ErrMsgShown == false){
               this->ErrMsgShown = true;
-              this->mserial->printStrln("The dataset is unlocked. Upload possible.");
+              this->interface->mserial->printStrln("The dataset is unlocked. Upload possible.");
             }
             interface->onBoardLED->led[0] = interface->onBoardLED->LED_RED;
             interface->onBoardLED->statusLED(100, 5);
@@ -175,7 +229,7 @@ void DATAVERSE_CLASS::UploadToDataverse(bool ble_connected) {
     }else{
       if (this->ErrMsgShown == false){
         this->ErrMsgShown = true;
-        this->mserial->printStrln("dataset ID is empty. Upload not possible. ");
+        this->interface->mserial->printStrln("dataset ID is empty. Upload not possible. ");
       }
       interface->onBoardLED->led[0] = interface->onBoardLED->LED_RED;
       interface->onBoardLED->statusLED(100, 5); 
@@ -185,7 +239,7 @@ void DATAVERSE_CLASS::UploadToDataverse(bool ble_connected) {
   }else{
     if (this->ErrMsgShown == false){
       this->ErrMsgShown = true;
-      this->mserial->printStrln("dataset metadata not loaded. Upload not possible. ");
+      this->interface->mserial->printStrln("dataset metadata not loaded. Upload not possible. ");
     }
     interface->onBoardLED->led[0] = interface->onBoardLED->LED_RED;
     interface->onBoardLED->statusLED(100, 5); 
@@ -198,7 +252,7 @@ void DATAVERSE_CLASS::UploadToDataverse(bool ble_connected) {
   if (!datasetFile){
     if (this->ErrMsgShown == false){
       this->ErrMsgShown = true;
-      this->mserial->printStrln("Dataset file not found");
+      this->interface->mserial->printStrln("Dataset file not found");
     }
     interface->onBoardLED->led[0] = interface->onBoardLED->LED_RED;
     interface->onBoardLED->statusLED(100, 5);
@@ -212,10 +266,10 @@ void DATAVERSE_CLASS::UploadToDataverse(bool ble_connected) {
   
   String datasetFileName = datasetFile.name();
   String datasetFileSize = String(datasetFile.size());
-  this->mserial->printStrln("Dataset File Details:");
-  this->mserial->printStrln("Filename:" + datasetFileName);
-  this->mserial->printStrln("size (bytes): "+ datasetFileSize);
-  this->mserial->printStrln("");
+  this->interface->mserial->printStrln("Dataset File Details:");
+  this->interface->mserial->printStrln("Filename:" + datasetFileName);
+  this->interface->mserial->printStrln("size (bytes): "+ datasetFileSize);
+  this->interface->mserial->printStrln("");
     
   int str_len = this->config.SERVER_URL.length() + 1; // Length (with one extra character for the null terminator)
   char SERVER_URL_char [str_len];    // Prepare the character array (the buffer) 
@@ -226,20 +280,20 @@ void DATAVERSE_CLASS::UploadToDataverse(bool ble_connected) {
   if (!this->mWifi->client.connect(SERVER_URL_char, this->config.SERVER_PORT)) {
         if (this->ErrMsgShown == false){
           this->ErrMsgShown = true;
-          this->mserial->printStrln("Cloud server URL connection FAILED!");
-          this->mserial->printStrln(SERVER_URL_char);
+          this->interface->mserial->printStrln("Cloud server URL connection FAILED!");
+          this->interface->mserial->printStrln(SERVER_URL_char);
           int server_status = this->mWifi->client.connected();
-          this->mserial->printStrln("Server status code: " + String(server_status));
+          this->interface->mserial->printStrln("Server status code: " + String(server_status));
         }
       interface->onBoardLED->led[0] = interface->onBoardLED->LED_RED;
       interface->onBoardLED->statusLED(100, 5);
       this->mWifi->resumePowerSavingMode();
       return;
   }
-  this->mserial->printStrln("Connected to the dataverse of Harvard University"); 
-  this->mserial->printStrln("");
+  this->interface->mserial->printStrln("Connected to the dataverse of Harvard University"); 
+  this->interface->mserial->printStrln("");
 
-  this->mserial->printStr("Requesting URL: " + this->DATASET_REPOSITORY_URL);
+  this->interface->mserial->printStr("Requesting URL: " + this->DATASET_REPOSITORY_URL);
 
   // Make a HTTP request and add HTTP headers    
   String postHeader = "POST " + this->DATASET_REPOSITORY_URL + " HTTP/1.1\r\n";
@@ -277,19 +331,19 @@ void DATAVERSE_CLASS::UploadToDataverse(bool ble_connected) {
   char charBuf0[postHeader_len];
   postHeader.toCharArray(charBuf0, postHeader_len);
   this->mWifi->client.print(charBuf0);
-  this->mserial->printStr(charBuf0);
+  this->interface->mserial->printStr(charBuf0);
 
   // send key header
   char charBufKey[jsonDataHeader.length() + 1];
   jsonDataHeader.toCharArray(charBufKey, jsonDataHeader.length() + 1);
   this->mWifi->client.print(charBufKey);
-  this->mserial->printStr(charBufKey);
+  this->interface->mserial->printStr(charBufKey);
 
   // send request buffer
   char charBuf1[datasetHead.length() + 1];
   datasetHead.toCharArray(charBuf1, datasetHead.length() + 1);
   this->mWifi->client.print(charBuf1);
-  this->mserial->printStr(charBuf1);
+  this->interface->mserial->printStr(charBuf1);
 
   // create buffer
   const int bufSize = 2048;
@@ -307,36 +361,36 @@ void DATAVERSE_CLASS::UploadToDataverse(bool ble_connected) {
   datasetFile.close();
   if (clientCount > 0) {
       this->mWifi->client.write((const uint8_t *)clientBuf, clientCount);
-      this->mserial->printStrln("[binary data]");
+      this->interface->mserial->printStrln("[binary data]");
   }
 
   // send tail
   char charBuf3[tail.length() + 1];
   tail.toCharArray(charBuf3, tail.length() + 1);
   this->mWifi->client.print(charBuf3);
-  this->mserial->printStr(charBuf3);
+  this->interface->mserial->printStr(charBuf3);
 
   // Read all the lines on reply back from server and print them to mserial
-  this->mserial->printStrln("");
-  this->mserial->printStrln("Response Headers:");
+  this->interface->mserial->printStrln("");
+  this->interface->mserial->printStrln("Response Headers:");
   String responseHeaders = "";
 
   while (this->mWifi->client.connected()) {
-    // this->mserial->printStrln("while this->mWifi.client connected");
+    // this->interface->mserial->printStrln("while this->mWifi.client connected");
     responseHeaders = this->mWifi->client.readStringUntil('\n');
-    this->mserial->printStrln(responseHeaders);
+    this->interface->mserial->printStrln(responseHeaders);
     if (responseHeaders == "\r") {
-      this->mserial->printStrln("======   end of headers ======");
+      this->interface->mserial->printStrln("======   end of headers ======");
       break;
     }
   }
 
   String responseContent = this->mWifi->client.readStringUntil('\n');
-  this->mserial->printStrln("Harvard University's Dataverse reply was:");
-  this->mserial->printStrln("==========");
-  this->mserial->printStrln(responseContent);
-  this->mserial->printStrln("==========");
-  this->mserial->printStrln("closing connection");
+  this->interface->mserial->printStrln("Harvard University's Dataverse reply was:");
+  this->interface->mserial->printStrln("==========");
+  this->interface->mserial->printStrln(responseContent);
+  this->interface->mserial->printStrln("==========");
+  this->interface->mserial->printStrln("closing connection");
   this->mWifi->client.stop();
 
   interface->onBoardLED->led[0] = interface->onBoardLED->LED_GREEN;
@@ -358,21 +412,21 @@ String DATAVERSE_CLASS::GetInfoFromDataverse(String url) {
   if (!this->mWifi->client.connect(SERVER_URL_char, this->config.SERVER_PORT)) {
       if (this->ErrMsgShown == false){
         this->ErrMsgShown = true;
-        this->mserial->printStrln("Cloud server URL connection FAILED!");
-        this->mserial->printStrln(SERVER_URL_char);
+        this->interface->mserial->printStrln("Cloud server URL connection FAILED!");
+        this->interface->mserial->printStrln(SERVER_URL_char);
         int server_status = this->mWifi->client.connected();
-        this->mserial->printStrln("Server status code: " + String(server_status));
+        this->interface->mserial->printStrln("Server status code: " + String(server_status));
       }
       this->mWifi->resumePowerSavingMode();
       return "";
   }
   
-  this->mserial->printStrln("Connected to the dataverse of Harvard University"); 
-  this->mserial->printStrln("");
+  this->interface->mserial->printStrln("Connected to the dataverse of Harvard University"); 
+  this->interface->mserial->printStrln("");
   
   // We now create a URI for the request
-  this->mserial->printStr("Requesting URL: ");
-  this->mserial->printStrln(url);
+  this->interface->mserial->printStr("Requesting URL: ");
+  this->interface->mserial->printStrln(url);
 
   // Make a HTTP request and add HTTP headers    
   // post header
@@ -402,14 +456,14 @@ String DATAVERSE_CLASS::GetInfoFromDataverse(String url) {
   postHeader.toCharArray(charBuf0, postHeader_len);
   this->mWifi->client.print(charBuf0);
   
-  this->mserial->printStrln("======= Headers =======");
-  this->mserial->printStrln(charBuf0);
-  this->mserial->printStrln("======= End of Headers =======");
+  this->interface->mserial->printStrln("======= Headers =======");
+  this->interface->mserial->printStrln(charBuf0);
+  this->interface->mserial->printStrln("======= End of Headers =======");
   
   // Read all the lines of the reply from server and print them to mserial
   String responseHeaders = "";
 
-  this->mserial->printStr("Waiting for server response...");
+  this->interface->mserial->printStr("Waiting for server response...");
   long timeout= millis();
   long ttl=millis()-timeout;
   while (this->mWifi->client.connected() && abs(ttl) < this->mWifi->HTTP_TTL) {
@@ -420,9 +474,9 @@ String DATAVERSE_CLASS::GetInfoFromDataverse(String url) {
     }
   }
   if (abs(ttl) < 10000){
-    this->mserial->printStrln("OK");
+    this->interface->mserial->printStrln("OK");
   }else{
-    this->mserial->printStrln("timed out.");  
+    this->interface->mserial->printStrln("timed out.");  
   }
   
   String responseContent = this->mWifi->client.readStringUntil('\n');
@@ -441,30 +495,30 @@ String DATAVERSE_CLASS::GetInfoFromDataverse(String url) {
 
 void DATAVERSE_CLASS::getDatasetMetadata(){
   String rawResponse = GetInfoFromDataverse("/api/datasets/" +  this->config.DATASET_ID + "/locks");
-  this->mserial->printStr("getDatasetMetadata json ini");
+  this->interface->mserial->printStr("getDatasetMetadata json ini");
   // Parse JSON object
   DeserializationError error = deserializeJson(this->datasetInfoJson, rawResponse);
   if (error) {
-    this->mserial->printStr("Get Info From Dataverse deserializeJson() failed: ");
-    this->mserial->printStrln(error.f_str());
-    this->mserial->printStrln("==== raw response ====");
-    this->mserial->printStr(rawResponse);  
-    this->mserial->printStr("========================");
+    this->interface->mserial->printStr("Get Info From Dataverse deserializeJson() failed: ");
+    this->interface->mserial->printStrln(error.f_str());
+    this->interface->mserial->printStrln("==== raw response ====");
+    this->interface->mserial->printStr(rawResponse);  
+    this->interface->mserial->printStr("========================");
     return;
   }else{
      String stat = this->datasetInfoJson["status"];
-     this->mserial->printStrln("Status: "+ stat);   
+     this->interface->mserial->printStrln("Status: "+ stat);   
      if(stat=="ERROR"){
        String code = this->datasetInfoJson["code"];
        String msg = this->datasetInfoJson["message"];
-       this->mserial->printStrln("code : " + code);
-       this->mserial->printStrln("message : " + msg);            
+       this->interface->mserial->printStrln("code : " + code);
+       this->interface->mserial->printStrln("message : " + msg);            
      }else{
-        this->mserial->printStrln("The dataset is unlocked");     
+        this->interface->mserial->printStrln("The dataset is unlocked");     
      }
      
     String id = this->datasetInfoJson["data"]["id"];
-    this->mserial->printStrln("DATASET ID: " + id);
+    this->interface->mserial->printStrln("DATASET ID: " + id);
   }
 }
 

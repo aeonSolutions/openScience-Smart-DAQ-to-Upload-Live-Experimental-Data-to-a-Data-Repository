@@ -82,7 +82,6 @@ void GBRL::init(INTERFACE_CLASS* interface, M_WIFI_CLASS* mWifi){
 
 bool GBRL::commands(String $BLE_CMD, uint8_t sendTo ){
   String dataStr="";
-
   if($BLE_CMD.indexOf("$lang dw ")>-1){
     return this->set_device_language($BLE_CMD, sendTo);
   }
@@ -320,7 +319,7 @@ bool GBRL::powerManagement(String $BLE_CMD, uint8_t sendTo ){
     }
   } else if($BLE_CMD=="$BAT" || $BLE_CMD=="$bat"){
       this->interface->mserial->printStr("Value from pin: ");
-      this->interface->mserial->printStrln(String(analogRead(INTERFACE_CLASS::BATTERY_ADC_IO)));
+      this->interface->mserial->printStrln(String(analogRead(this->interface->BATTERY_ADC_IO)));
       this->interface->mserial->printStr("Average value from pin: ");
       this->interface->mserial->printStrln(String(this->interface->BL.pinRead()));
       this->interface->mserial->printStr("Volts: ");

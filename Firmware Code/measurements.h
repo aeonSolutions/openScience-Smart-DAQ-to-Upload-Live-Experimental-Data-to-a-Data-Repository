@@ -54,10 +54,10 @@ extern "C"
   // **************************** == Measurements Class == ************************
 class MEASUREMENTS {
     private:
-        INTERFACE_CLASS* interface=nullptr;
-        M_WIFI_CLASS* mWifi=nullptr;
-        DISPLAY_LCD_CLASS* display;
-        ONBOARD_SENSORS* onBoardSensors ;
+        INTERFACE_CLASS* interface;
+        M_WIFI_CLASS* mWifi = NULL ;
+        DISPLAY_LCD_CLASS* display = NULL;
+        ONBOARD_SENSORS* onBoardSensors = NULL;
 
         unsigned long LAST_DATASET_UPLOAD = 0;
         unsigned long LAST_DATA_MEASUREMENTS = 0;
@@ -81,9 +81,23 @@ class MEASUREMENTS {
         uint8_t SELECTED_ADC_REF_RESISTANCE;
 
         // GBRL commands  *********************************************
-        bool helpCommands( uint8_t sendTo );
+        bool helpCommands(String $BLE_CMD, uint8_t sendTo );
+        bool history(String $BLE_CMD, uint8_t sendTo);
+        bool measurementInterval(String $BLE_CMD, uint8_t sendTo);
+        bool cfg_commands(String $BLE_CMD, uint8_t sendTo);
+        bool  gbrl_summary_measurement_config( uint8_t sendTo);
 
     public:
+
+        bool hasNewMeasurementValues;
+        float last_measured_probe_temp;
+        float last_measured_time_delta;     
+        int DATASET_NUM_SAMPLES;
+        
+        bool Measurments_EN;
+        bool Measurments_NEW;
+        String measurement_Start_Time;
+
            // ...................................................     
         typedef struct{
             String EXPERIMENTAL_DATA_FILENAME = "ER_measurements.csv";
@@ -127,9 +141,6 @@ class MEASUREMENTS {
         void init(INTERFACE_CLASS* interface, DISPLAY_LCD_CLASS* display,M_WIFI_CLASS* mWifi, ONBOARD_SENSORS* onBoardSensors );
 
         void settings_defaults();
-        bool loadSettings( fs::FS &fs = LittleFS );
-        bool saveSettings( fs::FS &fs = LittleFS );
-
         // **********************************
         void ReadExternalAnalogData();
         void runExternalMeasurements();
@@ -146,7 +157,12 @@ class MEASUREMENTS {
         void freeAllocatedMemory(int ****measurements, int nRow, int nColumn, int dim3);
 
         // GBRL commands  *********************************************
-        bool commands(String $BLE_CMD, uint8_t sendTo );
+        bool gbrl_commands(String $BLE_CMD, uint8_t sendTo);
+
+        // Setup configuration and settings *******************************************
+        bool readSettings( fs::FS &fs = LittleFS );
+        bool saveSettings( fs::FS &fs = LittleFS  );
+
 };
 
 

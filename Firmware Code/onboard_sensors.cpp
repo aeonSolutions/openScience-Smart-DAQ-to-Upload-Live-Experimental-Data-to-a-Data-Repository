@@ -311,7 +311,7 @@ void ONBOARD_SENSORS::I2Cscanner() {
  }
 
 // *********************************************************
-bool ONBOARD_SENSORS::commands(String $BLE_CMD, uint8_t sendTo){
+bool ONBOARD_SENSORS::gbrl_commands(String $BLE_CMD, uint8_t sendTo){
   String dataStr="";
   
   if($BLE_CMD.indexOf("$ms ")>-1){
