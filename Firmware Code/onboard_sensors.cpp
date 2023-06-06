@@ -40,8 +40,6 @@ https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/wiki/AeonLabs-Solutio
 ONBOARD_SENSORS::ONBOARD_SENSORS(){
     this->NUMBER_OF_ONBOARD_SENSORS=0;
     this->AHT20_ADDRESS = 0x38;
-
-
 }
 
 void ONBOARD_SENSORS::init(INTERFACE_CLASS* interface, mSerial* mserial){
@@ -59,16 +57,17 @@ void ONBOARD_SENSORS::init(INTERFACE_CLASS* interface, mSerial* mserial){
     this->i2c_err_t[7]="I2C_ERROR_CONTINUE";// 7
     this->i2c_err_t[8]="I2C_ERROR_NO_BEGIN"; // 8
 
-    aht20= new AHT20(this->AHT20_ADDRESS);
+    this->aht20 = new AHT20_SENSOR();
+    this->aht20->init(this->interface, this->AHT20_ADDRESS);
+    this->aht20->startAHT();
 
-    this->startAHT();
     this->startLSM6DS3();
-    this->prevReadings[0]=0.0;
-    this->prevReadings[1]=0.0;
-    this->prevReadings[2]=0.0;
-    this->prevReadings[3]=0.0;
-    this->prevReadings[4]=0.0;
-    this->prevReadings[5]=0.0;
+    this->prevReadings[0] = 0.0;
+    this->prevReadings[1] = 0.0;
+    this->prevReadings[2] = 0.0;
+    this->prevReadings[3] = 0.0;
+    this->prevReadings[4] = 0.0;
+    this->prevReadings[5] = 0.0;
     this->ROLL_THRESHOLD  = 8.5;   
     this->numtimesBeforeDetectMotion=5;
     this->numtimesMotionDetected=0;
@@ -79,47 +78,16 @@ void ONBOARD_SENSORS::init(INTERFACE_CLASS* interface, mSerial* mserial){
 
 // ***************************************************************
 void ONBOARD_SENSORS::request_onBoard_Sensor_Measurements(){
-    if (AHTsensorAvail == false) {
-      startAHT(); 
-    }  
+    this->aht20->requestMeasurements();
 
-    aht_temp = aht20->getTemperature();
-    aht_humidity = aht20->getHumidity();
+    this->aht_temp = aht20->measurement[0];
+    this->aht_humidity = aht20->measurement[1];
 
-    if (isnan(aht_temp)) { // check if 'is not a number'
-      this->mserial->printStrln("Failed to read temperature");
-    }
-
-    if (isnan(aht_humidity)) { // check if 'is not a number'
-      this->mserial->printStrln("Failed to read humidity");
-    }
-    
     getLSM6DS3sensorData();
 }
 
 
-// ********************************************************
-void ONBOARD_SENSORS::startAHT() {
-  
-    Wire.begin();
-
-    bool result = this->aht20->begin();  
-    if (result){
-        this->AHTsensorAvail = true;
-        this->mserial->printStr("AHT sensor status code: " + String(this->aht20->getStatus()));
-        this->mserial->printStrln(" <<>> calibrated: " + String( this->aht20->isCalibrated() == 1 ? "True" : "False" ) );
-    }else{
-        this->AHTsensorAvail = false;
-        this->mserial->printStrln("AHT sensor not found at specified address (0x"+String(this->AHT20_ADDRESS, HEX)+")");
-        interface->onBoardLED->led[0] = interface->onBoardLED->LED_RED;
-        interface->onBoardLED->statusLED(100,2); 
-    }
-}
-// ********************************************************
-
 void ONBOARD_SENSORS::startLSM6DS3(){
-
-
   if ( LSM6DS3sensor.begin() != 0 ) {
     this->mserial->printStrln("\nError starting the motion sensor at specified address (0x"+String(this->LSM6DS3_ADDRESS, HEX)+")");
     interface->onBoardLED->led[0] = interface->onBoardLED->LED_RED;

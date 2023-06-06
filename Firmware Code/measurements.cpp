@@ -333,41 +333,41 @@ void MEASUREMENTS::runExternalMeasurements(){
 void MEASUREMENTS::readOnboardSensorData(int i, int pos){
     this->onBoardSensors->request_onBoard_Sensor_Measurements();
 
-    measurements[i][pos][this->measurements_current_pos]= (char*) String( this->onBoardSensors->aht_temp ).c_str();
-    measurements[i][pos+1][this->measurements_current_pos]= (char*) String( this->onBoardSensors->aht_humidity ).c_str();
+    this->measurements[i][pos][this->measurements_current_pos]= (char*) String( this->onBoardSensors->aht_temp ).c_str();
+    this->measurements[i][pos+1][this->measurements_current_pos]= (char*) String( this->onBoardSensors->aht_humidity ).c_str();
 
-    measurements[i][pos+2][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_Motion_X).c_str();  
-    measurements[i][pos+3][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_Motion_Y).c_str();
-    measurements[i][pos+4][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_Motion_Z).c_str();
+    this->measurements[i][pos+2][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_Motion_X).c_str();  
+    this->measurements[i][pos+3][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_Motion_Y).c_str();
+    this->measurements[i][pos+4][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_Motion_Z).c_str();
 
-    measurements[i][pos+5][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_GYRO_X).c_str();
-    measurements[i][pos+6][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_GYRO_Y).c_str();  
-    measurements[i][pos+7][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_GYRO_Z).c_str();
+    this->measurements[i][pos+5][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_GYRO_X).c_str();
+    this->measurements[i][pos+6][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_GYRO_Y).c_str();  
+    this->measurements[i][pos+7][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_GYRO_Z).c_str();
 
-    measurements[i][pos+8][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_TEMP).c_str();
-    measurements[i][pos+9][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_errors).c_str();
+    this->measurements[i][pos+8][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_TEMP).c_str();
+    this->measurements[i][pos+9][this->measurements_current_pos]= (char*) String(this->onBoardSensors->LSM6DS3_errors).c_str();
 }
 
 // ****************************************************************
-void readChannel2SensorMeasurements(int i, int pos){
+void MEASUREMENTS::readChannel2SensorMeasurements(int i, int pos){
  // SHT3x sensor
-  if(this->channel_2_sensor_type == "sht3x"){
-    if (this->channel_1_switch_on_pos == 0){ // channel 1 is disabled
-      measurements [i][pos][this->measurements_current_pos]= (char*) this->interface->rtc.getDateTime(true).c_str();
+  if(this->config.channel_2_sensor_type == "sht3x"){
+    if (this->config.channel_1_switch_on_pos == 0){ // channel 1 is disabled
+      this->measurements [i][pos][this->measurements_current_pos]= (char*) this->interface->rtc.getDateTime(true).c_str();
       pos++;
     }
-    measurements [i][pos][this->measurements_current_pos]= (char*) String(this->sht3x->measurement[0]).c_str(); // Temp
-    measurements [i][pos][this->measurements_current_pos]= (char*) String(this->sht3x->measurement[1]).c_str();  // Humidity
+    this->measurements [i][pos][this->measurements_current_pos]= (char*) String(this->sht3x->measurement[0]).c_str(); // Temp
+    this->measurements [i][pos][this->measurements_current_pos]= (char*) String(this->sht3x->measurement[1]).c_str();  // Humidity
   }
    
   // AHT20 sensor
-  if(this->channel_2_sensor_type == "aht20"){
-    if (this->channel_1_switch_on_pos == 0){ // channel 1 is disabled
-      measurements [i][pos][this->measurements_current_pos]= (char*) this->interface->rtc.getDateTime(true).c_str();
+  if(this->config.channel_2_sensor_type == "aht20"){
+    if (this->config.channel_1_switch_on_pos == 0){ // channel 1 is disabled
+      this->measurements [i][pos][this->measurements_current_pos]= (char*) this->interface->rtc.getDateTime(true).c_str();
       pos++;
     }
-    measurements [i][pos][this->measurements_current_pos]= (char*) String(this->aht20->measurement[0]).c_str(); // Temp
-    measurements [i][pos][this->measurements_current_pos]= (char*) String(this->aht20->measurement[1]).c_str();  // Humidity
+    this->measurements [i][pos][this->measurements_current_pos]= (char*) String(this->aht20->measurement[0]).c_str(); // Temp
+    this->measurements [i][pos][this->measurements_current_pos]= (char*) String(this->aht20->measurement[1]).c_str();  // Humidity
   }
 
  // other sensors 
@@ -376,7 +376,7 @@ void readChannel2SensorMeasurements(int i, int pos){
 }
 // *****************************************************************************
 void MEASUREMENTS::readSensorMeasurements() {
-  if(this->channel_1_switch_on_pos == 1){ // DS18B20 sensor
+  if(this->config.channel_1_switch_on_pos == 1){ // DS18B20 sensor
     int zerosCount=0;
     for (byte i = 0; i < this->config.NUM_SAMPLE_SAMPLING_READINGS; i++) {
       this->interface->mserial->printStrln("");
@@ -386,19 +386,20 @@ void MEASUREMENTS::readSensorMeasurements() {
       this->readOnboardSensorData(i, 0); // 10 readings
 
       this->ds18b20->requestMeasurements(); 
-      measurements [i][10][this->measurements_current_pos]= (char*) this->interface->rtc.getDateTime(true).c_str();
-      measurements [i][11][this->measurements_current_pos]= (char*) String(this->ds18b20->measurement[0]).c_str();
+      this->measurements [i][10][this->measurements_current_pos]= (char*) this->interface->rtc.getDateTime(true).c_str();
+      this->measurements [i][11][this->measurements_current_pos]= (char*) String(this->ds18b20->measurement[0]).c_str();
       
       this->readChannel2SensorMeasurements(i,12);
       
       delay(this->config.SAMPLING_INTERVAL);
     }
-  }else if (this->channel_1_switch_on_pos > 1){
+  }else if (this->config.channel_1_switch_on_pos > 1){
     this->readExternalAnalogData();
   }
 
 }
 
+// *********************************************************
 void MEASUREMENTS::readExternalAnalogData() {
   float adc_ch_analogRead_raw; 
   float ADC_CH_REF_VOLTAGE; 
@@ -478,11 +479,11 @@ void MEASUREMENTS::readExternalAnalogData() {
     this->readOnboardSensorData(i, 0); // 10 readings
 
     // SAMPLING_READING POS,  SENSOR POS, MEASUREMENTS_BUFFER_ POS
-    measurements [i][10][this->measurements_current_pos]= (char*) this->interface->rtc.getDateTime(true).c_str();
-    measurements [i][11][this->measurements_current_pos]= (char*) String(adc_ch_analogRead_raw).c_str();
-    measurements [i][12][this->measurements_current_pos]= (char*) String(ADC_CH_REF_VOLTAGE).c_str();
-    measurements [i][13][this->measurements_current_pos]= (char*) String(adc_ch_measured_voltage).c_str();
-    measurements [i][14][this->measurements_current_pos]= (char*) String(adc_ch_calcukated_e_resistance).c_str();
+    this->measurements [i][10][this->measurements_current_pos]= (char*) this->interface->rtc.getDateTime(true).c_str();
+    this->measurements [i][11][this->measurements_current_pos]= (char*) String(adc_ch_analogRead_raw).c_str();
+    this->measurements [i][12][this->measurements_current_pos]= (char*) String(ADC_CH_REF_VOLTAGE).c_str();
+    this->measurements [i][13][this->measurements_current_pos]= (char*) String(adc_ch_measured_voltage).c_str();
+    this->measurements [i][14][this->measurements_current_pos]= (char*) String(adc_ch_calcukated_e_resistance).c_str();
     
     this->readChannel2SensorMeasurements(i,15);
 

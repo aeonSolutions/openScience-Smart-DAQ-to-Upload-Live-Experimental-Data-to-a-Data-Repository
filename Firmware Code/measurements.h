@@ -47,9 +47,9 @@ extern "C"
 #include <semphr.h>
 #include "onboard_sensors.h"
 
-#include "sensors/ds18b20.h"
-#include "sensors/sht3x.h"
-#include "sensors/aht20.h"
+#include "src/sensors/ds18b20.h"
+#include "src/sensors/aht20.h"
+#include "src/sensors/sht3x.h"
 
 #ifndef MEASUREMENTS_COMMANDS  
   #define MEASUREMENTS_COMMANDS
@@ -63,10 +63,9 @@ class MEASUREMENTS {
         DISPLAY_LCD_CLASS* display = NULL;
         ONBOARD_SENSORS* onBoardSensors = NULL;
 
-        DS18B20_SENSOR* ds18b20 = nullptr;
-        SHT3X_SENSOR* sht3x =nullptr;
-        AHT20_SENSOR* aht20 = nullptr;
-        SHT3X_SENSOR* sht3x = nullptr;
+        DS18B20_SENSOR* ds18b20  = nullptr;
+        AHT20_SENSOR* aht20      = nullptr;
+        SHT3X_SENSOR* sht3x      = nullptr;
 
         unsigned long LAST_DATASET_UPLOAD = 0;
         unsigned long LAST_DATA_MEASUREMENTS = 0;
@@ -150,8 +149,9 @@ class MEASUREMENTS {
         // **********************************
         void readSensorMeasurements();
         void readExternalAnalogData();
-        void readOnboardSensorData(int i);
+        void readOnboardSensorData(int i, int pos);
         void runExternalMeasurements();
+        void readChannel2SensorMeasurements(int i, int pos);
         void units();
 
         // ***********************************

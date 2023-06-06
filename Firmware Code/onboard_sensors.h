@@ -36,7 +36,7 @@ https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/wiki/AeonLabs-Solutio
 #include "mserial.h"
 #include "interface_class.h"
 #include <Wire.h>
-#include "AHT20.h"
+#include "src/sensors/aht20.h"
 
 #ifndef ONBOARD_SENSORS_DEF
   #define ONBOARD_SENSORS_DEF
@@ -52,14 +52,14 @@ class ONBOARD_SENSORS {
     bool AHTsensorAvail;
     float aht_temp, aht_humidity;
     uint8_t AHT20_ADDRESS;
-    AHT20* aht20;
-
+    
+    AHT20_SENSOR* aht20;
 
     // LSM6DS3 motion sensor  ******************************
     uint8_t LSM6DS3_ADDRESS= 0x6B; // default address is 0x6B
     uint8_t IMU_CS_IO =38;
     bool MotionSensorAvail;
-    LSM6DS3 LSM6DS3sensor= LSM6DS3( I2C_MODE, LSM6DS3_ADDRESS);
+    LSM6DS3 LSM6DS3sensor = LSM6DS3( I2C_MODE, LSM6DS3_ADDRESS);
     float LSM6DS3_errors, LSM6DS3_Motion_X, LSM6DS3_Motion_Y, LSM6DS3_Motion_Z, LSM6DS3_GYRO_X,  LSM6DS3_GYRO_Y,  LSM6DS3_GYRO_Z,  LSM6DS3_TEMP;
 
     bool MOTION_DETECT_EN;
@@ -78,7 +78,7 @@ class ONBOARD_SENSORS {
     ONBOARD_SENSORS();
     void I2Cscanner();
     void init(INTERFACE_CLASS* interface, mSerial* mserial);
-    void startAHT();
+
     void startLSM6DS3();
     void request_onBoard_Sensor_Measurements();
     void getLSM6DS3sensorData();
