@@ -111,7 +111,7 @@ The pcb hardware has now a status of fully tested and fully working. The next mi
 ## OEM Firmware code
 The OEM version of the firmware code can be found on the folder **firmware code**.  It has by default OTA updates, meaning the smart data acquisition device automatically updates it self when newer updated versions made available here.  
 
-This code uses my own ESP32 c++ class libraties to expedite development of code of ESP32 microcontrollers. The repository is located [here](https://github.com/aeonSolutions/aeonlabs-ESP32-C-Base-Firmware-Libraries#readme) for anyone to use.
+This code uses my own ESP32 c++ class libraries to expedite development of code of ESP32 microcontrollers. The repository is located [here](https://github.com/aeonSolutions/aeonlabs-ESP32-C-Base-Firmware-Libraries#readme) for anyone to use.
 
 <br>
 
