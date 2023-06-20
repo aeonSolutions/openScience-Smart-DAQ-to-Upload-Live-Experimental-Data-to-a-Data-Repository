@@ -28,7 +28,7 @@
 
 (2007)
 
-I can already see students in a laboratory all dressed up and equipped with their tablets and smart device kits, all sending the experimental data to a public data repository while at the same time receiving experimental data from other students.  All inside that tablet cooperating, and whithout the need to get to know each other.
+I can already see students in a laboratory all dressed up and equipped with their tablets and smart device kits, all sending the experimental data to a public data repository while at the same time receiving experimental data from other students.  All inside that tablet cooperating and without the need to get to know each other.
 
 <p align="center">
   <img src="https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/blob/main/Design/man-at-desk-writing-on-ipad-with-stylus-portrait_2000x2000.webp" height=500>
@@ -38,7 +38,7 @@ I can already see students in a laboratory all dressed up and equipped with thei
 
 **The problem**
 
-Current scientific methods use traditional dataloggers (DAQ) for doing experimental data measurements and collection. This means collected data many times is stored in a paper format, and most of the time in a conventional CSV excel data file. This is prone to errors and even worst, forgery of experimental data. To this date, there are no dataloggers able to automate an experimental data acquisition in a scientific experiment, making it transparent and trustworthy beyond common critique found nowadays. 
+Current scientific methods use traditional dataloggers (DAQ) for doing experimental data measurements and collection. This means collected data many times is stored in a paper format, and most of the time in a conventional CSV Excel data file. This is prone to errors and even worst, forgery of experimental data. To this date, there are no dataloggers able to automate experimental data acquisition in a scientific experiment, making it transparent and trustworthy beyond common critiques found nowadays. 
 
 <br>
 
@@ -87,7 +87,7 @@ I also have available [here](https://github.com/aeonSolutions/AeonLabs--Writing-
 
 The LDAD is officially up and running! Well, the very first release candidate of the firmware. Now, on this code revision, electrical resistance and measurement voltage are correctly measured by the built-in multimeter. And this means the smart DAQ is now ready to be installed on all specimens in an experimental campaign after configuration with the correct calibration curves (temperature compensated). From now on all changes will be towards improving usability and user experience in a laboratory.
 
-The C firmware code now includes SRAM support for temporary storage of measured data in RAM up to 9175 samplings (for the 64Mbit IC) before flushing it into the onboard Flash storage. See [this](https://stackoverflow.com/questions/75004548/multidimensional-char-string-array-initialization-and-usage-for-esp32-mcus-with/75004549#75004549) stack overflow question for more info. The [1.69" Display](https://s.click.aliexpress.com/e/_DklsWrB) is now also available and a standard layout design and configuration are now shown when the smart DAQ is powered.
+The C firmware code now includes SRAM support for the temporary storage of measured data in RAM up to 9175 samplings (for the 64Mbit IC) before flushing it into the onboard Flash storage. See [this](https://stackoverflow.com/questions/75004548/multidimensional-char-string-array-initialization-and-usage-for-esp32-mcus-with/75004549#75004549) stack overflow question for more info. The [1.69" Display](https://s.click.aliexpress.com/e/_DklsWrB) is now also available and a standard layout design and configuration are now shown when the smart DAQ is powered.
 
 A new PCB design layout made to fit a well-known [waterproof acrylic enclosure](https://s.click.aliexpress.com/e/_Dmudkjt), is available with new DAQ capabilities. This new PCB design dimension is the one selected to move forward on this sci. research project. See the photos below.
 
@@ -104,37 +104,37 @@ A new PCB design layout made to fit a well-known [waterproof acrylic enclosure](
 
 ## ![](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/working_green.png) Status
 
-The pcb hardware has now a status of fully tested and fully working. The next milestone is now the firmware code being programmed. More updates in comming weeks. 
+The PCB hardware has now a status of fully tested and fully working. Nowadays, coding the firmware for the first public beta stable release.
 
 <br>
 
 ## OEM Firmware code
-The OEM version of the firmware code can be found on the folder **firmware code**.  It has by default OTA updates, meaning the smart data acquisition device automatically updates it self when newer updated versions made available here.  
+The OEM version of the firmware code can be found in the folder **firmware code**.  It has by default OTA updates, meaning the smart data acquisition device automatically updates itself when newer updated versions are made available here.  
 
-This code uses my own ESP32 c++ class libraries to expedite development of code of ESP32 microcontrollers. The repository is located [here](https://github.com/aeonSolutions/aeonlabs-ESP32-C-Base-Firmware-Libraries#readme) for anyone to use.
+This code uses my own ESP32 c++ class libraries to expedite development of the code of ESP32 microcontrollers. The repository is located [here](https://github.com/aeonSolutions/aeonlabs-ESP32-C-Base-Firmware-Libraries#readme) for anyone to use.
 
 <br>
 
 ## ToDo List
 
 **Smart DAQ Firmware:**
-  - Calc MD5 hash of the dataset file yo compare with json result on upload 
+  - Calc MD5 hash of the dataset file to compare with json result on upload 
   - ✓ ~~OTA firmware update~~
-  - Remove lock on a dataset (by an admin)
+  - Remove the lock on a dataset (by an admin)
   - ✓ ~~Validate Json received on a new dataset upload~~
   - ✓ ~~Load dataset repository metadata~~
   - ✓ ~~Output board startup diagnostics serial stream to a Bluetooth or WIFI data stream~~
   - ✓ ~~accept GBRL like setup and config $ commands.~~
-  - SQLite database to store measured experumental data and upload to a dataverse repository
+  - SQLite database to store measured experimental data and upload to a dataverse repository
   - Swarm connectivity to other nearby Smart DAQ devices for experimental data redundancy and sharing (IoE - Internet of Everything). 
-  - Blockchain like data storage and exchange of experimental data collected
+  - Blockchain-like data storage and exchange of experimental data collected
   - Experimental Data multiple Signing with multiple unique Fingerprint ID requests to other Smart DAQ devices:
     - from nearby devices on the same research project
-    - from nearby devices on the same Laboratory
+    - from nearby devices in the same Laboratory
     - from nearby devices on the same campus
     - from devices located elsewhere (on the internet) and available to do experimental data signing (obtained from a list of devices registered in a public server) 
   - ✓ ~~Automatic geolocation of experimental data origins using the wifi network it connects~~
-  - Allow remote query of a device's setup, for instance sensor calibration,  at any time of the day (and night) from the data repository server
+  - Allow remote query of a device's setup, for instance, sensor calibration,  at any time of the day (and night) from the data repository server
   - ✓ ~~Motion Detection of unauthorized handling of a specimen during an ongoing experiment~~
   - ✓ ~~Smart Device Language Pack Downloader and Language Selection~~
   - ✓ ~~Github Certificate of Authority (CA) Updater~~
@@ -143,7 +143,7 @@ This code uses my own ESP32 c++ class libraries to expedite development of code 
 <br>
 
 **Smart DAQ setup and configuration**
-- Multi environment smart DAQ manager coded in QT6 (Android, Windows, Lunux,...)  for setup and configuration of individual smart DAQ devices to each specimen or sample (using RFID NFC technolgies).
+- Multi-environment smart DAQ manager coded in QT6 (Android, Windows, Linux,...)  for setup and configuration of individual smart DAQ devices to each specimen or sample (using RFID NFC technologies).
 - Ability to define a policy of experimental expected/ possible warnings on measured results (when in autonomous mode). 
 
 <br>
@@ -157,10 +157,10 @@ This code uses my own ESP32 c++ class libraries to expedite development of code 
 ## Related Open Source code and Software Apps
 
 ### Mobile App for managing LDAD Smart DAQ devices
-The Android App under development able to connect these smart data acquisitin devives can be found here on the following repository "[Mobile App for managing LDAD Smart DAQ devices](https://github.com/aeonSolutions/aeonlabs-Android-Mobile-App-for-managing-LDAD-Smart-DAQ-devices)".
+The Android App under development is able to connect these smart data acquisition devices and can be found here on the following repository "[Mobile App for managing LDAD Smart DAQ devices](https://github.com/aeonSolutions/aeonlabs-Android-Mobile-App-for-managing-LDAD-Smart-DAQ-devices)".
 
 ### Dataverse API C library
-In paralell is being written a C library to expedite API integration on smart DAQ devices or elsewhere. Follow the link to its repository:
+In parallel is being written a C library to expedite API integration on smart DAQ devices or elsewhere. Follow the link to its repository:
 
 https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library
 
@@ -174,7 +174,7 @@ https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library
 
 **Dataverse API in another coding language**
 
-Goto dataverse.org for another coding language that best suits your coding style and needs. Currently there are client libraries for Python, Javascript, R, Java, and Julia that can be used to develop against Dataverse Software APIs
+Goto dataverse.org for another coding language that best suits your coding style and needs. Currently, there are client libraries for Python, Javascript, R, Java, and Julia that can be used to develop against Dataverse Software APIs
 
 https://guides.dataverse.org/en/5.12/api/client-libraries.html
 
@@ -184,9 +184,9 @@ https://guides.dataverse.org/en/5.12/api/client-libraries.html
 -----------------------------------------------------------------------------------
 <br>
 
-### Open Data Respsitories 
+### Open Data Repositories 
 
-| [<img src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/dataverse_org.png" alt="" width="150">](https://dataverse.org) | The Dataverse Project is an open source web application to share, preserve, cite, explore, and analyze research data. It facilitates making data available to others, and allows you to replicate others' work more easily. Researchers, journals, data authors, publishers, data distributors, and affiliated institutions all receive academic credit and web visibility. |
+| [<img src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/dataverse_org.png" alt="" width="150">](https://dataverse.org) | The Dataverse Project is an open source web application to share, preserve, cite, explore, and analyze research data. It facilitates making data available to others and allows you to replicate others' work more easily. Researchers, journals, data authors, publishers, data distributors, and affiliated institutions all receive academic credit and web visibility. |
 |-------------|------|
 
 <br>
@@ -208,7 +208,7 @@ https://guides.dataverse.org/en/5.12/api/client-libraries.html
 
 <br>
 
-In the Wiki  the reader can find a [list of Open Science projects](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki) worth mention. And if you know one of interest, share it here too, for everyone to see and use.   
+In the Wiki,  the reader can find a [list of Open Science projects](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki) worth mention. And if you know one of interest, share it here too, for everyone to see and use.   
 
 <br>
 <br>
@@ -222,7 +222,7 @@ In the Wiki  the reader can find a [list of Open Science projects](https://githu
   <img width="600" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/12bitSmartDAQ2023january_2.jpeg">
 </p>
 
-On the photo above the smart DAQ is installed on an acrylic case and screwed with plastic screws to an acrylic base with the same cross section area as the specimen to be tested. The acrylic base can be bought [here](https://s.click.aliexpress.com/e/_DEGsZaL). And the acrylic case [here](https://s.click.aliexpress.com/e/_Dmudkjt). 
+On the photo above the smart DAQ is installed on an acrylic case and screwed with plastic screws to an acrylic base with the same cross-section area as the specimen to be tested. The acrylic base can be bought [here](https://s.click.aliexpress.com/e/_DEGsZaL). And the acrylic case [here](https://s.click.aliexpress.com/e/_Dmudkjt). 
 
 <br>
 
@@ -230,13 +230,13 @@ On the photo above the smart DAQ is installed on an acrylic case and screwed wit
   <img width="600" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/12bitSmartDAQ2023january_4.jpeg">
 </p>
 
-On the photo above is one of my many specimens I purposely fabricated to research self-sensing properties of a asphalt mixed with a known content of carbon fibers. This is a 10cm cylinder specimen and on the top is already setup my own design smart #DAQ (get it here on my GitHub ) with ability do upload LIVE experimental data to a #dataverse.
+The photo above is one of many specimens I purposely fabricated to research the self-sensing properties of asphalt mixed with a known content of carbon fibers. This is a 10cm cylinder specimen and on the top is already setup my own design smart #DAQ (get it here on my GitHub ) with the ability to upload LIVE experimental data to a #dataverse.
 
 <br>
 
 **Proof of Concept**
 
-To test and validate proposed smart DAQ PCB electronics and its firmware as a solution for LIVE experimental data measurements on any test specimen part of a experimental campaign, This PCB electronics is being used to measure a predefined set of variables/parameters to further study several asphalt mixtures with known carbon fiber weight content in the asphalt matrix. Below is a YouTube link to an unedited short video showing one of the experimental setups.
+To test and validate proposed smart DAQ PCB electronics and its firmware as a solution for LIVE experimental data measurements on any test specimen part of an experimental campaign, This PCB electronics is being used to measure a predefined set of variables/parameters to further study several asphalt mixtures with known carbon fiber weight content in the asphalt matrix. Below is a YouTube link to an unedited short video showing one of the experimental setups.
 
 <p align="center">
   <a href="https://youtu.be/ycCJRiwse2M">
@@ -269,7 +269,7 @@ See a list with the hardware specifications for the 12bit pcb on the [WiKi](http
 
 ## PCB Design Files and Circuit Schematic
 
-There are many smart DAQ hardware solutions available on my Laboratory Automation catalog, [here](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/tree/main/Laboratory%20Automation), ranging from 12-Bit data acquistion devices with only one channel to high accuracy 24-bit resolution and 12 channels.  
+There are many smart DAQ hardware solutions available on my Laboratory Automation catalog, [here](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/tree/main/Laboratory%20Automation), ranging from 12-Bit data acquisition devices with only one channel to high accuracy 24-bit resolution and 12 channels.  
  
 <p align="center">
   <img width="350" src="https://github.com/aeonSolutions/Open-Science-12bit-Smart-DAQ-unique-data-fingerprint-made-for-an-Acrylic-52x48mm-/blob/main/designs/pcb_front.png">
@@ -295,7 +295,7 @@ Before proceeding to download any of AeonLabs software solutions for open-source
 
 ### Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library/blob/main/CODE_OF_CONDUCT.md). Don't forget to read [AeonLabs's Wiki](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/wiki) before using any code or electronics available here on Github. Thank you.
+Bug reports and pull requests are welcome on GitHub at https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library/blob/main/CODE_OF_CONDUCT.md). Don't forget to read [AeonLabs's Wiki](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/wiki) before using any code or electronics available here on GitHub. Thank you.
 
 ### Coding standards
 
@@ -306,7 +306,7 @@ ________________________________________________________________________________
 <br />
 
 ### Be supportive of my dedication and work towards technology education and buy me a cup of coffee
-Buy me a cup of coffee, a slice of pizza or a book to help me study, eat and think new PCB design files.
+Buy me a cup of coffee, a slice of pizza, or a book to help me study, eat and think new PCB design files.
 
 <p align+"left">
 <a href="https://www.buymeacoffee.com/migueltomas">
@@ -319,14 +319,14 @@ Buy me a cup of coffee, a slice of pizza or a book to help me study, eat and thi
 <br />
 
 ### Make a donation on Paypal
-Make a donation on paypal and get a TAX refund*.
+Make a donation on PayPal and get a TAX refund*.
 
 [![](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/paypal_small.png)](http://paypal.me/mtpsilva)
 
 
-### Support all these open hardware projects and become a patreon  
-Liked any of my PCB KiCad Designs? Help and Support my open work to all by becomming a LDAD Patreon.
-In return I will give a free PCB design in KiCad to all patreon supporters. To learn more go to patreon.com. Link below.
+### Support all these open hardware projects and become a Patreon  
+Liked any of my PCB KiCad Designs? Help and Support my open work to all by becoming a LDAD Patreon.
+In return, I will give a free PCB design in KiCad to all Patreon supporters. To learn more go to patreon.com. Link below.
 
 [![](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/patreon_small.png)](https://www.patreon.com/ldad)
 
