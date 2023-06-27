@@ -75,8 +75,8 @@ class MEASUREMENTS {
 
         uint8_t NUMBER_OF_SENSORS_DATA_VALUES;
     
-        char ****measurements = NULL; //pointer to pointer
-        int measurements_current_pos=0;
+        float **measurements = NULL; //pointer to pointer
+        String measurementsOnBoard;
 
         const float MCU_ADC_DIVIDER = 4096.0;
         uint8_t SELECTED_ADC_REF_RESISTANCE;
@@ -149,9 +149,9 @@ class MEASUREMENTS {
         // **********************************
         void readSensorMeasurements();
         void readExternalAnalogData();
-        void readOnboardSensorData(int i, int pos);
+        void readOnboardSensorData();
         void runExternalMeasurements();
-        void readChannel2SensorMeasurements(int i, int pos);
+        void readChannel2SensorMeasurements(int pos);
         void units();
 
         // ***********************************
@@ -160,9 +160,9 @@ class MEASUREMENTS {
 
         bool initializeDataMeasurementsFile();
 
-        bool initializeDynamicVar( int size1D, int size2D, int size3D);
+        bool initializeDynamicVar( int size1D, int size2D);
         //Free Allocated memory
-        void freeAllocatedMemory(int ****measurements, int nRow, int nColumn, int dim3);
+        void freeAllocatedMemory(int nRow, int nColumn);
 
         // GBRL commands  *********************************************
         bool gbrl_commands(String $BLE_CMD, uint8_t sendTo);

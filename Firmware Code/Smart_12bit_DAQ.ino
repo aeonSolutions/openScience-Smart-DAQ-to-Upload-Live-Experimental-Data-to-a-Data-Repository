@@ -36,8 +36,8 @@
 
 //----------------------------------------------------------------------------------------
 // Components Testing  **************************************
-bool SCAN_I2C_BUS = false;
-bool TEST_FINGERPRINT_ID_IC = false;
+bool SCAN_I2C_BUS = true;
+bool TEST_FINGERPRINT_ID_IC = true;
 
 //----------------------------------------------------------------------------------
 #include <math.h>
@@ -83,6 +83,7 @@ ONBOARD_SENSORS* onBoardSensors = new ONBOARD_SENSORS();
 
 // unique figerprint data ID
 #include "m_atsha204.h"
+#include <Wire.h>
 
 // serial comm
 #include <HardwareSerial.h>
@@ -229,9 +230,30 @@ static uint8_t taskCoreOne  = 1;
 long int prevMeasurementMillis;
 
 void setup() {
-  ESP_ERROR_CHECK(nvs_flash_erase());
-  nvs_flash_init();
+  // ......................................................................................................
+  // .......................... START OF IO & PIN CONFIGURATION..............................................
+  // ......................................................................................................
+  
+  // I2C IOs  __________________________
+  interface->I2C_SDA_IO_PIN = 8;
+  interface->I2C_SCL_IO_PIN = 9;
+/*
+  i2c_config_t conf;
 
+  conf.mode = I2C_MODE_MASTER;
+  conf.sda_io_num = interface->I2C_SDA_IO_PIN;
+  conf.scl_io_num = interface->I2C_SCL_IO_PIN;
+  conf.sda_pullup_en = true;
+  conf.scl_pullup_en = true;
+  conf.master.clk_speed = 400000;
+  conf.clk_flags = 0;
+
+  i2c_param_config(I2C_NUM_0, &conf);
+
+  i2c_driver_install(I2C_NUM_0, I2C_MODE_MASTER, 0, 0, 0);
+    */
+    
+    
   // Firmware Build Version / revision ______________________________
   interface->firmware_version = "1.0.0";
 
@@ -241,28 +263,18 @@ void setup() {
   mserial->DEBUG_EN = true;
   mserial->DEBUG_TYPE = mserial->DEBUG_TYPE_VERBOSE; // DEBUG_TYPE_INFO;
 
-  mserial->start(115200);
-
-  // ......................................................................................................
-  // .......................... START OF IO & PIN CONFIGURATION..............................................
-  // ......................................................................................................
-
-  // I2C IOs  __________________________
-  interface->I2C_SDA_IO_PIN = 8;
-  interface->I2C_SCL_IO_PIN = 9;
-
   // Power Saving ____________________________________
   interface->LIGHT_SLEEP_EN = false;
 
   // External Ports IO Pin assignment ________________________________
   interface-> EXT_PLUG_PWR_EN = 33;
   
-  measurements->ENABLE_3v3_PWR_PIN = 33;
-  measurements->EXT_IO_ANALOG_PIN = 2;
-  measurements->VOLTAGE_REF_PIN = 12;
+  measurements->ENABLE_3v3_PWR_PIN = 38;
+  measurements->EXT_IO_ANALOG_PIN = 4;
+  measurements->VOLTAGE_REF_PIN = 7;
 
   pinMode(interface->EXT_PLUG_PWR_EN, OUTPUT);
-  digitalWrite(interface->EXT_PLUG_PWR_EN , LOW);
+  digitalWrite(interface->EXT_PLUG_PWR_EN , HIGH);
 
   // Battery Power Monitor ___________________________________
   interface->BATTERY_ADC_IO = 21;
@@ -291,7 +303,19 @@ void setup() {
   // ......................................................................................................
   // .......................... END OF IO & PIN CONFIGURATION..............................................
   // ......................................................................................................
+  bool result = Wire.begin( interface->I2C_SDA_IO_PIN , interface->I2C_SCL_IO_PIN, 100000 );
+  
+  ESP_ERROR_CHECK(nvs_flash_erase());
+  nvs_flash_init();
 
+  mserial->start(115200);
+  if ( result ){
+    mserial->printStrln("I2C Bus started at SDA IO " + String(interface->I2C_SDA_IO_PIN) + " SCL IO " + String(interface->I2C_SCL_IO_PIN) );
+  }else{
+    mserial->printStrln("Error starting I2C Bus");  
+  }
+  delay(3000);
+  
   interface->onBoardLED->init();
 
   interface->onBoardLED->led[0] = interface->onBoardLED->LED_RED;
@@ -311,31 +335,20 @@ void setup() {
     interface->onBoardLED->led[0] = interface->onBoardLED->LED_GREEN;
     interface->onBoardLED->statusLED(100, 2);
   }
-
-  //init display ___________________________
-  display->init(interface, mWifi);
-
+  
   // init onboard sensors ___________________________
   onBoardSensors->init(interface, mserial);
-  onBoardSensors->initRollTheshold();
-
-
   if (SCAN_I2C_BUS) {
     onBoardSensors->I2Cscanner();
   }
+  onBoardSensors->initOnboardSensors();
+  
+  //init display ___________________________
+  display->init(interface, mWifi);
 
   if (TEST_FINGERPRINT_ID_IC) {
-    mserial->printStrln("Testing the Unique FingerPrind ID for Sensor Data Measurements");
-
-    mserial->printStr("This Smart Device  Serial Number is : ");
-    mserial->printStrln(CryptoICserialNumber(interface));
-
-    mserial->printStrln("Testing Random Genenator: " + CryptoGetRandom(interface));
-    mserial->printStrln("");
-
-    mserial->printStrln("Testing Sensor Data Validation hashing");
-    mserial->printStrln( macChallengeDataAuthenticity(interface, "TEST IC"));
-    mserial->printStrln("");
+    delay(500);
+    runFingerPrintIDtests(interface);
   }
 
   mserial->printStrln("\nMicrocontroller specifications:");
@@ -364,7 +377,9 @@ void setup() {
   //init wifi
   mWifi->init(interface, drive, interface->onBoardLED);
   mWifi->OTA_FIRMWARE_SERVER_URL = "https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/releases/download/openFirmware/firmware.bin";
-
+  
+  mWifi->add_wifi_network("TheScientist","angelaalmeidasantossilva");
+  
   mWifi->WIFIscanNetworks();
 
   // check for firmwate update
@@ -382,6 +397,9 @@ void setup() {
   //Init GBRL
   gbrl.init(interface, mWifi);
 
+  // calibrate motion sensor to detect shaking
+  onBoardSensors->initRollTheshold();
+ 
   interface->onBoardLED->led[0] = interface->onBoardLED->LED_BLUE;
   interface->onBoardLED->statusLED(100, 0);
 
@@ -408,8 +426,11 @@ void setup() {
   mserial->printStrln("done. ");
 
   mserial->printStrln("Free memory: " + addThousandSeparators( std::string( String(esp_get_free_heap_size() ).c_str() ) ) + " bytes");
-  mserial->printStrln("\nSetup is completed. You may start using the " + String(DEVICE_NAME) );
-  mserial->printStrln("Type $? for a List of commands.\n");
+  
+  mserial->printStrln("============================================================================");
+  mserial->printStrln("Setup is completed. You may start using the " + String(DEVICE_NAME) );
+  mserial->printStrln("Type $? for a List of commands.");
+  mserial->printStrln("============================================================================\n");
 
   interface->onBoardLED->led[0] = interface->onBoardLED->LED_GREEN;
   interface->onBoardLED->statusLED(100, 1);
@@ -550,6 +571,10 @@ void loop(){
   }
   prevMeasurementMillis = millis();
 
+
+  // ....................................
+  measurements->runExternalMeasurements();
+  
   // ....................................................................................
   // Dataverse
   dataverse->syncronizeToDataverse();
@@ -558,11 +583,13 @@ void loop(){
 
   if (mserial->readSerialData()){
     GBRLcommands(mserial->serialDataReceived, mserial->DEBUG_TO_USB);
+    mserial->printStrln("<");
   }
  // ................................................................................    
 
   if (mserial->readUARTserialData()){
     GBRLcommands(mserial->serialUartDataReceived, mserial->DEBUG_TO_UART);
+    mserial->printStrln("<");
   }
 // ................................................................................
 
@@ -572,11 +599,11 @@ void loop(){
     xSemaphoreGive(MemLockSemaphoreBLE_RX);
 
     GBRLcommands($BLE_CMD, mserial->DEBUG_TO_BLE);
+    mserial->printStrln("<");
   }
 
   // ....................................................................................
   // OTA Firmware
-
   if ( mWifi->forceFirmwareUpdate == true )
     mWifi->startFirmwareUpdate();
 
