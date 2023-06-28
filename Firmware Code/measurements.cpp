@@ -69,69 +69,110 @@ void MEASUREMENTS::init(INTERFACE_CLASS* interface, DISPLAY_LCD_CLASS* display,M
     // ADC 
     pinMode(this->EXT_IO_ANALOG_PIN, INPUT);
 
-    this->ds18b20 = new DS18B20_SENSOR();
-    this->ds18b20->init(this->interface, this->EXT_IO_ANALOG_PIN);
-
     // ADC Power
     pinMode(this->ENABLE_3v3_PWR_PIN, OUTPUT);
 
     this->settings_defaults();
 
-    this->interface->mserial->printStrln("Initializing Dynamic memory:");
-    this->interface->mserial->printStrln("Number of SAMPLING READINGS:"+ String(this->config.NUM_SAMPLE_SAMPLING_READINGS));
-    this->interface->mserial->printStrln("Number of Sensor Data values per reading:" + String(this->NUMBER_OF_SENSORS_DATA_VALUES));
-    this->interface->mserial->printStrln("PSRAM buffer size:" + String(this->config.MEASUREMENTS_BUFFER_SIZE));
-    this->display->tftPrintText(0,160,(char*) String("Buff. size:"+ String(this->config.MEASUREMENTS_BUFFER_SIZE)).c_str(),2,"center", TFT_WHITE, true); 
-    delay(2000);
-
-    String units="";    
-
-    if(this->config.channel_1_switch_on_pos == 1){ //  DS18b20
-      this->NUMBER_OF_SENSORS_DATA_VALUES = 1;
-    }else{
-      this->NUMBER_OF_SENSORS_DATA_VALUES = 3;
-    }
-    if (this->config.channel_2_sensor_type != "off" ){
-      this->NUMBER_OF_SENSORS_DATA_VALUES = this->NUMBER_OF_SENSORS_DATA_VALUES + 2;
-    }
-
-    // 1D number of sample readings ; 2D number of sensor data measuremtns; 3D RAM buffer size
-    if ( false == this->initializeDynamicVar( this->NUMBER_OF_SENSORS_DATA_VALUES, this->config.NUM_SAMPLE_SAMPLING_READINGS * this->config.MEASUREMENTS_BUFFER_SIZE) ){
-      this->interface->mserial->printStrln("Error Initializing Measruments Buffer.");
-      this->display->tftPrintText(0,160,"ERR Exp. data Buffer",2,"center", TFT_WHITE, true); 
-      this->interface->onBoardLED->led[0] = this->interface->onBoardLED->LED_RED;
-      this->interface->onBoardLED->statusLED(100, 5);
-      // TODO : what to do when memeory alloc is NULL
-    }else{
-        this->interface->mserial->printStrln("Measurements Buffer Initialized successfully.");
-        float bufSize= sizeof(char)*(this->config.NUM_SAMPLE_SAMPLING_READINGS * this->NUMBER_OF_SENSORS_DATA_VALUES * this->config.MEASUREMENTS_BUFFER_SIZE); // bytes
-        units=" B";
-        if (bufSize>1024){
-            bufSize=bufSize/1024;
-            units=" Kb";
-        }
-        this->interface->mserial->printStrln("Buffer size:" + String(bufSize) + units);
-        this->display->tftPrintText(0,160,(char*) String("Buf size:"+String(bufSize)+ units).c_str(),2,"center", TFT_WHITE, true); 
-        delay(1000);
-        this->display->tftPrintText(0,160,"Exp. Data RAM ready",2,"center", TFT_WHITE, true); 
-        this->interface->onBoardLED->led[0] = this->interface->onBoardLED->LED_GREEN;
-        this->interface->onBoardLED->statusLED(100, 2);
-    }
-
-
     this->interface->mserial->printStrln("done.");
 }
+// **************************************************
+bool MEASUREMENTS::initializeSensors(){
+  this->NUMBER_OF_SENSORS_DATA_VALUES = 0;
+  String dataStr = "";
+  this->ch2_sensor_type ="disabled";
 
+  if ( this->config.channel_2_switch_en == true ){
+    this->sht3x = new SHT3X_SENSOR();
+    this->sht3x->init(this->interface, 0x44);
+    if ( this->sht3x->startSHT3X() ){
+      dataStr += "The device is now setup for Temperature and Humidty readings using the SHT3x sensor\n";
+      this->NUMBER_OF_SENSORS_DATA_VALUES =  this->NUMBER_OF_SENSORS_DATA_VALUES  + this->sht3x->numSensors;
+      this->ch2_sensor_type ="sht3x";
+    }else{
+      this->sht3x->init(this->interface, 0x45);
+      if ( this->sht3x->startSHT3X() ){
+        this->NUMBER_OF_SENSORS_DATA_VALUES =  this->NUMBER_OF_SENSORS_DATA_VALUES  + this->sht3x->numSensors;
+        dataStr += "The device is now setup for Temperature and Humidty readings using the SHT3x sensor.\n";
+        this->ch2_sensor_type ="sht3x";
+      }
+    }
+  }
+
+  if(this->config.channel_1_switch_on_pos == 1){ //  DS18b20
+    this->ds18b20 = new DS18B20_SENSOR();
+    this->ds18b20->init(this->interface,  this->EXT_IO_ANALOG_PIN);
+    if ( this->ds18b20->startDS18B20() ){
+      dataStr += "The device is now setup for Temperature readings using the DS18b20 sensor.\n";
+      this->NUMBER_OF_SENSORS_DATA_VALUES =  this->NUMBER_OF_SENSORS_DATA_VALUES  + this->ds18b20->numSensors;
+    }
+  }else if(this->config.channel_1_switch_on_pos > 1){ //  Analog read
+    this->NUMBER_OF_SENSORS_DATA_VALUES =  this->NUMBER_OF_SENSORS_DATA_VALUES  + 3;
+    dataStr += "The device is now setup for electrical voltage readings using ADC sensor.\n";
+
+  }
+  if (this->measurements != nullptr){
+    this->interface->mserial->printStrln("Reinitializing Dynamic memory:");
+    this->freeAllocatedMemory(this->measureIndex[0], this->measureIndex[1]);
+    delete this->measurementsOnBoard;
+    this->measurementsOnBoard = nullptr; 
+  }else{
+      this->interface->mserial->printStrln("Initializing Dynamic memory:");
+  }
+
+
+  this->interface->mserial->printStrln("Number of SAMPLING READINGS:"+ String(this->config.NUM_SAMPLE_SAMPLING_READINGS));
+  this->interface->mserial->printStrln("Number of Sensor Data values per reading:" + String(this->NUMBER_OF_SENSORS_DATA_VALUES));
+  this->interface->mserial->printStrln("PSRAM buffer size:" + String(this->config.MEASUREMENTS_BUFFER_SIZE));
+
+  this->display->tftPrintText(0,160,(char*) String("Buff. size:"+ String(this->config.MEASUREMENTS_BUFFER_SIZE)).c_str(),2,"center", TFT_WHITE, true); 
+  delay(2000);
+
+  String units="";    
+  
+  this->measureIndex[0] =  this->NUMBER_OF_SENSORS_DATA_VALUES;
+  this->measureIndex[1] = this->config.NUM_SAMPLE_SAMPLING_READINGS * this->config.MEASUREMENTS_BUFFER_SIZE;
+  
+  this->interface->mserial->printStrln( "Max idx is : " + String( this->measureIndex[1]) );
+
+  // 1D number of sample readings ; 2D number of sensor data measuremtns; 3D RAM buffer size
+  if ( false == this->initializeDynamicVar( this->measureIndex[0] ,  this->measureIndex[1] ) ){
+    this->interface->mserial->printStrln("Error Initializing Measruments Buffer.");
+    this->display->tftPrintText(0,160,"ERR Exp. data Buffer",2,"center", TFT_WHITE, true); 
+    this->interface->onBoardLED->led[0] = this->interface->onBoardLED->LED_RED;
+    this->interface->onBoardLED->statusLED(100, 5);
+    // TODO : what to do when memeory alloc is NULL
+  }else{
+      this->measurementsOnBoard = new String[this->config.MEASUREMENTS_BUFFER_SIZE];
+
+      float bufSize= sizeof(char)*(this->config.NUM_SAMPLE_SAMPLING_READINGS * this->NUMBER_OF_SENSORS_DATA_VALUES * this->config.MEASUREMENTS_BUFFER_SIZE); // bytes
+      units=" B";
+      if (bufSize>1024){
+          bufSize=bufSize/1024;
+          units=" Kb";
+      }
+      this->interface->mserial->printStrln("Buffer size:" + String(bufSize) + units);
+      this->display->tftPrintText(0,160,(char*) String("Buf size:"+String(bufSize)+ units).c_str(),2,"center", TFT_WHITE, true); 
+      delay(1000);
+      this->display->tftPrintText(0,160,"Exp. Data RAM ready",2,"center", TFT_WHITE, true); 
+      this->interface->mserial->printStrln("Exp. Data RAM ready");
+      this->interface->onBoardLED->led[0] = this->interface->onBoardLED->LED_GREEN;
+      this->interface->onBoardLED->statusLED(100, 2);
+  }
+  
+  this->interface->sendBLEstring( dataStr + "\n" ); 
+  return true;
+}
 // ****************************************************************************
 void MEASUREMENTS::settings_defaults(){
 
     this->config.NUM_SAMPLE_SAMPLING_READINGS = 16;
-    this->config.SAMPLING_INTERVAL            = 0;
+    this->config.SAMPLING_INTERVAL            = 10;
     this->config.MEASUREMENTS_BUFFER_SIZE     = 10;
-    this->NUMBER_OF_SENSORS_DATA_VALUES       = 3;
+    this->NUMBER_OF_SENSORS_DATA_VALUES       = 0;
 
     this->config.UPLOAD_DATASET_DELTA_TIME    = this->config.NUM_SAMPLE_SAMPLING_READINGS*this->config.SAMPLING_INTERVAL + 120000; // 10 min
-    this->config.MEASUREMENT_INTERVAL         = this->config.NUM_SAMPLE_SAMPLING_READINGS*this->config.SAMPLING_INTERVAL + 00000; // 1 min
+    this->config.MEASUREMENT_INTERVAL         = this->config.NUM_SAMPLE_SAMPLING_READINGS*this->config.SAMPLING_INTERVAL + 10000; // 10 sec
     this->LAST_DATASET_UPLOAD                 = 0;
     this->LAST_DATA_MEASUREMENTS              = 0;
     this->MAX_LATENCY_ALLOWED                 = (unsigned long)(this->config.MEASUREMENT_INTERVAL/2);
@@ -144,14 +185,15 @@ void MEASUREMENTS::settings_defaults(){
     this->config.ADC_REF_RESISTANCE[2] = 198000;
     this->config.ADC_REF_RESISTANCE[3] = 2000000;
 
+    this->config.channel_2_switch_en = false;
     this->config.channel_1_switch_en = false;
     this->config.channel_1_switch_on_pos = 0;
-    this->config.channel_2_sensor_type = "off"; 
+    this->ch2_sensor_type ="disabled";
 
     this->Measurments_NEW=false;
     this->Measurments_EN=false;
     this->DATASET_NUM_SAMPLES =0;
-
+    this->DATASET_NUM_SAMPLES_TOTAL =0;
       // ADC Power
     pinMode( this->ENABLE_3v3_PWR_PIN, OUTPUT);
     digitalWrite( this->ENABLE_3v3_PWR_PIN,HIGH); // enabled 
@@ -173,7 +215,6 @@ void MEASUREMENTS::units(){
   this->display->tftPrintText(0,160,(char*)String("Selected ref R:\n"+String(refRes)+ units).c_str(),2,"center", TFT_WHITE, true); 
   this->interface->mserial->printStrln("ADC_REF_RESISTANCE="+String(this->config.ADC_REF_RESISTANCE[SELECTED_ADC_REF_RESISTANCE])+" Ohm");
   delay(2000);
-
 }
 
 // ************************************************************************
@@ -231,29 +272,58 @@ bool MEASUREMENTS::saveDataMeasurements(){
 
   File expFile = LittleFS.open("/" + this->config.EXPERIMENTAL_DATA_FILENAME,"a+");
   if ( expFile ){
-    this->interface->mserial->printStr("Saving data measurements to the dataset file: ");
+    this->interface->mserial->printStr("dataset CSV file.("+ this->config.EXPERIMENTAL_DATA_FILENAME +")" );
     this->interface->mserial->printStrln("[" + String(this->config.NUM_SAMPLE_SAMPLING_READINGS) + "][" + String( this->NUMBER_OF_SENSORS_DATA_VALUES -1 ) + "][" + String( this->config.MEASUREMENTS_BUFFER_SIZE -1 ) + "] ...");
+    this->interface->mserial->printStrln("one moment...");
 
-    String serialNumber = CryptoICserialNumber(this->interface);
-    int idx = this->config.NUM_SAMPLE_SAMPLING_READINGS * this->DATASET_NUM_SAMPLES + this->config.NUM_SAMPLE_SAMPLING_READINGS;
-    
-    String lineRowOfData = this->measurementsOnBoard;
-
-    for (int i = 0; i < (this->NUMBER_OF_SENSORS_DATA_VALUES-1) ; i++) {      
-      for (int j = 0; j <  idx  ; j++) {
-        lineRowOfData= lineRowOfData + String( measurements[i][j] ) +";";
+    String lineRowOfDataHeader = String( interface->rtc.getDateTime(true) ) + ";"; 
+    lineRowOfDataHeader       += CryptoICserialNumber(this->interface) + ";";
+    lineRowOfDataHeader       += this->mWifi->InternetIPaddress + ";";
+    lineRowOfDataHeader       += this->mWifi->requestGeoLocationDateTime + ";";
+        
+    if ( this->mWifi->geoLocationInfoJson.isNull() == false ){
+      if(this->mWifi->geoLocationInfoJson.containsKey("lat")){
+        float lat = this->mWifi->geoLocationInfoJson["lat"];
+        lineRowOfDataHeader += String(lat,4) + ";";
+      }else{
+        lineRowOfDataHeader += " - -;";
       }
-      lineRowOfData+= macChallengeDataAuthenticity(this->interface, lineRowOfData) + ";" + serialNumber;
-      this->interface->mserial->printStr("> ");
-      expFile.println(lineRowOfData);        
+      if(this->mWifi->geoLocationInfoJson.containsKey("lon")){
+        float lon = this->mWifi->geoLocationInfoJson["lon"];
+        lineRowOfDataHeader += String(lon,4) + ";";
+      }else{
+        lineRowOfDataHeader += "- -;";
+      }
     }
-    this->interface->mserial->printStr(" < OK");
+    expFile.println(lineRowOfDataHeader);        
+    
+    String uniqueFingerPrintID = "";
+    for (int i = 0; i < this->NUMBER_OF_SENSORS_DATA_VALUES ; i++) {
+      for (int k = 0; k < this->DATASET_NUM_SAMPLES  ; k++) {
+        int idxLow = this->config.NUM_SAMPLE_SAMPLING_READINGS * k ;
+        int idxUp =  idxLow + this->config.NUM_SAMPLE_SAMPLING_READINGS;
+
+        String lineRowOfData = this->measurementsOnBoard[k];
+
+        for (int j = idxLow; j <  idxUp  ; j++) {
+          this->interface->mserial->printStr( " "+ String(i) + ":" + String(j) + " " );
+          lineRowOfData = lineRowOfData + String( measurements[i][j] ) +";";
+        }
+        uniqueFingerPrintID = macChallengeDataAuthenticity(this->interface, lineRowOfData + measurements[i][0] );
+
+        lineRowOfData += uniqueFingerPrintID + ";";
+        expFile.println(lineRowOfData);        
+      }
+      this->interface->mserial->printStrln("> ");
+    }
+
+    this->interface->mserial->printStrln(".\nLast dataset entry's unique fingerprint ID:\n" + uniqueFingerPrintID );
 
     expFile.close();
     delay(500);
-    this->interface->mserial->printStrln("collected data measurements stored in the dataset CSV file.("+ this->config.EXPERIMENTAL_DATA_FILENAME +")");
+    this->interface->mserial->printStrln("saving complete.");
     
-    this->DATASET_NUM_SAMPLES ++;
+    this->DATASET_NUM_SAMPLES = 0;
 
     this->interface->onBoardLED->led[0] = this->interface->onBoardLED->LED_GREEN;
     this->interface->onBoardLED->statusLED(100, 0);
@@ -268,7 +338,6 @@ bool MEASUREMENTS::saveDataMeasurements(){
 
 // ******************************************************************************
  void MEASUREMENTS::initSaveDataset(){
-    this->interface->mserial->printStrln("starting"); 
     // SAVE DATA MEASUREMENTS ****
     xSemaphoreTake(this->MemLockSemaphoreDatasetFileAccess, portMAX_DELAY); // enter critical section
       this->datasetFileIsBusySaveData=true;
@@ -288,7 +357,7 @@ void MEASUREMENTS::runExternalMeasurements(){
   if (this->config.MEASUREMENT_INTERVAL < ( millis() -  this->LAST_DATA_MEASUREMENTS ) ){
     this->LAST_DATA_MEASUREMENTS=millis(); 
     this->interface->mserial->printStrln("");
-    this->interface->mserial->printStrln("Reading Specimen Electrical Response...");
+    this->interface->mserial->printStrln("Requesting sensor values (" + String(this ->DATASET_NUM_SAMPLES) + ")...");
 /*
     xSemaphoreTake(this->interface->McuFreqSemaphore, portMAX_DELAY); // enter critical section
       this->interface->McuFrequencyBusy=true;
@@ -300,14 +369,13 @@ void MEASUREMENTS::runExternalMeasurements(){
 
     this->readSensorMeasurements();
     
-    this->interface->mserial->printStrln("Saving collected data....");
     if(datasetFileIsBusyUploadData){
       this->interface->mserial->printStr("file is busy....");
       this->interface->onBoardLED->led[0] = this->interface->onBoardLED->LED_RED;
       this->interface->onBoardLED->statusLED(100, 2);
     }
-    if(this->DATASET_NUM_SAMPLES + 1 > this->config.MEASUREMENTS_BUFFER_SIZE * this->config.NUM_SAMPLE_SAMPLING_READINGS){
-      this->interface->mserial->printStr("[mandatory wait]");  
+    if(this->DATASET_NUM_SAMPLES + 1 > this->config.MEASUREMENTS_BUFFER_SIZE ){
+      this->interface->mserial->printStrln("Saving collected data....");
       this->interface->onBoardLED->led[0] = this->interface->onBoardLED->LED_RED;
       this->interface->onBoardLED->statusLED(100, 0);
       while (datasetFileIsBusyUploadData){
@@ -316,18 +384,7 @@ void MEASUREMENTS::runExternalMeasurements(){
       this->interface->onBoardLED->statusLED(100, 1);
       this->initSaveDataset();
     }else{ // measurements buffer is not full
-      long latency=millis();
-      long delta= millis()-latency;
-      while (datasetFileIsBusyUploadData || (delta < MAX_LATENCY_ALLOWED)){
-        delta= millis()-latency;
-        delay(500);
-      }
-      if(datasetFileIsBusyUploadData){
-        this->DATASET_NUM_SAMPLES++;
-        this->interface->mserial->printStr("skipping file save.");  
-      }else{
-        this->initSaveDataset();
-      }       
+
     }
 /*
     xSemaphoreTake(this->interface->McuFreqSemaphore, portMAX_DELAY); // enter critical section
@@ -366,37 +423,42 @@ void MEASUREMENTS::runExternalMeasurements(){
 // *************************************************************************
 void MEASUREMENTS::readOnboardSensorData(){
     this->onBoardSensors->request_onBoard_Sensor_Measurements();
-    this->measurementsOnBoard  = String ( this->interface->rtc.getDateTime() ) + ";";
-    this->measurementsOnBoard += String( this->onBoardSensors->onboardTHsensor->measurement[1] ) + ";" ;
-    this->measurementsOnBoard += String(  this->onBoardSensors->onboardTHsensor->measurement[0] ) + ";" ;
+    this->measurementsOnBoard[this->DATASET_NUM_SAMPLES]  = String ( this->interface->rtc.getDateTime() ) + ";";
+    this->measurementsOnBoard[this->DATASET_NUM_SAMPLES] += String( this->onBoardSensors->onboardTHsensor->measurement[1] ) + ";" ;
+    this->measurementsOnBoard[this->DATASET_NUM_SAMPLES] += String(  this->onBoardSensors->onboardTHsensor->measurement[0] ) + ";" ;
 
-    this->measurementsOnBoard += String( this->onBoardSensors->onboardMotionSensor->measurement[0] ) + ";" ;  
-    this->measurementsOnBoard += String( this->onBoardSensors->onboardMotionSensor->measurement[1] ) + ";" ;
-    this->measurementsOnBoard += String( this->onBoardSensors->onboardMotionSensor->measurement[2] ) + ";" ;
+    this->measurementsOnBoard[this->DATASET_NUM_SAMPLES] += String( this->onBoardSensors->onboardMotionSensor->measurement[0] ) + ";" ;  
+    this->measurementsOnBoard[this->DATASET_NUM_SAMPLES] += String( this->onBoardSensors->onboardMotionSensor->measurement[1] ) + ";" ;
+    this->measurementsOnBoard[this->DATASET_NUM_SAMPLES] += String( this->onBoardSensors->onboardMotionSensor->measurement[2] ) + ";" ;
 
-    this->measurementsOnBoard += String( this->onBoardSensors->onboardMotionSensor->measurement[3] ) + ";" ;
-    this->measurementsOnBoard += String( this->onBoardSensors->onboardMotionSensor->measurement[4] ) + ";" ;  
-    this->measurementsOnBoard += String( this->onBoardSensors->onboardMotionSensor->measurement[5] ) + ";" ;
+    this->measurementsOnBoard[this->DATASET_NUM_SAMPLES] += String( this->onBoardSensors->onboardMotionSensor->measurement[3] ) + ";" ;
+    this->measurementsOnBoard[this->DATASET_NUM_SAMPLES] += String( this->onBoardSensors->onboardMotionSensor->measurement[4] ) + ";" ;  
+    this->measurementsOnBoard[this->DATASET_NUM_SAMPLES] += String( this->onBoardSensors->onboardMotionSensor->measurement[5] ) + ";" ;
 
-    this->measurementsOnBoard += String( this->onBoardSensors->onboardMotionSensor->measurement[6] ) + ";" ;
-    this->measurementsOnBoard += String( this->onBoardSensors->onboardMotionSensor->sensor_n_errors ) + ";" ;
+    this->measurementsOnBoard[this->DATASET_NUM_SAMPLES] += String( this->onBoardSensors->onboardMotionSensor->measurement[6] ) + ";" ;
+    this->measurementsOnBoard[this->DATASET_NUM_SAMPLES] += String( this->onBoardSensors->onboardMotionSensor->sensor_n_errors ) + ";" ;
 }
 
 // ****************************************************************
 void MEASUREMENTS::readChannel2SensorMeasurements ( int pos ){
+   if (this->config.channel_2_switch_en == false)
+    return;
+
    int n=0;
    if(this->config.channel_1_switch_on_pos > 1){ // ADC
       n=2;
    }
 
  // SHT3x sensor
-  if(this->config.channel_2_sensor_type == "sht3x"){
+  if(this->ch2_sensor_type  == "sht3x"){
+    this->sht3x->requestMeasurements(); 
     this->measurements [1 + n][pos] = ( this->sht3x->measurement[0] ); // Temp
     this->measurements [2 + n][pos] = ( this->sht3x->measurement[1] );  // Humidity
   }
    
   // AHT20 sensor
-  if(this->config.channel_2_sensor_type == "aht20"){
+  if(this->ch2_sensor_type == "aht20"){
+    this->aht20->requestMeasurements();
     this->measurements [1 +n ][pos] = ( this->aht20->measurement[0] ); // Temp
     this->measurements [2 + n ][pos] = ( this->aht20->measurement[1] );  // Humidity
   }
@@ -427,10 +489,13 @@ void MEASUREMENTS::readSensorMeasurements() {
       
       delay(this->config.SAMPLING_INTERVAL);
     }
+    
   }else if ( this->config.channel_1_switch_on_pos > 1 || this->config.channel_1_switch_on_pos == 0 ){
     this->readExternalAnalogData();
   }
 
+  this ->DATASET_NUM_SAMPLES ++;
+  this ->DATASET_NUM_SAMPLES_TOTAL ++;
 }
 
 // *********************************************************
@@ -463,16 +528,13 @@ void MEASUREMENTS::readExternalAnalogData() {
   analogSetPinAttenuation(EXT_IO_ANALOG_PIN, ADC_11db);
   analogSetPinAttenuation(VOLTAGE_REF_PIN, ADC_11db);
   
-  // ToDo: move to config file
-  float MCU_VDD = 3.30;
-
-  ADC_CH_REF_VOLTAGE = analogRead(VOLTAGE_REF_PIN)/this->MCU_ADC_DIVIDER * MCU_VDD;
+  ADC_CH_REF_VOLTAGE = analogRead(VOLTAGE_REF_PIN) / this->MCU_ADC_DIVIDER * this->interface->config.BOARD_VDD;
 
   String dataStr = String(this->config.NUM_SAMPLE_SAMPLING_READINGS) + " measurement samples requested\n";
   dataStr       += "Sampling interval: " + String(this->config.SAMPLING_INTERVAL) + " ms\n";
   dataStr       += "ADC CH OUT: " + String(ADC_CH_REF_VOLTAGE) + " Volt\n";
   dataStr       += "one moment...";
-  this->interface->mserial->printStrln(dataStr);
+  this->interface->mserial->printStr(dataStr);
 
   this->display->tftPrintText(0,25,(char*) dataStr.c_str(), 2, "left", TFT_WHITE, true); 
   delay(2000);
@@ -481,12 +543,9 @@ void MEASUREMENTS::readExternalAnalogData() {
 
   int zerosCount=0;
   for (byte i = 0; i < this->config.NUM_SAMPLE_SAMPLING_READINGS; i++) {
-    adc_ch_analogRead_raw = analogRead(this->EXT_IO_ANALOG_PIN);
-    // Vref
-    ADC_CH_REF_VOLTAGE = analogRead(this->VOLTAGE_REF_PIN)/this->MCU_ADC_DIVIDER * MCU_VDD;
-    
+    adc_ch_analogRead_raw = analogRead(this->EXT_IO_ANALOG_PIN);    
     // ADC Vin
-    adc_ch_measured_voltage = adc_ch_analogRead_raw  * ADC_CH_REF_VOLTAGE / this->MCU_ADC_DIVIDER;
+    adc_ch_measured_voltage = adc_ch_analogRead_raw  * this->interface->config.BOARD_VDD / this->MCU_ADC_DIVIDER;
     
     /*
     How accurate is an Arduino Ohmmeter?
@@ -502,7 +561,7 @@ void MEASUREMENTS::readExternalAnalogData() {
 
     // SAMPLING_READING POS,  SENSOR POS, MEASUREMENTS_BUFFER_ POS
 
-    this->measurements [0] [ this->config.NUM_SAMPLE_SAMPLING_READINGS*this->DATASET_NUM_SAMPLES + i ]  = ( ADC_CH_REF_VOLTAGE ); 
+    this->measurements [0] [ this->config.NUM_SAMPLE_SAMPLING_READINGS*this->DATASET_NUM_SAMPLES + i ]  = ( this->interface->config.BOARD_VDD ); 
     this->measurements [1] [ this->config.NUM_SAMPLE_SAMPLING_READINGS*this->DATASET_NUM_SAMPLES + i ]  = ( adc_ch_measured_voltage ); 
     this->measurements [2] [ this->config.NUM_SAMPLE_SAMPLING_READINGS*this->DATASET_NUM_SAMPLES + i ]  = ( adc_ch_calcukated_e_resistance );
     
@@ -533,6 +592,7 @@ void MEASUREMENTS::readExternalAnalogData() {
       adc_ch_measured_voltage_Sum = adc_ch_measured_voltage_Sum + adc_ch_measured_voltage;
     }
   } // for
+  this->interface->mserial->printStrln("done");
 
   this->interface->mserial->DEBUG_EN = true;
 
@@ -557,10 +617,13 @@ void MEASUREMENTS::readExternalAnalogData() {
     units="kOhm";
   }
 
-  String resultStr = "Total data samples: \n"+String(this->DATASET_NUM_SAMPLES+1)+"/"+String(this->config.NUM_SAMPLE_SAMPLING_READINGS)+"\n\n";
-  resultStr       += "Avg ADC CH: \n"+String(adc_ch_measured_voltage_avg)+" Volt\n\nR:\n"+String(adc_ch_calcukated_e_resistance_avg);
-  resultStr       += " " + units;
-  
+  String resultStr = "Total data samples: "+String(this->config.NUM_SAMPLE_SAMPLING_READINGS - zerosCount)+"/"+String(this->config.NUM_SAMPLE_SAMPLING_READINGS)+"\n";
+  resultStr       += "Avg ADC CH    : "+String(adc_ch_measured_voltage_avg)+" Volt  " + String(adc_ch_calcukated_e_resistance_avg) + " " + units;
+  if (this->config.channel_2_switch_en == true) {
+    resultStr       += "\nCH2 Temp    : " +  String( this->measurements [3] [ this->config.NUM_SAMPLE_SAMPLING_READINGS*this->DATASET_NUM_SAMPLES + this->config.NUM_SAMPLE_SAMPLING_READINGS -1 ] ) ;  
+    resultStr       += "\nCH2 Humidty : " +  String( this->measurements [4] [ this->config.NUM_SAMPLE_SAMPLING_READINGS*this->DATASET_NUM_SAMPLES + this->config.NUM_SAMPLE_SAMPLING_READINGS -1 ] ) ;  
+  }
+
   this->interface->mserial->printStrln(resultStr);
   this->display->tftPrintText(0,25,(char*) resultStr.c_str(),2,"left", TFT_WHITE, true); 
 
@@ -596,13 +659,10 @@ bool MEASUREMENTS::initializeDynamicVar(  int size1D, int size2D ){
   //Free Allocated memory
   void MEASUREMENTS::freeAllocatedMemory(int nRow, int nColumn){
     for (int i = 0; i < nRow; i++) {
-      for (int j = 0; j < nColumn; j++) {
-        delete this->measurements[i][j]; 
-      }
       delete[] this->measurements[i]; 
     }
-    delete [] this->measurments; 
-    this->measurments = NULL;
+    delete [] this->measurements; 
+    this->measurements = NULL;
   }
 
 // --------------------------------------------------------------------------
@@ -666,7 +726,7 @@ bool MEASUREMENTS::readSettings(fs::FS &fs){
                     "$set sw5 on            - Position 5 on the Switch: Ohmmeter 2M dvider\n" \
                     "\n" \                           
                     "$view ch2              - View channel 2 configuration\n" \
-                    "$set ch2 [off/sht3x]   - Connect the selected sensor to port 2 (I2C)\n" \
+                    "$set ch2 [off/on]      - Connect a I2C compatible sensor to port 2\n" \
                     "\n" \                    
                     "$ufid                  - "+ this->interface->DeviceTranslation("ufid") +" unique fingerprint ID\n" \
                     "$me new                - "+ this->interface->DeviceTranslation("me_new") +"\n" \
@@ -690,25 +750,8 @@ bool MEASUREMENTS::readSettings(fs::FS &fs){
 bool MEASUREMENTS::gbrl_commands(String $BLE_CMD, uint8_t sendTo){
     String dataStr="";
 
-    if($BLE_CMD.indexOf("$set ch2")>-1){
-      dataStr = "";
-      if ($BLE_CMD == "$set ch2 sht3x"){
-        dataStr = "A SHT3x sensor is now connected to channel 2.\n";
-        this->config.channel_2_sensor_type = "sht3x";
-      }
-      if ($BLE_CMD == "$set ch2 off"){
-        dataStr = "Channel 2 is now disabled.\n";
-        this->config.channel_2_sensor_type = "off";
-      }
-      if (dataStr != ""){
-        this->interface->sendBLEstring( dataStr + "\n" , sendTo); 
-        this->saveSettings();
-        return true;
-      }
-    }
-
     if ($BLE_CMD == "$view ch2"){
-      dataStr = "Channel 2 current configuration is : " + String(this->config.channel_2_sensor_type) +"\n";
+      dataStr = "Channel 2 current configuration is : " + String(this->ch2_sensor_type) +"\n";
       this->interface->sendBLEstring( dataStr , sendTo); 
       return true;
     }
@@ -724,6 +767,10 @@ bool MEASUREMENTS::gbrl_commands(String $BLE_CMD, uint8_t sendTo){
       return true;
     }
 
+    if( $BLE_CMD.equals( "$set ch2 on" ) || $BLE_CMD.equals( "$set ch2 off" ) ){
+      return this->sw_commands( $BLE_CMD,  sendTo);
+    }
+    
     if($BLE_CMD.indexOf("$set sw")>-1){
       return this->sw_commands( $BLE_CMD,  sendTo);
     }
@@ -778,11 +825,13 @@ bool MEASUREMENTS::gbrl_commands(String $BLE_CMD, uint8_t sendTo){
             dataStr = this->interface->DeviceTranslation("measure_already_started_on") +  " " + String(this->measurement_Start_Time) + String("\n\n");
             this->interface->sendBLEstring( dataStr, sendTo); 
         }else{
-            this->DATASET_NUM_SAMPLES=0;
+            this->DATASET_NUM_SAMPLES = 0;
+            this ->DATASET_NUM_SAMPLES_TOTAL = 0;
             this->Measurments_NEW=true;
             this->Measurments_EN=true;
             this->measurement_Start_Time = this->interface->rtc.getDateTime(true);
-
+            this->initializeSensors();
+            
             dataStr = this->interface->DeviceTranslation("measure_started_on") +  " " + String(this->measurement_Start_Time) + String("\n");
             this->interface->sendBLEstring( dataStr, sendTo); 
             
@@ -855,6 +904,7 @@ bool MEASUREMENTS::sw_commands(String $BLE_CMD, uint8_t sendTo){
       this->config.channel_1_switch_on_pos=3;
       this->SELECTED_ADC_REF_RESISTANCE = 1;
       dataStr =" position 3 on on channel 1 switch set to ON postion ("+ addThousandSeparators( std::string( String(this->config.ADC_REF_RESISTANCE[this->SELECTED_ADC_REF_RESISTANCE] ).c_str()) ) +" Ohm). All other are set to OFF\n";
+
     }
 
     if($BLE_CMD.indexOf("$set sw4 on")>-1){
@@ -871,11 +921,20 @@ bool MEASUREMENTS::sw_commands(String $BLE_CMD, uint8_t sendTo){
       dataStr =" position 5 on on channel 1 switch set to ON postion ("+ addThousandSeparators( std::string( String(this->config.ADC_REF_RESISTANCE[this->SELECTED_ADC_REF_RESISTANCE] ).c_str() )) +" Ohm). All other are set to OFF\n";
     }
     
-    this->saveSettings();
-
-    this->interface->sendBLEstring( dataStr + "\n" , sendTo); 
-    return true;
+   if( $BLE_CMD.equals( "$set ch2 on" ) || $BLE_CMD.equals( "$set ch2 off" ) ){
+    if($BLE_CMD.equals( "$set ch2 on" ) ){
+        dataStr = "Channel 2 on the device is now enabled.";
+        this->config.channel_2_switch_en=true;
+    }else if($BLE_CMD.equals( "$set ch2 off" ) ){
+        dataStr = "Channel 2 on the device is now disabled.";
+        this->config.channel_2_switch_en=false;
+        this->ch2_sensor_type = "disabled";
+    }
+  }
   
+  this->saveSettings();
+  this->interface->sendBLEstring( dataStr + "\n" , sendTo); 
+  return true;
 }
 
 // ********************************************************

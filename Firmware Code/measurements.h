@@ -63,10 +63,6 @@ class MEASUREMENTS {
         DISPLAY_LCD_CLASS* display = NULL;
         ONBOARD_SENSORS* onBoardSensors = NULL;
 
-        DS18B20_SENSOR* ds18b20  = nullptr;
-        AHT20_SENSOR* aht20      = nullptr;
-        SHT3X_SENSOR* sht3x      = nullptr;
-
         unsigned long LAST_DATASET_UPLOAD = 0;
         unsigned long LAST_DATA_MEASUREMENTS = 0;
         unsigned long MAX_LATENCY_ALLOWED;
@@ -76,7 +72,8 @@ class MEASUREMENTS {
         uint8_t NUMBER_OF_SENSORS_DATA_VALUES;
     
         float **measurements = NULL; //pointer to pointer
-        String measurementsOnBoard;
+        String* measurementsOnBoard;
+        int measureIndex[2];
 
         const float MCU_ADC_DIVIDER = 4096.0;
         uint8_t SELECTED_ADC_REF_RESISTANCE;
@@ -101,6 +98,7 @@ class MEASUREMENTS {
         float last_measured_probe_temp;
         float last_measured_time_delta;     
         int DATASET_NUM_SAMPLES;
+        int DATASET_NUM_SAMPLES_TOTAL;
         
         bool Measurments_EN;
         bool Measurments_NEW;
@@ -128,7 +126,8 @@ class MEASUREMENTS {
 
             bool     channel_1_switch_en;
             uint8_t  channel_1_switch_on_pos;
-            String   channel_2_sensor_type; 
+            bool     channel_2_switch_en;
+
 
         } config_strut;
 
@@ -140,6 +139,13 @@ class MEASUREMENTS {
         SemaphoreHandle_t MemLockSemaphoreDatasetFileAccess = xSemaphoreCreateMutex();
         bool datasetFileIsBusySaveData = false;
         bool datasetFileIsBusyUploadData = false;
+
+        // external sensors __________________________________________
+        SHT3X_SENSOR*     sht3x;
+        AHT20_SENSOR*     aht20;
+        DS18B20_SENSOR*   ds18b20;
+        String ch2_sensor_type;
+
 
         MEASUREMENTS();
         
@@ -159,6 +165,7 @@ class MEASUREMENTS {
         bool saveDataMeasurements();
 
         bool initializeDataMeasurementsFile();
+        bool initializeSensors();
 
         bool initializeDynamicVar( int size1D, int size2D);
         //Free Allocated memory

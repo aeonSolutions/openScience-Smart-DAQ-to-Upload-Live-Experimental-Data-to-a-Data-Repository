@@ -194,8 +194,18 @@ class pCharacteristicTX_Callbacks: public BLECharacteristicCallbacks {
 class pCharacteristicRX_Callbacks: public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic *pCharacteristic) {
       delay(10);
+      String rxValue;
+      int len = strlen(pCharacteristic->getValue().c_str() );
+      const char* chrArr;
+      chrArr = pCharacteristic->getValue().c_str();
 
-      String rxValue = String(pCharacteristic->getValue().c_str());
+      for (int i=0; i<len; i++ ){
+        if(isdigit(chrArr[i])==false && isalpha(chrArr[i])==false ){
+          mserial->printStrln("Error receiving Serial BLE command");
+          return;      
+        }
+      }
+      rxValue = String(pCharacteristic->getValue().c_str());      
       rxValue.trim();
       mserial->printStrln("Received RX Value: " + String(rxValue.c_str()), mserial->DEBUG_BOTH_USB_UART );
 
@@ -269,25 +279,25 @@ void setup() {
   // External Ports IO Pin assignment ________________________________
   interface-> EXT_PLUG_PWR_EN = 33;
   
-  measurements->ENABLE_3v3_PWR_PIN = 38;
-  measurements->EXT_IO_ANALOG_PIN = 4;
+  measurements->ENABLE_3v3_PWR_PIN = 2;
+  measurements->EXT_IO_ANALOG_PIN = 6;
   measurements->VOLTAGE_REF_PIN = 7;
 
   pinMode(interface->EXT_PLUG_PWR_EN, OUTPUT);
   digitalWrite(interface->EXT_PLUG_PWR_EN , HIGH);
 
   // Battery Power Monitor ___________________________________
-  interface->BATTERY_ADC_IO = 21;
+  interface->BATTERY_ADC_IO = 8;
   pinMode(interface->BATTERY_ADC_IO, INPUT);
 
   // ________________ Onboard LED  _____________
   interface->onBoardLED = new ONBOARD_LED_CLASS();
-  interface->onBoardLED->LED_RED = 6;
-  interface->onBoardLED->LED_BLUE = 5;
+  interface->onBoardLED->LED_RED = 24;
+  interface->onBoardLED->LED_BLUE = 13;
   interface->onBoardLED->LED_GREEN = 14;
 
-  interface->onBoardLED->LED_RED_CH = 5;
-  interface->onBoardLED->LED_BLUE_CH = 4;
+  interface->onBoardLED->LED_RED_CH = 7;
+  interface->onBoardLED->LED_BLUE_CH = 2;
   interface->onBoardLED->LED_GREEN_CH = 3;
 
   // ___________ MCU freq ____________________
@@ -297,7 +307,7 @@ void setup() {
   interface-> SERIAL_DEFAULT_SPEED = 115200;
 
   // ___________  LCD Display ____________________
-  display->LCD_BACKLIT_LED = 35;
+  display->LCD_BACKLIT_LED = 9;
   display->LCD_DISABLED = true;
 
   // ......................................................................................................
@@ -379,11 +389,31 @@ void setup() {
   mWifi->OTA_FIRMWARE_SERVER_URL = "https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/releases/download/openFirmware/firmware.bin";
   
   mWifi->add_wifi_network("TheScientist","angelaalmeidasantossilva");
-  
+  mWifi->ALWAYS_ON_WIFI = true;
+
   mWifi->WIFIscanNetworks();
 
   // check for firmwate update
   mWifi->startFirmwareUpdate();
+  mWifi->get_ip_geo_location_data("", true);
+  
+  mserial->printStrln("Internet IP       : " + mWifi->InternetIPaddress );
+  mserial->printStrln( "Geo Location Time: " + mWifi->requestGeoLocationDateTime );
+  if ( mWifi->geoLocationInfoJson.isNull() == false ){
+    if( mWifi->geoLocationInfoJson.containsKey("lat")){
+      float lat = mWifi->geoLocationInfoJson["lat"];
+      mserial->printStrln( "Latitude: " + String(lat,4) );
+    }else{
+      mserial->printStrln( "Latitude: - -" );
+    }
+
+    if( mWifi->geoLocationInfoJson.containsKey("lon")){
+      float lon = mWifi->geoLocationInfoJson["lon"];
+      mserial->printStrln( "Longitude: " + String(lon,4) );
+    }else{
+      mserial->printStrln( "Longitude: - -" );
+    }
+  }
 
   interface->onBoardLED->led[0] = interface->onBoardLED->LED_RED;
   interface->onBoardLED->statusLED(100, 0);
