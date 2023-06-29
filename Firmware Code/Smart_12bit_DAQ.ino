@@ -395,26 +395,57 @@ void setup() {
 
   // check for firmwate update
   mWifi->startFirmwareUpdate();
+  
+  mserial->printStrln( "\nRequesting Geo Location FingerPrint  =====================================" );
   mWifi->get_ip_geo_location_data("", true);
   
+  ESP32Time rtc(0);
+  rtc.setTime( mWifi->requestGeoLocationDateTime );
+
   mserial->printStrln("Internet IP       : " + mWifi->InternetIPaddress );
-  mserial->printStrln( "Geo Location Time: " + mWifi->requestGeoLocationDateTime );
+  mserial->printStrln("Geo Location Time : " + String( rtc.getDateTime(true) ) );
   if ( mWifi->geoLocationInfoJson.isNull() == false ){
+    float lat =0.0f;
+    float lon = 0.0f;
+
     if( mWifi->geoLocationInfoJson.containsKey("lat")){
-      float lat = mWifi->geoLocationInfoJson["lat"];
-      mserial->printStrln( "Latitude: " + String(lat,4) );
+      lat = mWifi->geoLocationInfoJson["lat"];
+      mserial->printStr( "Latitude : " + String(lat,4) );
     }else{
-      mserial->printStrln( "Latitude: - -" );
+      mserial->printStr( "Latitude : - -" );
     }
 
     if( mWifi->geoLocationInfoJson.containsKey("lon")){
-      float lon = mWifi->geoLocationInfoJson["lon"];
-      mserial->printStrln( "Longitude: " + String(lon,4) );
+      lon = mWifi->geoLocationInfoJson["lon"];
+      mserial->printStr( "  Longitude: " + String(lon,4) );
     }else{
-      mserial->printStrln( "Longitude: - -" );
+      mserial->printStr( "  Longitude: - -" );
     }
-  }
+    
+    if( mWifi->geoLocationInfoJson.containsKey("regionName")){
+      String regionName = mWifi->geoLocationInfoJson["regionName"];
+      mserial->printStr( "\nLocation: " + regionName );
+    }else{
+      mserial->printStr( "\nLocation: - -" );
+    }
 
+    if( mWifi->geoLocationInfoJson.containsKey("country")){
+      String country = mWifi->geoLocationInfoJson["country"];
+      mserial->printStrln( ", " + country );
+    }else{
+      mserial->printStrln( " , - -" );
+    }
+
+    mserial->printStrln( "\nGEO Location FingerPrint is : " );
+    String geoFingerprint = String( interface->rtc.getEpoch()  ) + "-" + String(mWifi->requestGeoLocationDateTime) + "-" + mWifi->InternetIPaddress + "-" + String(lat) + "-" + String(lon);
+    mserial->printStrln( geoFingerprint + "\nGEO Location FingerPrint is ID: " );
+    geoFingerprint = macChallengeDataAuthenticity( interface, geoFingerprint );
+    mserial->printStrln( geoFingerprint );
+    mserial->printStrln("Offline response is:\n" + macChallengeDataAuthenticityOffLine(interface, (char*) geoFingerprint.c_str() ) );
+
+  }
+  mserial->printStrln( "\n ====================== done =======================" );
+  
   interface->onBoardLED->led[0] = interface->onBoardLED->LED_RED;
   interface->onBoardLED->statusLED(100, 0);
   

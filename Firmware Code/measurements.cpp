@@ -61,7 +61,7 @@ MEASUREMENTS::MEASUREMENTS() {
 //****************************************************************
 void MEASUREMENTS::init(INTERFACE_CLASS* interface, DISPLAY_LCD_CLASS* display,M_WIFI_CLASS* mWifi, ONBOARD_SENSORS* onBoardSensors ){    
     this->interface = interface;
-    this->interface->mserial->printStrln("\ninit measurements library ...");
+    this->interface->mserial->printStr("\ninit measurements library ...");
     this->mWifi = mWifi;
     this->display = display;
     this->onBoardSensors =  onBoardSensors;
@@ -168,7 +168,7 @@ void MEASUREMENTS::settings_defaults(){
 
     this->config.NUM_SAMPLE_SAMPLING_READINGS = 16;
     this->config.SAMPLING_INTERVAL            = 10;
-    this->config.MEASUREMENTS_BUFFER_SIZE     = 10;
+    this->config.MEASUREMENTS_BUFFER_SIZE     = 5;
     this->NUMBER_OF_SENSORS_DATA_VALUES       = 0;
 
     this->config.UPLOAD_DATASET_DELTA_TIME    = this->config.NUM_SAMPLE_SAMPLING_READINGS*this->config.SAMPLING_INTERVAL + 120000; // 10 min
@@ -274,29 +274,37 @@ bool MEASUREMENTS::saveDataMeasurements(){
   if ( expFile ){
     this->interface->mserial->printStr("dataset CSV file.("+ this->config.EXPERIMENTAL_DATA_FILENAME +")" );
     this->interface->mserial->printStrln("[" + String(this->config.NUM_SAMPLE_SAMPLING_READINGS) + "][" + String( this->NUMBER_OF_SENSORS_DATA_VALUES -1 ) + "][" + String( this->config.MEASUREMENTS_BUFFER_SIZE -1 ) + "] ...");
-    this->interface->mserial->printStrln("one moment...");
-
-    String lineRowOfDataHeader = String( interface->rtc.getDateTime(true) ) + ";"; 
-    lineRowOfDataHeader       += CryptoICserialNumber(this->interface) + ";";
-    lineRowOfDataHeader       += this->mWifi->InternetIPaddress + ";";
-    lineRowOfDataHeader       += this->mWifi->requestGeoLocationDateTime + ";";
-        
+    
+    // ---------------- add GEO Location fingerprint ----------------------------------
+    this->mWifi->get_ip_geo_location_data("", true);
+    float lat = 0.0f;
+    float lon= 0.0f; 
     if ( this->mWifi->geoLocationInfoJson.isNull() == false ){
       if(this->mWifi->geoLocationInfoJson.containsKey("lat")){
-        float lat = this->mWifi->geoLocationInfoJson["lat"];
-        lineRowOfDataHeader += String(lat,4) + ";";
-      }else{
-        lineRowOfDataHeader += " - -;";
+        lat = this->mWifi->geoLocationInfoJson["lat"];
       }
       if(this->mWifi->geoLocationInfoJson.containsKey("lon")){
-        float lon = this->mWifi->geoLocationInfoJson["lon"];
-        lineRowOfDataHeader += String(lon,4) + ";";
-      }else{
-        lineRowOfDataHeader += "- -;";
+        lon = this->mWifi->geoLocationInfoJson["lon"];
       }
     }
-    expFile.println(lineRowOfDataHeader);        
+
+    this->interface->mserial->printStrln( "\nGEO Location FingerPrint is : " );
+    String geoFingerprint = String( this->interface->rtc.getEpoch()  ) + "-" + String(this->mWifi->requestGeoLocationDateTime) + "-" + this->mWifi->InternetIPaddress + "-" + String(lat) + "-" + String(lon);
+    this->interface->mserial->printStrln( geoFingerprint + "\nGEO Location FingerPrint is ID: " );
     
+    geoFingerprint = macChallengeDataAuthenticity( this->interface, geoFingerprint );
+    this->interface->mserial->printStrln( geoFingerprint);
+
+    expFile.println(geoFingerprint);        
+    
+    this->interface->mserial->printStrln("\nAdding a Unique Fingerprint ID to the experimental data. One moment...");
+    this->interface->mserial->printStrln("|--------------------|");
+    this->interface->mserial->printStr(" ");
+
+    float blocks =  20 / this->NUMBER_OF_SENSORS_DATA_VALUES;
+    float sumBlocks = 0.0f;
+    float prevSumBlocks = 0.0f;
+    // ---------------------------- add experimental data ------------------------------------
     String uniqueFingerPrintID = "";
     for (int i = 0; i < this->NUMBER_OF_SENSORS_DATA_VALUES ; i++) {
       for (int k = 0; k < this->DATASET_NUM_SAMPLES  ; k++) {
@@ -304,9 +312,8 @@ bool MEASUREMENTS::saveDataMeasurements(){
         int idxUp =  idxLow + this->config.NUM_SAMPLE_SAMPLING_READINGS;
 
         String lineRowOfData = this->measurementsOnBoard[k];
-
+        
         for (int j = idxLow; j <  idxUp  ; j++) {
-          this->interface->mserial->printStr( " "+ String(i) + ":" + String(j) + " " );
           lineRowOfData = lineRowOfData + String( measurements[i][j] ) +";";
         }
         uniqueFingerPrintID = macChallengeDataAuthenticity(this->interface, lineRowOfData + measurements[i][0] );
@@ -314,7 +321,13 @@ bool MEASUREMENTS::saveDataMeasurements(){
         lineRowOfData += uniqueFingerPrintID + ";";
         expFile.println(lineRowOfData);        
       }
-      this->interface->mserial->printStrln("> ");
+     
+     sumBlocks += blocks;
+
+      for (int m = (int) prevSumBlocks; m < (int) sumBlocks  ; m++) {
+        this->interface->mserial->printStr("#");
+      }
+      prevSumBlocks = sumBlocks;
     }
 
     this->interface->mserial->printStrln(".\nLast dataset entry's unique fingerprint ID:\n" + uniqueFingerPrintID );
@@ -375,7 +388,7 @@ void MEASUREMENTS::runExternalMeasurements(){
       this->interface->onBoardLED->statusLED(100, 2);
     }
     if(this->DATASET_NUM_SAMPLES + 1 > this->config.MEASUREMENTS_BUFFER_SIZE ){
-      this->interface->mserial->printStrln("Saving collected data....");
+      this->interface->mserial->printStrln("\nSaving collected data....");
       this->interface->onBoardLED->led[0] = this->interface->onBoardLED->LED_RED;
       this->interface->onBoardLED->statusLED(100, 0);
       while (datasetFileIsBusyUploadData){
@@ -529,10 +542,12 @@ void MEASUREMENTS::readExternalAnalogData() {
   analogSetPinAttenuation(VOLTAGE_REF_PIN, ADC_11db);
   
   ADC_CH_REF_VOLTAGE = analogRead(VOLTAGE_REF_PIN) / this->MCU_ADC_DIVIDER * this->interface->config.BOARD_VDD;
+  float errorDev = ( ADC_CH_REF_VOLTAGE - 2.5 ) / 2.5;
 
   String dataStr = String(this->config.NUM_SAMPLE_SAMPLING_READINGS) + " measurement samples requested\n";
   dataStr       += "Sampling interval: " + String(this->config.SAMPLING_INTERVAL) + " ms\n";
-  dataStr       += "ADC CH OUT: " + String(ADC_CH_REF_VOLTAGE) + " Volt\n";
+  dataStr       += "Ref. Voltage     : " + String(ADC_CH_REF_VOLTAGE) + " Volt\n";
+  dataStr       += "Error            : " +  String(errorDev*100) + "%\n";
   dataStr       += "one moment...";
   this->interface->mserial->printStr(dataStr);
 
@@ -543,7 +558,8 @@ void MEASUREMENTS::readExternalAnalogData() {
 
   int zerosCount=0;
   for (byte i = 0; i < this->config.NUM_SAMPLE_SAMPLING_READINGS; i++) {
-    adc_ch_analogRead_raw = analogRead(this->EXT_IO_ANALOG_PIN);    
+    adc_ch_analogRead_raw = analogRead(this->EXT_IO_ANALOG_PIN);
+    adc_ch_analogRead_raw = adc_ch_analogRead_raw - errorDev*adc_ch_analogRead_raw;
     // ADC Vin
     adc_ch_measured_voltage = adc_ch_analogRead_raw  * this->interface->config.BOARD_VDD / this->MCU_ADC_DIVIDER;
     
@@ -592,9 +608,11 @@ void MEASUREMENTS::readExternalAnalogData() {
       adc_ch_measured_voltage_Sum = adc_ch_measured_voltage_Sum + adc_ch_measured_voltage;
     }
   } // for
-  this->interface->mserial->printStrln("done");
-
   this->interface->mserial->DEBUG_EN = true;
+
+  this->interface->mserial->printStrln("done.");
+
+
 
   //this->display->tft->pushImage (this->display->TFT_CURRENT_X_RES-75,0,16,18,MEASURE_GREY_ICON_16BIT_BITMAP);
 
@@ -619,7 +637,7 @@ void MEASUREMENTS::readExternalAnalogData() {
 
   String resultStr = "Total data samples: "+String(this->config.NUM_SAMPLE_SAMPLING_READINGS - zerosCount)+"/"+String(this->config.NUM_SAMPLE_SAMPLING_READINGS)+"\n";
   resultStr       += "Avg ADC CH    : "+String(adc_ch_measured_voltage_avg)+" Volt  " + String(adc_ch_calcukated_e_resistance_avg) + " " + units;
-  if (this->config.channel_2_switch_en == true) {
+  if (this->config.channel_2_switch_en == true && this->ch2_sensor_type != "disabled" ) {
     resultStr       += "\nCH2 Temp    : " +  String( this->measurements [3] [ this->config.NUM_SAMPLE_SAMPLING_READINGS*this->DATASET_NUM_SAMPLES + this->config.NUM_SAMPLE_SAMPLING_READINGS -1 ] ) ;  
     resultStr       += "\nCH2 Humidty : " +  String( this->measurements [4] [ this->config.NUM_SAMPLE_SAMPLING_READINGS*this->DATASET_NUM_SAMPLES + this->config.NUM_SAMPLE_SAMPLING_READINGS -1 ] ) ;  
   }
