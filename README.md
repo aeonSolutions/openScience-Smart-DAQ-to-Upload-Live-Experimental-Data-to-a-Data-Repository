@@ -18,7 +18,7 @@
 <img src="https://github.com/aeonSolutions/Open-Science-12bit-Smart-DAQ-unique-data-fingerprint-made-for-an-Acrylic-52x48mm-/blob/main/media/bnner.jpg" width="100%">
 </p>
 
-[Open Scientific Research](https://github.com/aeonSolutions/Open-Scientific-Research)  >>  Validation of Experimental Data Origins: A Swarm of DAQ devices able to Deliver Unique Experimental Data using Blockchain-like Fingerprint ID to a Data Repository
+[Open Scientific Research](https://github.com/aeonSolutions/Open-Scientific-Research)  >>  Real time validation of Experimental Data Origins: A Swarm of DAQ devices able to Deliver Unique Experimental Data using Blockchain-like Fingerprint ID to a Data Repository
 
 # Real time validation of Experimental Data Origins: A Swarm of DAQ devices able to Deliver Unique Experimental Data using Blockchain-like Fingerprint ID to a Data Repository
 
