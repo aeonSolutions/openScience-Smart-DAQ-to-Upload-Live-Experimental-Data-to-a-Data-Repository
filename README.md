@@ -18,9 +18,9 @@
 <img src="https://github.com/aeonSolutions/Open-Science-12bit-Smart-DAQ-unique-data-fingerprint-made-for-an-Acrylic-52x48mm-/blob/main/media/bnner.jpg" width="100%">
 </p>
 
-[Open Scientific Research](https://github.com/aeonSolutions/Open-Scientific-Research)  >>  Validation of Experimental Data Origins: A Swarm of DAQ devices able to Deliver Unique Experimental Data using Blockchain-like Fingerprint ID to a Data Repository
+[Open Scientific Research](https://github.com/aeonSolutions/Open-Scientific-Research)  >>  Real time validation of Experimental Data Origins: A Swarm of DAQ devices able to Deliver Unique Experimental Data using Blockchain-like Fingerprint ID to a Data Repository
 
-# Validation of Experimental Data Origins: A Swarm of DAQ devices able to Deliver Unique Experimental Data using Blockchain-like Fingerprint ID to a Data Repository
+# Real time validation of Experimental Data Origins: A Swarm of DAQ devices able to Deliver Unique Experimental Data using Blockchain-like Fingerprint ID to a Data Repository
 
 <br>
 
@@ -103,6 +103,8 @@ A new PCB design layout made to fit a well-known [waterproof acrylic enclosure](
 <br>
 
 ## ![](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/working_green.png) Status
+
+This research and prototype work is scheduled to resume next september.
 
 The PCB hardware has now a status of fully tested and fully working. Nowadays, coding the firmware for the first public beta stable release.
 
