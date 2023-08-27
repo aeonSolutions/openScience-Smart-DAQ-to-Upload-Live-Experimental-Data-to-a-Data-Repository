@@ -104,7 +104,7 @@ A new PCB design layout made to fit a well-known [waterproof acrylic enclosure](
 
 ## ![](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/working_green.png) Status
 
-This research and prototype work is scheduled to resume next september.
+PCB revision "09-2023" is now ready for fabrication and testing. 
 
 The PCB hardware has now a status of fully tested and fully working. Nowadays, coding the firmware for the first public beta stable release.
 
