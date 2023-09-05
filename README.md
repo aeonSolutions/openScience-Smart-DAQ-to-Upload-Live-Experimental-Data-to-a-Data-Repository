@@ -62,7 +62,12 @@ continue reading [here](https://github.com/aeonSolutions/openScienceResearch-Sma
 
 <br>
 
-**A paper is currently being written, in an open-environment format**. Available as a preprint draft document at Elsevier's SSRN platform. https://ssrn.com/abstract=4210504 . See its revision history and ongoing writing works [here](https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/wiki/Validation-of-Experimental-Data-Origins:-A-Swarm-of-DAQ-devices-able-to-Deliver-Unique-Experimental-Data-using-Blockchain%E2%80%90like-Fingerprint-ID-to-a-Data-Repository) for how this kind of smart electronics can be connected for fail-safe data and redundancy (and as an IoE DAQ device) on any experimental setup.
+**A paper is currently being written, in an open-environment format**
+
+Available as a preprint draft document at Elsevier's SSRN platform. https://ssrn.com/abstract=4210504 . 
+
+See its revision history and ongoing writing works [here](https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/wiki/Validation-of-Experimental-Data-Origins:-A-Swarm-of-DAQ-devices-able-to-Deliver-Unique-Experimental-Data-using-Blockchain%E2%80%90like-Fingerprint-ID-to-a-Data-Repository) for how this kind of smart electronics can be connected for fail-safe data and redundancy (and as an IoE DAQ device) on any experimental setup.
+
 I also have available [here](https://github.com/aeonSolutions/AeonLabs--Writing-Styles-Classification-Using-Stylometric-Analysis), an intelligent system that takes a single document and classifies different writing styles within the document using stylometric analysis, that is worth have a run in python. 
 
 <br>
@@ -117,18 +122,6 @@ This code uses my own ESP32 c++ class libraries to expedite development of the c
 ## ToDo List
 To view a list of work scheduled to be done on all these open ghardware smart data acquisitin devices see this page [here](https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/wiki#index-of-contents).
 
-
-<br>
-
-**Smart DAQ setup and configuration**
-- Multi-environment smart DAQ manager coded in QT6 (Android, Windows, Linux,...)  for setup and configuration of individual smart DAQ devices to each specimen or sample (using RFID NFC technologies).
-- Ability to define a policy of experimental expected/ possible warnings on measured results (when in autonomous mode). 
-
-<br>
-
-**Experimental Data Media Manager**
-- Multi environment experimental files media manager coded in QT6 (Android, Windows, Linux,...) able to upload an Edit metadata of photos and video files to a dataverse repository.
-
 <br>
 <br>
 
@@ -175,17 +168,6 @@ https://guides.dataverse.org/en/5.12/api/client-libraries.html
 <br>
 
 ### OPEN Science Networks
-
-| [<img src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/RDA_org.png" alt="" width="150">](https://rd-alliance.org) | With over 10000 members from 145 countries, Research Data Alliance provides a neutral space where its members can come together to develop and adopt infrastructure that promotes data-sharing and data-driven research |
-|-------------|------|
-
-<br>
-
-| [<img src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/openAIRE_eu.png" alt="" width="150">](https://www.openaire.eu) | OpenAIRE's vision is to transform society through validated scientific knowledge and allow citizens, educators, funders, civil servants and industry to find ways to make science useful for themselves, their working environments and society. |
-|-------------|------|
-
-<br>
-
 In the Wiki,  the reader can find a [list of Open Science projects](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki) worth mention. And if you know one of interest, share it here too, for everyone to see and use.   
 
 <br>
