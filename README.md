@@ -30,15 +30,19 @@
 
 I can already see students in a laboratory all dressed up and equipped with their tablets and smart device kits, all sending the experimental data to a public data repository while at the same time receiving experimental data from other students.  All inside that tablet cooperating and without the need to get to know each other.
 
-<p align="center">
-  <img src="https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/blob/main/Design/man-at-desk-writing-on-ipad-with-stylus-portrait_2000x2000.webp" height=300>
-</p>
+(...)
+
+continue reading [here](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki).
 
 <br>
 
 **The problem**
 
 Current scientific methods use traditional dataloggers (DAQ) for doing experimental data measurements and collection. This means collected data many times is stored in a paper format, and most of the time in a conventional CSV Excel data file. This is prone to errors and even worst, forgery of experimental data. To this date, there are no dataloggers able to automate experimental data acquisition in a scientific experiment, making it transparent and trustworthy beyond common critiques found nowadays. 
+
+(...)
+
+continue reading [here](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki).
 
 <br>
 
@@ -48,26 +52,19 @@ This Sci. research presents an innovative method for experimental data acquisiti
 
 These Smart DAQ devices are of type "Internet of Everything" (IoE) Smart Devices and are able to connect with each other using swarm intelligence. The main purpose is to increase data integrity and trustworthiness among DAQ devices connected and on all experimental data collected during an experiment or research project.
 
-<p align="center">
-  <img width="600" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/swarm.png">
-</p>
+(...)
 
-Experimental data collected is stored in a block format, meaning, a single block stores an individual piece of experimental data written to it, the hash of the previous block, and its own hash. 
+**In everyday science at a laboratory these Smart DAQ devices are able to connect among each other, in a swarm-like manner, and when doing so, increase experimental data trustworthiness and authenticity in an experiment part of a research project or experimental campaign.** Setting up a Swarm network of smart DAQ devices not only increases the quality of research results, by tagging each individual piece of experimental data collected from each individual sensor, with a unique data fingerprint ID (hash) at the exact same moment of data collection, broadcast it to other nearby smart DAQ devices and finally do data upload to a repository where a new, additional data fingerprint is added to existing ones (generated locally). This way is maintained and guaranteed data collection integrity locally, from the laboratory, until the moment is received and stored in a data repository in a cloud server.   
 
-<p align="center">
-  <img width="600" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/block.png">
-</p>
+(...)
 
-This is the main principle of operation behind blockchain technologies, to make it really difficult to modify experimental data once it’s written to a block since hashes are interconnected among each other since the beginning of an experiment, experimental campaign, and even since the beginning of a research project. Every block written references the hash of its previous block. This way, for any modification to the data stored in a block, the hash it stores changes forcing the following blocks to also indicate a change (since they must have the hash of the previous block). To modify a block is needed a rewrite on all blocks.
+continue reading [here](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki).
 
-<p align="center">
-  <img width="600" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/blockchain.png">
-</p>
+<br>
 
-**In everyday science at a laboratory these Smart DAQ devices are able to connect among each other, in a swarm-like manner, and when doing so, increase experimental data trustworthiness and authenticity in an experiment part of a research project or experimental campaign.** Setting up a Swarm network of smart DAQ devices not only increases the quality of research results, by tagging each individual piece of experimental data collected from each individual sensor, with a unique data fingerprint ID (hash) at the exact same moment of data collection, broadcast it to other nearby smart DAQ devices and finally do data upload to a repository where a new, additional data fingerprint is added to existing ones (generated locally). This way is maintained and guaranteed data collection integrity locally, from the laboratory, until the moment is received and stored in a data repository in a cloud server.     
-
-A paper is currently being written, in an open-environment format. Available as a preprint draft document at Elsevier's SSRN platform. https://ssrn.com/abstract=4210504 . See the [WIKI](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki) for how this kind of smart electronics can be connected for fail-safe data and redundancy (and as an IoE DAQ device) on any experimental setup.
+**A paper is currently being written, in an open-environment format**. Available as a preprint draft document at Elsevier's SSRN platform. https://ssrn.com/abstract=4210504 . See its revision history and ongoing writing works [here]([https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki](https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/wiki/Validation-of-Experimental-Data-Origins:-A-Swarm-of-DAQ-devices-able-to-Deliver-Unique-Experimental-Data-using-Blockchain%E2%80%90like-Fingerprint-ID-to-a-Data-Repository)) for how this kind of smart electronics can be connected for fail-safe data and redundancy (and as an IoE DAQ device) on any experimental setup.
 I also have available [here](https://github.com/aeonSolutions/AeonLabs--Writing-Styles-Classification-Using-Stylometric-Analysis), an intelligent system that takes a single document and classifies different writing styles within the document using stylometric analysis, that is worth have a run in python. 
+
 <br>
 <br>
 
@@ -118,29 +115,8 @@ This code uses my own ESP32 c++ class libraries to expedite development of the c
 <br>
 
 ## ToDo List
+To view a list of work scheduled to be done on all these open ghardware smart data acquisitin devices see this page [here](https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/wiki#index-of-contents).
 
-**Smart DAQ Firmware:**
-  - Calc MD5 hash of the dataset file to compare with json result on upload 
-  - ✓ ~~OTA firmware update~~
-  - Remove the lock on a dataset (by an admin)
-  - ✓ ~~Validate Json received on a new dataset upload~~
-  - ✓ ~~Load dataset repository metadata~~
-  - ✓ ~~Output board startup diagnostics serial stream to a Bluetooth or WIFI data stream~~
-  - ✓ ~~accept GBRL like setup and config $ commands.~~
-  - SQLite database to store measured experimental data and upload to a dataverse repository
-  - Swarm connectivity to other nearby Smart DAQ devices for experimental data redundancy and sharing (IoE - Internet of Everything). 
-  - Blockchain-like data storage and exchange of experimental data collected
-  - Experimental Data multiple Signing with multiple unique Fingerprint ID requests to other Smart DAQ devices:
-    - from nearby devices on the same research project
-    - from nearby devices in the same Laboratory
-    - from nearby devices on the same campus
-    - from devices located elsewhere (on the internet) and available to do experimental data signing (obtained from a list of devices registered in a public server) 
-  - ✓ ~~Automatic geolocation of experimental data origins using the wifi network it connects~~
-  - Allow remote query of a device's setup, for instance, sensor calibration,  at any time of the day (and night) from the data repository server
-  - ✓ ~~Motion Detection of unauthorized handling of a specimen during an ongoing experiment~~
-  - ✓ ~~Smart Device Language Pack Downloader and Language Selection~~
-  - ✓ ~~Github Certificate of Authority (CA) Updater~~
-  - ✓ ~~Dataverse Certificate of Authority (CA) Updater~~
 
 <br>
 
