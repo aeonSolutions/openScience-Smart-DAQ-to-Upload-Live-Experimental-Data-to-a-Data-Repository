@@ -31,7 +31,7 @@
 I can already see students in a laboratory all dressed up and equipped with their tablets and smart device kits, all sending the experimental data to a public data repository while at the same time receiving experimental data from other students.  All inside that tablet cooperating and without the need to get to know each other.
 
 <p align="center">
-  <img src="https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/blob/main/Design/man-at-desk-writing-on-ipad-with-stylus-portrait_2000x2000.webp" height=500>
+  <img src="https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/blob/main/Design/man-at-desk-writing-on-ipad-with-stylus-portrait_2000x2000.webp" height=300>
 </p>
 
 <br>
