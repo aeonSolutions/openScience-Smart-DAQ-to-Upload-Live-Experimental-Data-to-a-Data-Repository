@@ -271,11 +271,21 @@ See a list with the hardware specifications for the 12bit pcb on the [WiKi](http
 
 ## PCB Design Files and Circuit Schematic
 
-There are many smart DAQ hardware solutions available on my Laboratory Automation catalog, [here](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/tree/main/Laboratory%20Automation), ranging from 12-Bit data acquisition devices with only one channel to high accuracy 24-bit resolution and 12 channels.  
- 
-<p align="center">
-  <img width="350" src="https://github.com/aeonSolutions/Open-Science-12bit-Smart-DAQ-unique-data-fingerprint-made-for-an-Acrylic-52x48mm-/blob/main/designs/pcb_front.png">
-</p>
+### Data Acquisition with a resistivity meter
+- [12-bit Smart Data Acquisition Devices](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/tree/main/Smart%20DAQ/12-bit) (8)
+- [16-bit Smart Data Acquisition Device](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/Smart%20DAQ/16-bit/readme.md)
+- [24-bit Smart Data Acquisition Devices](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/tree/main/Smart%20DAQ/24-bit/readme.md) (2) (soon . stay tuned.)
+
+<br>
+
+### Weight Scales
+- [24-bit Smart Weight Scales](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/tree/main/Smart%20DAQ/24-bit/readme.md) (1) (soon . stay tuned.)
+- [24-bit Smart Hydrostatic Weight Scales](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/tree/main/Smart%20DAQ/24-bit/readme.md) (1) (soon . stay tuned.)
+
+<br>
+
+### Weather Station
+- [Wireless Battery & Solar Powered Rain meter](https://github.com/aeonSolutions/aeonlabs-HomeAutomation-Outdoors-Wireless-Battery-powered-Rainmeter)
 
 <br>
 <br>
