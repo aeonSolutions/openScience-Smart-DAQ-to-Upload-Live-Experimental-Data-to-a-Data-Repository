@@ -72,8 +72,6 @@ Available as a preprint draft document at Elsevier's SSRN platform. https://ssrn
 
 See its revision history and ongoing writing works [here](https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/wiki/Validation-of-Experimental-Data-Origins:-A-Swarm-of-DAQ-devices-able-to-Deliver-Unique-Experimental-Data-using-Blockchain%E2%80%90like-Fingerprint-ID-to-a-Data-Repository) for how this kind of smart electronics can be connected for fail-safe data and redundancy (and as an IoE DAQ device) on any experimental setup.
 
-I also have available [here](https://github.com/aeonSolutions/AeonLabs--Writing-Styles-Classification-Using-Stylometric-Analysis), an intelligent system that takes a single document and classifies different writing styles within the document using stylometric analysis, that is worth have a run in python. 
-
 <br>
 <br>
 
