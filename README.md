@@ -289,7 +289,7 @@ Buy me a cup of coffee, a slice of pizza, or a book to help me study, eat and th
 ### Make a donation on Paypal
 Make a donation on PayPal and get a TAX refund*.
 
-[![](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/paypal_small.png)](http://paypal.me/mtpsilva)
+[![](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/media/paypal_small.png)](http://paypal.me/mtpsilva)
 
 
 ### Support all these open hardware projects and become a Patreon  
