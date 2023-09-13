@@ -24,21 +24,29 @@
 
 <br>
 
+<p align="right">
+Last update: 11-09-2023
+</p>
+
 **Vision**
 
 (2007)
 
 I can already see students in a laboratory all dressed up and equipped with their tablets and smart device kits, all sending the experimental data to a public data repository while at the same time receiving experimental data from other students.  All inside that tablet cooperating and without the need to get to know each other.
 
-<p align="center">
-  <img src="https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/blob/main/Design/man-at-desk-writing-on-ipad-with-stylus-portrait_2000x2000.webp" height=500>
-</p>
+(...)
+
+continue reading [here](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki).
 
 <br>
 
 **The problem**
 
 Current scientific methods use traditional dataloggers (DAQ) for doing experimental data measurements and collection. This means collected data many times is stored in a paper format, and most of the time in a conventional CSV Excel data file. This is prone to errors and even worst, forgery of experimental data. To this date, there are no dataloggers able to automate experimental data acquisition in a scientific experiment, making it transparent and trustworthy beyond common critiques found nowadays. 
+
+(...)
+
+continue reading [here](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki).
 
 <br>
 
@@ -48,26 +56,22 @@ This Sci. research presents an innovative method for experimental data acquisiti
 
 These Smart DAQ devices are of type "Internet of Everything" (IoE) Smart Devices and are able to connect with each other using swarm intelligence. The main purpose is to increase data integrity and trustworthiness among DAQ devices connected and on all experimental data collected during an experiment or research project.
 
-<p align="center">
-  <img width="600" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/swarm.png">
-</p>
+(...)
 
-Experimental data collected is stored in a block format, meaning, a single block stores an individual piece of experimental data written to it, the hash of the previous block, and its own hash. 
+**In everyday science at a laboratory these Smart DAQ devices are able to connect among each other, in a swarm-like manner, and when doing so, increase experimental data trustworthiness and authenticity in an experiment part of a research project or experimental campaign.** Setting up a Swarm network of smart DAQ devices not only increases the quality of research results, by tagging each individual piece of experimental data collected from each individual sensor, with a unique data fingerprint ID (hash) at the exact same moment of data collection, broadcast it to other nearby smart DAQ devices and finally do data upload to a repository where a new, additional data fingerprint is added to existing ones (generated locally). This way is maintained and guaranteed data collection integrity locally, from the laboratory, until the moment is received and stored in a data repository in a cloud server.   
 
-<p align="center">
-  <img width="600" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/block.png">
-</p>
+(...)
 
-This is the main principle of operation behind blockchain technologies, to make it really difficult to modify experimental data once it’s written to a block since hashes are interconnected among each other since the beginning of an experiment, experimental campaign, and even since the beginning of a research project. Every block written references the hash of its previous block. This way, for any modification to the data stored in a block, the hash it stores changes forcing the following blocks to also indicate a change (since they must have the hash of the previous block). To modify a block is needed a rewrite on all blocks.
+continue reading [here](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki).
 
-<p align="center">
-  <img width="600" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/blockchain.png">
-</p>
+<br>
 
-**In everyday science at a laboratory these Smart DAQ devices are able to connect among each other, in a swarm-like manner, and when doing so, increase experimental data trustworthiness and authenticity in an experiment part of a research project or experimental campaign.** Setting up a Swarm network of smart DAQ devices not only increases the quality of research results, by tagging each individual piece of experimental data collected from each individual sensor, with a unique data fingerprint ID (hash) at the exact same moment of data collection, broadcast it to other nearby smart DAQ devices and finally do data upload to a repository where a new, additional data fingerprint is added to existing ones (generated locally). This way is maintained and guaranteed data collection integrity locally, from the laboratory, until the moment is received and stored in a data repository in a cloud server.     
+**A paper is currently being written, in an open-environment format**
 
-A paper is currently being written, in an open-environment format. Available as a preprint draft document at Elsevier's SSRN platform. https://ssrn.com/abstract=4210504 . See the [WIKI](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki) for how this kind of smart electronics can be connected for fail-safe data and redundancy (and as an IoE DAQ device) on any experimental setup.
-I also have available [here](https://github.com/aeonSolutions/AeonLabs--Writing-Styles-Classification-Using-Stylometric-Analysis), an intelligent system that takes a single document and classifies different writing styles within the document using stylometric analysis, that is worth have a run in python. 
+Available as a preprint draft document at Elsevier's SSRN platform. https://ssrn.com/abstract=4210504 . 
+
+See its revision history and ongoing writing works [here](https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/wiki/Validation-of-Experimental-Data-Origins:-A-Swarm-of-DAQ-devices-able-to-Deliver-Unique-Experimental-Data-using-Blockchain%E2%80%90like-Fingerprint-ID-to-a-Data-Repository) for how this kind of smart electronics can be connected for fail-safe data and redundancy (and as an IoE DAQ device) on any experimental setup.
+
 <br>
 <br>
 
@@ -80,8 +84,17 @@ I also have available [here](https://github.com/aeonSolutions/AeonLabs--Writing-
 <br>
 
 <p align="center">
-  <img src="https://github.com/aeonSolutions/Open-Science-12bit-Smart-DAQ-unique-data-fingerprint-made-for-an-Acrylic-52x48mm-/raw/main/media/20230427_182904.jpg" width="100%">
+  <img src="https://github.com/aeonSolutions/Open-Science-12bit-Smart-DAQ-unique-data-fingerprint-made-for-an-Acrylic-52x48mm-/raw/main/media/20230427_182904.jpg" width="70%">
 </p>
+
+
+## ![](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/working_green.png) Status
+
+PCB revision "09-2023" is now ready for fabrication and testing. 
+
+The PCB hardware has now a status of fully tested and fully working. Nowadays, coding the firmware for the first public beta stable release.
+
+<br>
 
 **Most recent update**
 
@@ -102,14 +115,6 @@ A new PCB design layout made to fit a well-known [waterproof acrylic enclosure](
 
 <br>
 
-## ![](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/working_green.png) Status
-
-PCB revision "09-2023" is now ready for fabrication and testing. 
-
-The PCB hardware has now a status of fully tested and fully working. Nowadays, coding the firmware for the first public beta stable release.
-
-<br>
-
 ## OEM Firmware code
 The OEM version of the firmware code can be found in the folder **firmware code**.  It has by default OTA updates, meaning the smart data acquisition device automatically updates itself when newer updated versions are made available here.  
 
@@ -118,40 +123,7 @@ This code uses my own ESP32 c++ class libraries to expedite development of the c
 <br>
 
 ## ToDo List
-
-**Smart DAQ Firmware:**
-  - Calc MD5 hash of the dataset file to compare with json result on upload 
-  - ✓ ~~OTA firmware update~~
-  - Remove the lock on a dataset (by an admin)
-  - ✓ ~~Validate Json received on a new dataset upload~~
-  - ✓ ~~Load dataset repository metadata~~
-  - ✓ ~~Output board startup diagnostics serial stream to a Bluetooth or WIFI data stream~~
-  - ✓ ~~accept GBRL like setup and config $ commands.~~
-  - SQLite database to store measured experimental data and upload to a dataverse repository
-  - Swarm connectivity to other nearby Smart DAQ devices for experimental data redundancy and sharing (IoE - Internet of Everything). 
-  - Blockchain-like data storage and exchange of experimental data collected
-  - Experimental Data multiple Signing with multiple unique Fingerprint ID requests to other Smart DAQ devices:
-    - from nearby devices on the same research project
-    - from nearby devices in the same Laboratory
-    - from nearby devices on the same campus
-    - from devices located elsewhere (on the internet) and available to do experimental data signing (obtained from a list of devices registered in a public server) 
-  - ✓ ~~Automatic geolocation of experimental data origins using the wifi network it connects~~
-  - Allow remote query of a device's setup, for instance, sensor calibration,  at any time of the day (and night) from the data repository server
-  - ✓ ~~Motion Detection of unauthorized handling of a specimen during an ongoing experiment~~
-  - ✓ ~~Smart Device Language Pack Downloader and Language Selection~~
-  - ✓ ~~Github Certificate of Authority (CA) Updater~~
-  - ✓ ~~Dataverse Certificate of Authority (CA) Updater~~
-
-<br>
-
-**Smart DAQ setup and configuration**
-- Multi-environment smart DAQ manager coded in QT6 (Android, Windows, Linux,...)  for setup and configuration of individual smart DAQ devices to each specimen or sample (using RFID NFC technologies).
-- Ability to define a policy of experimental expected/ possible warnings on measured results (when in autonomous mode). 
-
-<br>
-
-**Experimental Data Media Manager**
-- Multi environment experimental files media manager coded in QT6 (Android, Windows, Linux,...) able to upload an Edit metadata of photos and video files to a dataverse repository.
+To view a list of work scheduled to be done on all these open ghardware smart data acquisitin devices see this page [here](https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/wiki#index-of-contents).
 
 <br>
 <br>
@@ -199,17 +171,6 @@ https://guides.dataverse.org/en/5.12/api/client-libraries.html
 <br>
 
 ### OPEN Science Networks
-
-| [<img src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/RDA_org.png" alt="" width="150">](https://rd-alliance.org) | With over 10000 members from 145 countries, Research Data Alliance provides a neutral space where its members can come together to develop and adopt infrastructure that promotes data-sharing and data-driven research |
-|-------------|------|
-
-<br>
-
-| [<img src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/openAIRE_eu.png" alt="" width="150">](https://www.openaire.eu) | OpenAIRE's vision is to transform society through validated scientific knowledge and allow citizens, educators, funders, civil servants and industry to find ways to make science useful for themselves, their working environments and society. |
-|-------------|------|
-
-<br>
-
 In the Wiki,  the reader can find a [list of Open Science projects](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki) worth mention. And if you know one of interest, share it here too, for everyone to see and use.   
 
 <br>
@@ -219,20 +180,15 @@ In the Wiki,  the reader can find a [list of Open Science projects](https://gith
 <br>
 
 ### Smart DAQ on a Laboratory Specimen
+see a list [here](https://github.com/aeonSolutions/Open-Scientific-Research) of open sicence projects that utilize these open hardware solutions for data acquistion.
+On the photo below, to the left, the smart DAQ is installed on an acrylic case and screwed with plastic screws to an acrylic base with the same cross-section area as the specimen to be tested. The acrylic base can be bought [here](https://s.click.aliexpress.com/e/_DEGsZaL). And the acrylic case [here](https://s.click.aliexpress.com/e/_Dmudkjt). 
 
 <p align="center">
-  <img width="600" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/12bitSmartDAQ2023january_2.jpeg">
+  <img  src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/12bitSmartDAQ2023january_2.jpeg" width="45%">
+  <img src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/12bitSmartDAQ2023january_4.jpeg" width="45%">
 </p>
 
-On the photo above the smart DAQ is installed on an acrylic case and screwed with plastic screws to an acrylic base with the same cross-section area as the specimen to be tested. The acrylic base can be bought [here](https://s.click.aliexpress.com/e/_DEGsZaL). And the acrylic case [here](https://s.click.aliexpress.com/e/_Dmudkjt). 
-
-<br>
-
-<p align="center">
-  <img width="600" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/12bitSmartDAQ2023january_4.jpeg">
-</p>
-
-The photo above is one of many specimens I purposely fabricated to research the self-sensing properties of asphalt mixed with a known content of carbon fibers. This is a 10cm cylinder specimen and on the top is already setup my own design smart #DAQ (get it here on my GitHub ) with the ability to upload LIVE experimental data to a #dataverse.
+The photo above, to the right, is one of many specimens I purposely fabricated to research the self-sensing properties of asphalt mixed with a known content of carbon fibers. This is a 10cm cylinder specimen and on the top is already setup my own design smart #DAQ (get it here on my GitHub ) with the ability to upload LIVE experimental data to a #dataverse.
 
 <br>
 
@@ -271,11 +227,21 @@ See a list with the hardware specifications for the 12bit pcb on the [WiKi](http
 
 ## PCB Design Files and Circuit Schematic
 
-There are many smart DAQ hardware solutions available on my Laboratory Automation catalog, [here](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/tree/main/Laboratory%20Automation), ranging from 12-Bit data acquisition devices with only one channel to high accuracy 24-bit resolution and 12 channels.  
- 
-<p align="center">
-  <img width="350" src="https://github.com/aeonSolutions/Open-Science-12bit-Smart-DAQ-unique-data-fingerprint-made-for-an-Acrylic-52x48mm-/blob/main/designs/pcb_front.png">
-</p>
+### Data Acquisition with a resistivity meter
+- [12-bit Smart Data Acquisition Devices](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/tree/main/Smart%20DAQ/12-bit) (8)
+- [16-bit Smart Data Acquisition Device](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/Smart%20DAQ/16-bit/readme.md)
+- [24-bit Smart Data Acquisition Devices](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/tree/main/Smart%20DAQ/24-bit/readme.md) (2) (soon . stay tuned.)
+
+<br>
+
+### Weight Scales
+- [24-bit Smart Weight Scales](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/tree/main/Smart%20DAQ/24-bit/readme.md) (1) (soon . stay tuned.)
+- [24-bit Smart Hydrostatic Weight Scales](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/tree/main/Smart%20DAQ/24-bit/readme.md) (1) (soon . stay tuned.)
+
+<br>
+
+### Weather Station
+- [Wireless Battery & Solar Powered Rain meter](https://github.com/aeonSolutions/aeonlabs-HomeAutomation-Outdoors-Wireless-Battery-powered-Rainmeter)
 
 <br>
 <br>
@@ -323,7 +289,7 @@ Buy me a cup of coffee, a slice of pizza, or a book to help me study, eat and th
 ### Make a donation on Paypal
 Make a donation on PayPal and get a TAX refund*.
 
-[![](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/paypal_small.png)](http://paypal.me/mtpsilva)
+[![](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/media/paypal_small.png)](http://paypal.me/mtpsilva)
 
 
 ### Support all these open hardware projects and become a Patreon  
