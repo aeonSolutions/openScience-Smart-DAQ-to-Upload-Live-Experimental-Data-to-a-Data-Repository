@@ -154,7 +154,7 @@ https://guides.dataverse.org/en/5.12/api/client-libraries.html
 
 <br>
 
-My presentation about real-time experimental data and dataverse, in particular to propose adding the functionality to receive live, real-time, experimental data directly from a smart data acquisition device into a dataverse repository.
+My presentation on the montly semptember 2023 dataverse.org meeting, to the team of programmers behind the datavsers open source code about real-time experimental data and dataverse, in particular to propose adding the functionality to receive live, real-time, experimental data directly from a smart data acquisition device into a dataverse repository.
 
 See this presentation on dataverseTV here:
 https://dataverse.org/dataversetv
