@@ -133,14 +133,14 @@ To view a list of work scheduled to be done on all these open ghardware smart da
 ### Mobile App for managing LDAD Smart DAQ devices
 The Android App under development is able to connect these smart data acquisition devices and can be found here on the following repository "[Mobile App for managing LDAD Smart DAQ devices](https://github.com/aeonSolutions/aeonlabs-Android-Mobile-App-for-managing-LDAD-Smart-DAQ-devices)".
 
-### Dataverse API C library
+### Dataverse API C++ library
 In parallel is being written a C library to expedite API integration on smart DAQ devices or elsewhere. Follow the link to its repository:
 
 https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library
 
 <p align="center">
   <a href="https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library">
-   <img width="300" src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/dataverse_r_project.png">
+   <img width="300" src="https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library/blob/main/dataverse_r_project.png">
  </a>
 </p>
 
