@@ -25,7 +25,7 @@
 <br>
 
 <p align="right">
-Last update: 11-09-2023
+Last update: 20-09-2023
 </p>
 
 **Vision**
@@ -151,6 +151,23 @@ https://github.com/aeonSolutions/OpenScience-Dataverse-API-C-library
 Goto dataverse.org for another coding language that best suits your coding style and needs. Currently, there are client libraries for Python, Javascript, R, Java, and Julia that can be used to develop against Dataverse Software APIs
 
 https://guides.dataverse.org/en/5.12/api/client-libraries.html
+
+<br>
+
+My presentation on the monthly September 2023 dataverse.org meeting, to the team of programmers behind the #datavserse open source code about real-time experimental data and #dataverse, in particular to propose adding the functionality to receive live, real-time, experimental data directly from a smart data acquisition device into a #dataverse repository.
+
+See this presentation on dataverseTV here:
+https://dataverse.org/dataversetv
+
+<p align="center">
+  <a href="http://www.youtube.com/watch?feature=player_embedded&v=1iFw65qx8tY" target="_blank">
+    <img src="http://img.youtube.com/vi/1iFw65qx8tY/mqdefault.jpg" alt="Watch the video"  border="10" />
+  </a>
+
+ <br>
+  View on Youtube my presentation about Real-time experimental data and Dataverse
+</p>
+
 
 <br>
 <br>
