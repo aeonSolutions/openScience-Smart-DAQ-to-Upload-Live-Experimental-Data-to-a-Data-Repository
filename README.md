@@ -25,7 +25,7 @@
 <br>
 
 <p align="right">
- <a href="https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/wiki">Change Language</a> <br>
+ <a href="https://github-com.translate.goog/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/wiki?_x_tr_sl=en&_x_tr_tl=pt&_x_tr_hl=en&_x_tr_pto=wapp">Change Language</a> <br>
 Last update: 20-09-2023
 </p>
 
