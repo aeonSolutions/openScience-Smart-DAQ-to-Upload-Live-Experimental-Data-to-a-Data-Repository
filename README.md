@@ -25,7 +25,7 @@
 
 <p align="right">
  <a href="https://github-com.translate.goog/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/wiki?_x_tr_sl=en&_x_tr_tl=pt&_x_tr_hl=en&_x_tr_pto=wapp">Change Language</a> <br>
-Last update: 20-09-2023
+Last update: 04-03-2024
 </p>
 
 **Vision**
@@ -64,7 +64,9 @@ These Smart DAQ devices are of type "Internet of Everything" (IoE) Smart Devices
 
 continue reading [here](https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/wiki).
 
-<br>
+<p align="center">
+  <img width="45%" src="https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/blob/main/media/LDAD_LCD_test.jpeg"> 
+</p>
 
 **A paper is currently being written, in an open-environment format**
 
@@ -84,7 +86,7 @@ See its revision history and ongoing writing works [here](https://github.com/aeo
 <br>
 
 <p align="center">
-  <img src="https://github.com/aeonSolutions/Open-Science-12bit-Smart-DAQ-unique-data-fingerprint-made-for-an-Acrylic-52x48mm-/raw/main/media/20230427_182904.jpg" width="70%">
+  <img width="55%" src="https://github.com/aeonSolutions/Open-Science-12bit-Smart-DAQ-unique-data-fingerprint-made-for-an-Acrylic-52x48mm-/raw/main/media/20230427_182904.jpg" >
 </p>
 
 
