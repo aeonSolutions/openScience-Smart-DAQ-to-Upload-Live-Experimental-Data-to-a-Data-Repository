@@ -97,14 +97,8 @@ Currently, coding the firmware for the first public beta stable release.
 
 <br>
 
-**Most recent update**
-
-The L.D.A.D. was renamed to S.D.A.D. and the latest hardware electronics revision has one channel with 16-bit precision and a power consumption of around ~60nA  only! 
-The very first release candidate of the firmware, on this code revision, the electrical resistance and voltage and measurements are being correctly measured by the built-in multimeter. This means the smart DAQ is now ready to be installed on all specimens in an experimental campaign after configuration with the correct calibration curves (temperature compensated). From now on all changes will be towards improving usability and user experience in a laboratory.
-
-The C firmware code now includes SRAM support for temporary storage of measured data in RAM  ( 64Mbit IC) before flushing it into the onboard Flash storage. See [this](https://stackoverflow.com/questions/75004548/multidimensional-char-string-array-initialization-and-usage-for-esp32-mcus-with/75004549#75004549) stack overflow question for more info. The [1.69" Display](https://s.click.aliexpress.com/e/_DklsWrB) is now also available and a standard layout design and configuration are now shown when the smart DAQ is powered.
-
-The current PCB design layout is made to fit a well-known [waterproof acrylic enclosure](https://s.click.aliexpress.com/e/_Dmudkjt), and is available with new DAQ capabilities. This new PCB design dimension is the one selected to move forward on this sci. research project. See the photos below.
+**Most recent update** <br>
+To read about the most recent update [click here](https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/wiki#-status).
 
 ## ToDo List
 To view a list of work scheduled to be done on all these open hardware smart data acquisition devices see this page [here](https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/wiki/ToDo-List).
