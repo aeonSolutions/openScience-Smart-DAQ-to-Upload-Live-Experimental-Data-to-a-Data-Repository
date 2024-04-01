@@ -17,9 +17,9 @@
 <img src="https://github.com/aeonSolutions/Open-Science-12bit-Smart-DAQ-unique-data-fingerprint-made-for-an-Acrylic-52x48mm-/blob/main/media/bnner.jpg" width="100%">
 </p>
 
-[Open Scientific Research](https://github.com/aeonSolutions/Open-Scientific-Research)  >>  Real time validation of Experimental Data Origins: A Swarm of DAQ devices able to Deliver Unique Experimental Data using Blockchain-like Fingerprint ID to a Data Repository
+[Open Scientific Research](https://github.com/aeonSolutions/Open-Scientific-Research)  >>  Real-time validation of Experimental Data Origins: A Swarm of DAQ devices able to Deliver Unique Experimental Data using Blockchain-like Fingerprint ID to a Data Repository
 
-# Real time validation of Experimental Data Origins: A Swarm of DAQ devices able to Deliver Unique Experimental Data using Blockchain-like Fingerprint ID to a Data Repository
+# Real-time validation of Experimental Data Origins: A Swarm of DAQ devices able to Deliver Unique Experimental Data using Blockchain-like Fingerprint ID to a Data Repository
 
 <br>
 
@@ -42,7 +42,7 @@ continue reading [here](https://github.com/aeonSolutions/openScienceResearch-Sma
 
 **The problem**
 
-Current scientific methods use traditional dataloggers (DAQ) for doing experimental data measurements and collection. This means collected data many times is stored in a paper format, and most of the time in a conventional CSV Excel data file. This is prone to errors and even worst, forgery of experimental data. To this date, there are no dataloggers able to automate experimental data acquisition in a scientific experiment, making it transparent and trustworthy beyond common critiques found nowadays. 
+Current scientific methods use traditional dataloggers (DAQ) for doing experimental data measurements and collection. This means collected data many times is stored in a paper format, and most of the time in a conventional CSV Excel data file. This is prone to errors and even worse, forgery of experimental data. To this date, there are no dataloggers able to automate experimental data acquisition in a scientific experiment, making it transparent and trustworthy beyond common critiques found nowadays. 
 
 (...)
 
@@ -52,13 +52,13 @@ continue reading [here](https://github.com/aeonSolutions/openScienceResearch-Sma
 
 **The idea**
 
-This Sci. research presents an innovative method for experimental data acquisition and management of collected data in real-time and is compatible with any open environment. The proposed smart DAQ device prototype has the minimum hardware characteristics to handle data measurements collected from sensors locally connected to it, store it on a local CSV or SQLite database file, and finally connect and synchronize data measurements collected with a data repository hosted remotely on a Dataverse.
+This Sci. research presents an innovative method for experimental data acquisition and management of collected data in real time and is compatible with any open environment. The proposed smart DAQ device prototype has the minimum hardware characteristics to handle data measurements collected from sensors locally connected to it, store it on a local CSV or SQLite database file, and finally connect and synchronize data measurements collected with a data repository hosted remotely on a Dataverse.
 
 These Smart DAQ devices are of type "Internet of Everything" (IoE) Smart Devices and are able to connect with each other using swarm intelligence. The main purpose is to increase data integrity and trustworthiness among DAQ devices connected and on all experimental data collected during an experiment or research project.
 
 (...)
 
-**In everyday science at a laboratory these Smart DAQ devices are able to connect among each other, in a swarm-like manner, and when doing so, increase experimental data trustworthiness and authenticity in an experiment part of a research project or experimental campaign.** Setting up a Swarm network of smart DAQ devices not only increases the quality of research results, by tagging each individual piece of experimental data collected from each individual sensor, with a unique data fingerprint ID (hash) at the exact same moment of data collection, broadcast it to other nearby smart DAQ devices and finally do data upload to a repository where a new, additional data fingerprint is added to existing ones (generated locally). This way is maintained and guaranteed data collection integrity locally, from the laboratory, until the moment is received and stored in a data repository in a cloud server.   
+**In everyday science at a laboratory these Smart DAQ devices are able to connect among each other, in a swarm-like manner, and when doing so, increase experimental data trustworthiness and authenticity in an experiment part of a research project or experimental campaign.** Setting up a Swarm network of smart DAQ devices not only increases the quality of research results, by tagging each individual piece of experimental data collected from each individual sensor, with a unique data fingerprint ID (hash) at the exact same moment of data collection, broadcast it to other nearby smart DAQ devices and finally do data upload to a repository where a new, additional data fingerprint is added to existing ones (generated locally). This way is maintained and guarantees data collection integrity locally, from the laboratory, until the moment is received and stored in a data repository in a cloud server.   
 
 (...)
 
@@ -92,15 +92,15 @@ See its revision history and ongoing writing works [here](https://github.com/aeo
 
 ## ![](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/working_green.png) Status
 
-PCB revision "09-2023" is now ready for fabrication and testing. 
+PCB revision "03-2024" is now being tested in the laboratory. 
 
-The PCB hardware has now a status of fully tested and fully working. Nowadays, coding the firmware for the first public beta stable release.
+The PCB hardware has now the status of fully tested and fully working. Currently, coding the firmware for the first public beta stable release.
 
 <br>
 
 **Most recent update**
 
-The LDAD is officially up and running! Well, the very first release candidate of the firmware. Now, on this code revision, electrical resistance and measurement voltage are correctly measured by the built-in multimeter. And this means the smart DAQ is now ready to be installed on all specimens in an experimental campaign after configuration with the correct calibration curves (temperature compensated). From now on all changes will be towards improving usability and user experience in a laboratory.
+The LDAD is officially up and running! Well, the very first release candidate of the firmware. Now, on this code revision, electrical resistance and measurement voltage are correctly measured by the built-in multimeter. This means the smart DAQ is now ready to be installed on all specimens in an experimental campaign after configuration with the correct calibration curves (temperature compensated). From now on all changes will be towards improving usability and user experience in a laboratory.
 
 The C firmware code now includes SRAM support for the temporary storage of measured data in RAM up to 9175 samplings (for the 64Mbit IC) before flushing it into the onboard Flash storage. See [this](https://stackoverflow.com/questions/75004548/multidimensional-char-string-array-initialization-and-usage-for-esp32-mcus-with/75004549#75004549) stack overflow question for more info. The [1.69" Display](https://s.click.aliexpress.com/e/_DklsWrB) is now also available and a standard layout design and configuration are now shown when the smart DAQ is powered.
 
