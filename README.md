@@ -25,7 +25,7 @@
 
 <p align="right">
  <a href="https://github-com.translate.goog/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/wiki?_x_tr_sl=en&_x_tr_tl=pt&_x_tr_hl=en&_x_tr_pto=wapp">Change Language</a> <br>
-Last update: 04-03-2024
+Last update: 01-04-2024
 </p>
 
 **Vision**
@@ -90,21 +90,24 @@ See its revision history and ongoing writing works [here](https://github.com/aeo
 </p>
 
 
-## ![](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/working_green.png) Status
+## ![](https://github.com/aeonSolutions/PCB-Prototyping-Catalogue/blob/main/working_green.png) Status: PCB revision "03-2024" is now being tested in the laboratory. 
 
-PCB revision "03-2024" is now being tested in the laboratory. 
-
-The PCB hardware has now the status of fully tested and fully working. Currently, coding the firmware for the first public beta stable release.
+The PCB hardware has now the status of fully tested and fully working. <br>
+Currently, coding the firmware for the first public beta stable release.
 
 <br>
 
 **Most recent update**
 
-The LDAD is officially up and running! Well, the very first release candidate of the firmware. Now, on this code revision, electrical resistance and measurement voltage are correctly measured by the built-in multimeter. This means the smart DAQ is now ready to be installed on all specimens in an experimental campaign after configuration with the correct calibration curves (temperature compensated). From now on all changes will be towards improving usability and user experience in a laboratory.
+The L.D.A.D. was renamed to S.D.A.D. and the latest hardware electronics revision has one channel with 16-bit precision and a power consumption of around ~60nA  only! 
+The very first release candidate of the firmware, on this code revision, the electrical resistance and voltage and measurements are being correctly measured by the built-in multimeter. This means the smart DAQ is now ready to be installed on all specimens in an experimental campaign after configuration with the correct calibration curves (temperature compensated). From now on all changes will be towards improving usability and user experience in a laboratory.
 
-The C firmware code now includes SRAM support for the temporary storage of measured data in RAM up to 9175 samplings (for the 64Mbit IC) before flushing it into the onboard Flash storage. See [this](https://stackoverflow.com/questions/75004548/multidimensional-char-string-array-initialization-and-usage-for-esp32-mcus-with/75004549#75004549) stack overflow question for more info. The [1.69" Display](https://s.click.aliexpress.com/e/_DklsWrB) is now also available and a standard layout design and configuration are now shown when the smart DAQ is powered.
+The C firmware code now includes SRAM support for temporary storage of measured data in RAM  ( 64Mbit IC) before flushing it into the onboard Flash storage. See [this](https://stackoverflow.com/questions/75004548/multidimensional-char-string-array-initialization-and-usage-for-esp32-mcus-with/75004549#75004549) stack overflow question for more info. The [1.69" Display](https://s.click.aliexpress.com/e/_DklsWrB) is now also available and a standard layout design and configuration are now shown when the smart DAQ is powered.
 
-A new PCB design layout made to fit a well-known [waterproof acrylic enclosure](https://s.click.aliexpress.com/e/_Dmudkjt), is available with new DAQ capabilities. This new PCB design dimension is the one selected to move forward on this sci. research project. See the photos below.
+The current PCB design layout is made to fit a well-known [waterproof acrylic enclosure](https://s.click.aliexpress.com/e/_Dmudkjt), and is available with new DAQ capabilities. This new PCB design dimension is the one selected to move forward on this sci. research project. See the photos below.
+
+## ToDo List
+To view a list of work scheduled to be done on all these open hardware smart data acquisition devices see this page [here](https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/wiki/ToDo-List).
 
 <br>
 
@@ -120,19 +123,13 @@ A new PCB design layout made to fit a well-known [waterproof acrylic enclosure](
 ## OEM Firmware code
 The OEM version of the firmware code can be found in the folder **firmware code**.  It has by default OTA updates, meaning the smart data acquisition device automatically updates itself when newer updated versions are made available here.  
 
-This code uses my own ESP32 c++ class libraries to expedite development of the code of ESP32 microcontrollers. The repository is located [here](https://github.com/aeonSolutions/aeonlabs-ESP32-C-Base-Firmware-Libraries#readme) for anyone to use.
+This code uses my own ESP32 C++ class libraries to expedite the development of the code of ESP32 microcontrollers. The repository is located [here](https://github.com/aeonSolutions/aeonlabs-ESP32-C-Base-Firmware-Libraries#readme) for anyone to use.
 
-<br>
-
-## ToDo List
-To view a list of work scheduled to be done on all these open ghardware smart data acquisitin devices see this page [here](https://github.com/aeonSolutions/openScience-Smart-DAQ-to-Upload-Live-Experimental-Data-to-a-Data-Repository/wiki#index-of-contents).
-
-<br>
 <br>
 
 ## Related Open Source code and Software Apps
 
-### Mobile App for managing LDAD Smart DAQ devices
+### Mobile App for managing SDAD Smart DAQ devices
 The Android App under development is able to connect these smart data acquisition devices and can be found here on the following repository "[Mobile App for managing LDAD Smart DAQ devices](https://github.com/aeonSolutions/aeonlabs-Android-Mobile-App-for-managing-LDAD-Smart-DAQ-devices)".
 
 ### Dataverse API C++ library
@@ -156,7 +153,7 @@ https://guides.dataverse.org/en/5.12/api/client-libraries.html
 
 <br>
 
-My presentation on the monthly September 2023 dataverse.org meeting, to the team of programmers behind the #datavserse open source code about real-time experimental data and #dataverse, in particular to propose adding the functionality to receive live, real-time, experimental data directly from a smart data acquisition device into a #dataverse repository.
+My presentation at the monthly September 2023 dataverse.org meeting, to the team of programmers behind the #datavserse open source code about real-time experimental data and #dataverse, in particular to propose adding the functionality to receive live, real-time, experimental data directly from a smart data acquisition device into a #dataverse repository.
 
 See this presentation on dataverseTV here:
 https://dataverse.org/dataversetv
@@ -199,15 +196,15 @@ In the Wiki,  the reader can find a [list of Open Science projects](https://gith
 <br>
 
 ### Smart DAQ on a Laboratory Specimen
-see a list [here](https://github.com/aeonSolutions/Open-Scientific-Research) of open sicence projects that utilize these open hardware solutions for data acquistion.
-On the photo below, to the left, the smart DAQ is installed on an acrylic case and screwed with plastic screws to an acrylic base with the same cross-section area as the specimen to be tested. The acrylic base can be bought [here](https://s.click.aliexpress.com/e/_DEGsZaL). And the acrylic case [here](https://s.click.aliexpress.com/e/_Dmudkjt). 
+see a list [here](https://github.com/aeonSolutions/Open-Scientific-Research) of open science projects that utilize these open hardware solutions for data acquisition.
+In the photo below, to the left, the smart DAQ is installed on an acrylic case and screwed with plastic screws to an acrylic base with the same cross-section area as the specimen to be tested. The acrylic base can be bought [here](https://s.click.aliexpress.com/e/_DEGsZaL). And the acrylic case [here](https://s.click.aliexpress.com/e/_Dmudkjt). 
 
 <p align="center">
   <img  src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/12bitSmartDAQ2023january_2.jpeg" width="45%">
   <img src="https://github.com/aeonSolutions/openScienceResearch-Smart-DAQ-Device-able-to-Upload-Live-Experimental-Sensor-Data-to-a-Data-Repo/blob/main/Design/12bitSmartDAQ2023january_4.jpeg" width="45%">
 </p>
 
-The photo above, to the right, is one of many specimens I purposely fabricated to research the self-sensing properties of asphalt mixed with a known content of carbon fibers. This is a 10cm cylinder specimen and on the top is already setup my own design smart #DAQ (get it here on my GitHub ) with the ability to upload LIVE experimental data to a #dataverse.
+The photo above, to the right, is one of many specimens I purposely fabricated to research the self-sensing properties of asphalt mixed with a known content of carbon fibers. This is a 10cm cylinder specimen and on the top is already set up my own design smart #DAQ (get it here on my GitHub ) with the ability to upload LIVE experimental data to a #dataverse.
 
 <br>
 
