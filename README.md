@@ -42,7 +42,7 @@ continue reading [here](https://github.com/aeonSolutions/openScienceResearch-Sma
 
 **The problem**
 
-Current scientific methods use traditional dataloggers (DAQ) for doing experimental data measurements and collection. This means collected data many times is stored in a paper format, and most of the time in a conventional CSV Excel data file. This is prone to errors and even worse, forgery of experimental data. To this date, there are no dataloggers able to automate experimental data acquisition in a scientific experiment, making it transparent and trustworthy beyond common critiques found nowadays. 
+Current scientific methods use traditional dataloggers (DAQ) to collect and measure experimental data. This means collected data many times is stored in a paper format, and most of the time in a conventional CSV Excel data file. This is prone to errors and even worse, forgery of experimental data. To this date, no dataloggers can automate experimental data acquisition in a scientific experiment, making it less transparent and less trustworthy. 
 
 (...)
 
